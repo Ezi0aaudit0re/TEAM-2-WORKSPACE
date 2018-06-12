@@ -1,4 +1,4 @@
-let betaApp = angular.module('betaApp', ['ngRoute']);
+let betaApp = angular.module('betaApp', []);
 
 //  TODO JSON data 
 let objJSON = JSON.parse(window.localStorage.getItem("data"));
@@ -8,44 +8,35 @@ betaApp.config(($routeProvider) => {
     $routeProvider
         .when('/', {
             // route for the home page
-            templateUrl: '../../templates/home.html',
-            controller: 'indexController'
+            templateUrl: '../../templates/index.html',
+            controller: 'IndexController'
+        })
+        .when('/login/', {
+            // route for the issue tracking
+            templateUrl: '../../templates/login.html',
+            controller: 'LoginController'
         })
         .when('/project/', {
             // route for the project management
             templateUrl: '../../templates/project.html',
-            controller: 'projectController'
+            controller: 'ProjectController'
         })
         .when('/message/', {
             //route for the task page
             templateUrl: '../../templates/message.html',
-            controller: 'messageController'
+            controller: 'MessageController'
         })
         .when('/issue/', {
             // route for the issue tracking
             templateUrl: '../../templates/issue.html',
-            controller: 'issueController'
+            controller: 'IssueController'
         })
         .otherwise({
             // route for the home page
-            templateUrl: '../../templates/home.html',
-            controller: 'indexController'
+            templateUrl: '../../templates/index.html',
+            controller: 'IndexController'
         });
 });
-
-
-betaApp.controller('LoginController', ($scope) => {
-    // login
-})
-
-betaApp.MessageController = ($scope) => {
-    let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
-
-    socket.on('connect', () => {
-        // connected
-    })
-}
-
 
 betaApp.HeaderController = ($scope, $location) => {
     // for making active page link in navbar highlighted
@@ -83,7 +74,11 @@ betaApp.IndexController = ($scope) => {
     }
 };
 
-betaApp.controller('projectController', ($scope) => {
+betaApp.LoginController = ($scope) => {
+    // login
+};
+
+betaApp.ProjectController = ($scope) => {
     $scope.message = 'This page is for updating information on projects';
 
     // var objJSON = window.localStorage.getItem("keatingData");
@@ -91,7 +86,7 @@ betaApp.controller('projectController', ($scope) => {
 
     $scope.saveProject = ($scope) => {
         // saves all projects to localStorage
-        window.localStorage.setItem("keatingData", JSON.stringify(objJSON));
+        window.localStorage.setItem("data", JSON.stringify(objJSON));
         let elems = $(".ng-dirty");
         // clear class once drag ends
         for (let i = 0; i < elems.length; i++) {
@@ -99,13 +94,11 @@ betaApp.controller('projectController', ($scope) => {
         }
     };
 
-    $scope.removeProject = function(project) {
-        let index = $scope.projects.indexOf(project);
-        $scope.projects.splice(index, 1);
-        window.localStorage.setItem("keatingData", JSON.stringify(objJSON));
+    $scope.removeProject = (project) => {
+        // remove object
     }
 
-    $scope.newProject = function() {
+    $scope.newProject = () => {
         $scope.projects.push({
             id: "",
             name: "",
@@ -126,4 +119,16 @@ betaApp.controller('projectController', ($scope) => {
 
         })
     }
-});
+};
+
+betaApp.MessageController = ($scope) => {
+    let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
+
+    socket.on('connect', () => {
+        // connected
+    })
+}
+
+betaApp.IssueController = ($scope) => {
+    // TODO
+}

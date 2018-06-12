@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="teamBetaApp">
+<html ng-app="betaApp">
 
 <head>
     <meta charset="utf-8">
@@ -13,9 +13,13 @@
 
     <!-- angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-route.js"></script>
 
     <!-- jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- socketio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
     <!-- BOOTSTRAP -->
     <!-- Latest compiled and minified CSS -->
@@ -30,11 +34,13 @@
     <!-- Latest client from the CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
-    <!-- angular app -->
-    <script src="../static/js/controller.js"></script>
 
     <!-- authentication -->
     <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+
+    <!-- angular app -->
+    <script src="../static/js/controller.js"></script>
+
 
 
     <link rel="icon" href="../static/beta.ico">
@@ -57,19 +63,19 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" ng-controller="HeaderController">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active">
                         <!-- TODO -->
-                        <a href="#">Project Management<span class="sr-only">(current)</span></a>
+                        <a href="/project">Project Management<span class="sr-only">(current)</span></a>
                     </li>
                     <li>
                         <!-- TODO -->
-                        <a href="#">Chat</a>
+                        <a href="/message">Chat</a>
                     </li>
                     <li>
                         <!-- TODO -->
-                        <a href="#">Issue Tracking</a>
+                        <a href="/issue">Issue Tracking</a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -109,7 +115,7 @@
     </nav>
 
     <div id="main">
-        <div class="container-fluid" ng-view>
+        <div class="container-fluid">
             <h1>Hello Team Beta</h1>
         </div>
     </div>
