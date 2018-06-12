@@ -33,9 +33,19 @@ betaApp.config(($routeProvider) => {
         });
 });
 
+
 betaApp.controller('LoginController', ($scope) => {
-    let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
+    // login
 })
+
+betaApp.MessageController = ($scope) => {
+    let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
+
+    socket.on('connect', () => {
+        // connected
+    })
+}
+
 
 betaApp.HeaderController = ($scope, $location) => {
     // for making active page link in navbar highlighted
