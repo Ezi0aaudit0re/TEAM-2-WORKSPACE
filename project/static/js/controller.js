@@ -1,3 +1,5 @@
+import angular from 'angular'
+
 var betaApp = angular.module('betaApp', ['ngRoute']);
 
 //  TODO JSON data 
@@ -11,24 +13,24 @@ betaApp.config(($routeProvider) => {
             templateUrl: '../static/partials/home.html',
             controller: 'IndexController'
         })
-        .when('/login', {
+        .when('#/login', {
             // route for the issue tracking
             templateUrl: '../static/partials/login.html',
             controller: 'LoginController'
         })
-        .when('/project', {
+        .when('#/project', {
             // route for the project management
-            templateUrl: '/includes/project.html',
+            templateUrl: '../static/partials/project.html',
             controller: 'ProjectController'
         })
-        .when('/message', {
+        .when('#/message', {
             //route for the task page
-            templateUrl: '/includes/message.html',
+            templateUrl: '../static/partials/message.html',
             controller: 'MessageController'
         })
-        .when('/issue', {
+        .when('#/issue', {
             // route for the issue tracking
-            templateUrl: '/includes/issue.html',
+            templateUrl: '../static/partials/issue.html',
             controller: 'IssueController'
         })
         .otherwise({
@@ -37,7 +39,7 @@ betaApp.config(($routeProvider) => {
         });
 });
 
-betaApp.HeaderController = ($scope, $location) => {
+function HeaderController($scope, $location) {
     /*
     // for making active page link in navbar highlighted
     $scope.isActive = (viewLocation) => {
