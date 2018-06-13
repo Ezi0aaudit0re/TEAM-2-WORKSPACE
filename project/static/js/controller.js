@@ -1,29 +1,29 @@
 var betaApp = angular.module('betaApp', ['ngRoute']);
 
 //  TODO JSON data 
-let objJSON = JSON.parse(window.localStorage.getItem("data"));
+// let objJSON = JSON.parse(window.localStorage.getItem("data"));
 
 // configure the routes
 betaApp.config(($routeProvider) => {
     $routeProvider
         .when('/', {
             // route for the home page
-            templateUrl: '../templates/includes/home.html',
+            templateUrl: '../static/partials/home.html',
             controller: 'IndexController'
         })
         .when('/login', {
             // route for the issue tracking
-            templateUrl: '../templates/includes/login.html',
+            templateUrl: '../static/partials/login.html',
             controller: 'LoginController'
         })
         .when('/project', {
             // route for the project management
-            templateUrl: '../templates/includes/project.html',
+            templateUrl: '/includes/project.html',
             controller: 'ProjectController'
         })
         .when('/message', {
             //route for the task page
-            templateUrl: '../templates/includes/message.html',
+            templateUrl: '/includes/message.html',
             controller: 'MessageController'
         })
         .when('/issue', {
@@ -81,6 +81,7 @@ betaApp.LoginController = ($scope) => {
 };
 
 betaApp.ProjectController = ($scope) => {
+    /*
     $scope.message = 'This page is for updating information on projects';
 
     // var objJSON = window.localStorage.getItem("keatingData");
@@ -121,6 +122,7 @@ betaApp.ProjectController = ($scope) => {
 
         })
     }
+    */
 };
 
 betaApp.MessageController = ($scope) => {
