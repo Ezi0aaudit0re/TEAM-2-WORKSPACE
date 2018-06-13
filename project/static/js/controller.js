@@ -1,4 +1,4 @@
-let betaApp = angular.module('betaApp', []);
+var betaApp = angular.module('betaApp', ['ngRoute']);
 
 //  TODO JSON data 
 let objJSON = JSON.parse(window.localStorage.getItem("data"));
@@ -8,70 +8,72 @@ betaApp.config(($routeProvider) => {
     $routeProvider
         .when('/', {
             // route for the home page
-            templateUrl: '../../templates/index.html',
+            templateUrl: '../templates/includes/home.html',
             controller: 'IndexController'
         })
-        .when('/login/', {
+        .when('/login', {
             // route for the issue tracking
-            templateUrl: '../../templates/login.html',
+            templateUrl: '../templates/includes/login.html',
             controller: 'LoginController'
         })
-        .when('/project/', {
+        .when('/project', {
             // route for the project management
-            templateUrl: '../../templates/project.html',
+            templateUrl: '../templates/includes/project.html',
             controller: 'ProjectController'
         })
-        .when('/message/', {
+        .when('/message', {
             //route for the task page
-            templateUrl: '../../templates/message.html',
+            templateUrl: '../templates/includes/message.html',
             controller: 'MessageController'
         })
-        .when('/issue/', {
+        .when('/issue', {
             // route for the issue tracking
-            templateUrl: '../../templates/issue.html',
+            templateUrl: '/includes/issue.html',
             controller: 'IssueController'
         })
         .otherwise({
             // route for the home page
-            templateUrl: '../../templates/index.html',
-            controller: 'IndexController'
+            redirectTo: '/'
         });
 });
 
 betaApp.HeaderController = ($scope, $location) => {
+    /*
     // for making active page link in navbar highlighted
     $scope.isActive = (viewLocation) => {
         return viewLocation === $location.path();
     };
+    */
 }
 
-betaApp.IndexController = ($scope) => {
+betaApp.IndexController = () => {
     // home page will load data from json file or storage
+    /*
+        $scope.message = 'Welcome to the home page!';
 
-    $scope.message = 'Welcome to the home page!';
+        // starting list if no local storage
+        // load from JSON if not in local storage
+        if (window.localStorage.getItem("data") === null) {
 
-    // starting list if no local storage
-    // load from JSON if not in local storage
-    if (window.localStorage.getItem("data") === null) {
+            window.localStorage.clear(); // to avoid non-relevent or "duplicate" items
 
-        window.localStorage.clear(); // to avoid non-relevent or "duplicate" items
-
-        // this section needed to designate JSON, as otherwise interprets as XML and fails
-        $.ajaxSetup({
-            beforeSend: (xhr) => {
-                if (xhr.overrideMimeType) {
-                    xhr.overrideMimeType("application/json");
+            // this section needed to designate JSON, as otherwise interprets as XML and fails
+            $.ajaxSetup({
+                beforeSend: (xhr) => {
+                    if (xhr.overrideMimeType) {
+                        xhr.overrideMimeType("application/json");
+                    }
                 }
-            }
-        });
-        // load data
-        $.getJSON("data.json", { format: "json" }, { async: false })
-            .done((data) => {
-                window.localStorage.setItem("data", JSON.stringify(data));
-            })
-    } else {
-        // load from localStorage
-    }
+            });
+            // load data
+            $.getJSON("data.json", { format: "json" }, { async: false })
+                .done((data) => {
+                    window.localStorage.setItem("data", JSON.stringify(data));
+                })
+        } else {
+            // load from localStorage
+        }
+        */
 };
 
 betaApp.LoginController = ($scope) => {
@@ -122,11 +124,13 @@ betaApp.ProjectController = ($scope) => {
 };
 
 betaApp.MessageController = ($scope) => {
+    /*
     let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
 
     socket.on('connect', () => {
         // connected
     })
+    */
 }
 
 betaApp.IssueController = ($scope) => {
