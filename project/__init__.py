@@ -6,8 +6,9 @@
 
 #from flask_cors import CORS # DRK 6/10/18 for Cross-Origin Resource Sharing (CORS); needed for Single Page Application (SPA)
 from application import *
-from flask import render_template, request
-from database.database_wrapper import *
+from flask import render_template, request, jsonify
+import database.database_wrapper as database_wrapper 
+#from database.models import *
 
 
 @app.route('/') # home page
@@ -15,10 +16,26 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/create_user', methods=["POST"]) # create a user
+@app.route('/create_user', methods=["GET"]) # create a user
 def create_user():
-    if request.method == 'POST':
-        print(request.get_json())
+
+    result = False
+
+    if request.method == 'GET':
+        # this is to test if the database query wrapper works
+        fake_data = {"first_name": "Aman", "last_name": "Nagpal",\
+                     "user_name": "anagpal4", "password": "pass",\
+                     "email_id": "anagpal4@gmail.com"}
+
+        result = database_wrapper.UserDB().create_user(fake_data)
+
+
+
+
+    if result:
+        return jsonify({"return_code": 200, "message": "Success"})
+    else:
+        return jsonify({"return_code": 500, "message": "Internal Server error"})
 
 
 

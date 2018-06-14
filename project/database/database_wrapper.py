@@ -8,11 +8,38 @@ from application import db
 from database.models import *
 
 
+
 """
-    THis function is used to add column to a particular table
-    :param: table_name the name of the table to add to
-    :param: key-value arguments of the columns
+    This class deals with all the database methods related to user
 """
-def add_row(table_name, **kwargs):
-    print(table_name)
-    print(kwargs)
+class UserDB:
+
+    def __init__(self):
+        pass
+
+
+    """
+        This method crreates a user in the database
+        :param: kwargs -> key value arguments of the colums in the table
+        :return: True/False
+    """
+    def create_user(self, kwargs):
+        try:
+            print(kwargs)
+            user = User(first_name=kwargs["first_name"], last_name=kwargs["last_name"], user_name=kwargs["user_name"], \
+                    password=kwargs["password"], email_id=kwargs["email_id"])
+
+            db.session.add(user) # add in the queue
+            db.session.commit() # commit to the database
+
+            return True
+
+        except Exception as e:
+            print("error occured when creating a user")
+            print(str(e))
+            return False
+
+
+
+
+

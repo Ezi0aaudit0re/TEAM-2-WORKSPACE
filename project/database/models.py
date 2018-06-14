@@ -2,6 +2,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, INTEGER, String, Table, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import time
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -22,6 +23,7 @@ class Project(Base):
 
 
 class User(Base):
+
     __tablename__ = 'users'
 
     id = Column(INTEGER(), primary_key=True, unique=True)
@@ -33,7 +35,19 @@ class User(Base):
     privilege = Column(INTEGER(), nullable=False, server_default=text("'0'"))
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-    userscol = Column(String(45))
+
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        self.first_name = kwargs["first_name"]
+        self.last_name = kwargs["last_name"]
+        self.user_name = kwargs["user_name"]
+        self.password = kwargs["password"]
+        self.email_id = kwargs["email_id"]
+        self.privilege = 0
+        self.created_at = current_time
+        self.updated_at = current_time
+
 
 
 class Issue(Base):
