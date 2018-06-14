@@ -1,10 +1,15 @@
 """
     This is the main file which acts as a server 
     All the routes are specified here
-    __author__ = "TEAM BETA"
 """
 
-#from flask_cors import CORS # DRK 6/10/18 for Cross-Origin Resource Sharing (CORS); needed for Single Page Application (SPA)
+__author__ = "TEAM BETA"
+
+import sys 
+
+sys.path.insert(0, '../project')
+
+
 from application import *
 from flask import render_template, request, jsonify
 import database.database_wrapper as database_wrapper 
@@ -16,7 +21,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/signup', methods=["GET", "POST"]) # create a user
+@app.route('/create_user', methods=["GET"]) # create a user
 def create_user():
 
     result = False
@@ -28,16 +33,6 @@ def create_user():
                      "email_id": "anagpal4@gmail.com"}
 
         result = database_wrapper.UserDB().create_user(fake_data)
-
-    elif request.method == 'POST':
-        # deals with the post requeust
-        json_data = request.get_json()["user"]
-        print(json_data)
-        data = {"first_name": json_data["firstName"], "last_name": json_data["lastName"] ,\
-                "user_name": json_data["username"], "password": json_data["password"],\
-                "email_id": json_data["emailAddress"]}
-        result = database_wrapper.UserDB().create_user(data)
-
 
 
 
