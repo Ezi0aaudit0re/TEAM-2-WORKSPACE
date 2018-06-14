@@ -25,7 +25,7 @@ class UserDB:
     """
     def create_user(self, kwargs):
         try:
-            instance = None;
+            print(kwargs)
             user = User(first_name=kwargs["first_name"], last_name=kwargs["last_name"], user_name=kwargs["user_name"], \
                     password=kwargs["password"], email_id=kwargs["email_id"])
 

@@ -16,8 +16,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/signup', methods=["GET", "POST"]) # create a user
+@app.route('/create_user', methods=["GET"]) # create a user
 def create_user():
+    print("Here")
 
     result = False
 
