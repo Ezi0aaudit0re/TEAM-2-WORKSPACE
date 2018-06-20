@@ -8,7 +8,7 @@
 from application import *
 from flask import render_template, request, jsonify
 import database.database_wrapper as database_wrapper 
-#from database.models import *
+from database.models import *
 
 
 @app.route('/') # home page
