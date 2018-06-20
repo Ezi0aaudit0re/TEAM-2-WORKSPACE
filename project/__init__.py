@@ -17,11 +17,11 @@ def index():
 
 @app.route('/signup') # signup page
 def signup():
-    return renderr_template('signup.html')
+    return render_template('signup.html')
 
 @app.route('/project') # signup page
-def signup():
-    return renderr_template('projects.html')
+def project():
+    return render_template('projects.html')
 
 @app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
