@@ -7,10 +7,7 @@
 #from flask_cors import CORS # DRK 6/10/18 for Cross-Origin Resource Sharing (CORS); needed for Single Page Application (SPA)
 from application import *
 from flask import render_template, request, jsonify
-# import sys
-# from database_wrapper import *
-# sys.path.insert(0, "../project")
-import database.database_wrapper as database_wrapper
+import database.database_wrapper as database_wrapper 
 from database.models import *
 
 
@@ -18,8 +15,15 @@ from database.models import *
 def index():
     return render_template('index.html')
 
+@app.route('/signup') # signup page
+def signup():
+    return render_template('signup.html')
 
-@app.route('/signup', methods=["GET", "POST"]) # create a user
+@app.route('/project') # signup page
+def project():
+    return render_template('projects.html')
+
+@app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
     print("Here")
 
