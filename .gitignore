@@ -1,0 +1,5 @@
+/venv/
+.DS_STORE
+*.swp
+*.pyc
+__pychache__
