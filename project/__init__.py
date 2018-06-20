@@ -15,8 +15,15 @@ import database.database_wrapper as database_wrapper
 def index():
     return render_template('index.html')
 
+@app.route('/signup') # signup page
+def signup():
+    return renderr_template('signup.html')
 
-@app.route('/signup', methods=["GET", "POST"]) # create a user
+@app.route('/project') # signup page
+def signup():
+    return renderr_template('projects.html')
+
+@app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
     print("Here")
 
