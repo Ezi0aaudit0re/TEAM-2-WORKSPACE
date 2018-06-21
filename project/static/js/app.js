@@ -1,4 +1,4 @@
-angular.module('betaApp', ['ngRoute'])
+angular.module('betaApp', ['ngRoute', 'ngStorage'])
 
 // configure the routes
 .config([

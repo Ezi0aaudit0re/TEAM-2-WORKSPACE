@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('betaApp')
         .factory('AuthenticationService', Service);
 
     function Service($http, $localStorage) {
