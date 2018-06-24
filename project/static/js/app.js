@@ -36,6 +36,23 @@ angular.module('betaApp', ['ngRoute'])
                 });
         }
     ])
+    // from http://jasonwatmore.com/post/2016/04/05/angularjs-jwt-authentication-example-tutorial
+    .run(function($rootScope, $http, $location, $localStorage) {
+        // keep user logged in after page refresh
+        if ($localStorage.currentUser) {
+            $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.currentUser.token;
+        }
+
+        // redirect to login page if not logged in and trying to access a restricted page
+        $rootScope.$on('$locationChangeStart', function(event, next, current) {
+            var publicPages = ['/login'];
+            var restrictedPage = publicPages.indexOf($location.path()) === -1;
+            if (restrictedPage && !$localStorage.currentUser) {
+                $location.path('/login');
+            }
+        });
+    })
+    // end from
     .controller('HeaderController', ($scope, $location) => {
 
         // for making active page link in navbar highlighted
@@ -45,8 +62,33 @@ angular.module('betaApp', ['ngRoute'])
 
     })
 
-.controller('IndexController', function() {
+.controller('IndexController', function($location, AuthenticationService) {
     // TODO
+    // from http://jasonwatmore.com/post/2016/04/05/angularjs-jwt-authentication-example-tutorial
+    var vm = this;
+
+    vm.login = login;
+
+    initController();
+
+    function initController() {
+        // reset login status
+        AuthenticationService.Logout();
+    }
+
+    function login() {
+        vm.loading = true;
+        AuthenticationService.Login(vm.username, vm.password, function(result) {
+            if (result === true) {
+                $location.path('/');
+            } else {
+                vm.error = 'Username or password is incorrect';
+                vm.loading = false;
+            }
+        });
+    }
+    // end from
+
     // home page will load data from json file or storage
     /*
         $scope.message = 'Welcome to the home page!';

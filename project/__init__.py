@@ -8,16 +8,25 @@
 from application import *
 from flask import render_template, request, jsonify
 import database.database_wrapper as database_wrapper 
-#from database.models import *
+from database.models import *
 
 
 @app.route('/') # home page
 def index():
     return render_template('index.html')
 
+@app.route('/signup') # signup page
+def signup():
+    # this should also serve as a login page
+    return render_template('signup.html')
 
-@app.route('/signup', methods=["GET", "POST"]) # create a user
+@app.route('/project') # signup page
+def project():
+    return render_template('projects.html')
+
+@app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
+    print("Here")
 
     result = False
 
