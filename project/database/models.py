@@ -21,6 +21,15 @@ class Project(Base):
 
     userss = relationship('User', secondary='users_has_projects')
 
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        self.name = kwargs["name"]
+        self.description = kwargs["description"]
+        self.created_at = current_time
+        self.updated_at = current_time
+        self.admin_id = kwargs["admin_id"] #This is the id of the user who creates the project
+
 
 class User(Base):
 
