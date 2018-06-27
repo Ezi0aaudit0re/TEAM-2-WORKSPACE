@@ -56,7 +56,7 @@ class ProjectDB:
     def create_project(self, kwargs):
         try:
             print(kwargs)
-            project = project(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"]
+            project = Project(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
 
             db.session.add(project) # add in the queue
             db.session.commit() # commit to the database
