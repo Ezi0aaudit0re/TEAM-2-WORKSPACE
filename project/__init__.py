@@ -17,6 +17,7 @@ def index():
 
 @app.route('/signup') # signup page
 def signup():
+    # this should also serve as a login page
     return render_template('signup.html')
 
 @app.route('/project') # signup page
