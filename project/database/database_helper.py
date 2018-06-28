@@ -7,7 +7,6 @@ __author__ = "Aman Nagpal"
 __email__ = "anagpal4@bu.edu"
 
 from application import db
-from constants import SALT
 from helper import hash_password
 
 """

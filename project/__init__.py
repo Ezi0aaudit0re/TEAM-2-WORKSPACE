@@ -1,10 +1,15 @@
 """
     This is the main file which acts as a server 
     All the routes are specified here
-    __author__ = "TEAM BETA"
 """
 
-#from flask_cors import CORS # DRK 6/10/18 for Cross-Origin Resource Sharing (CORS); needed for Single Page Application (SPA)
+__author__ = "TEAM BETA"
+
+import sys 
+
+sys.path.insert(0, '../project')
+
+
 from application import *
 from flask import render_template, request, jsonify
 import database.database_wrapper as database_wrapper 
