@@ -1,1 +1,34 @@
-<h3>Project page</h3>
+<div ng-controller="ProjectController">
+    <ul>
+        <li>
+            <a id={{project.id}}>
+                <div>
+                    {{project.name}}
+                </div>
+                <div>
+                    {{project.description}}
+                </div>
+                <div>
+                    {{project.status}}
+                </div>
+                <div>
+                    {{project.created_date}}
+                </div>
+                <div>
+                    {{project.updated_date}}
+                </div>
+                <div ng-repeat="task in project.tasks">
+                    <div>
+                        {{task.id}}
+                    </div>
+                    <div>
+                        {{task.name}}
+                    </div>
+                    <div>
+                        {{task.status}}
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

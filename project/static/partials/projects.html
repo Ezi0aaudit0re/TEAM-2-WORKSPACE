@@ -1,0 +1,14 @@
+<div ng-controller="ProjectsController">
+    <ul>
+        <li ng-repeat="project in projects">
+            <a id={{project.id}}>
+                <div>
+                    {{project.name}}
+                </div>
+                <div>
+                    {{project.status}}
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

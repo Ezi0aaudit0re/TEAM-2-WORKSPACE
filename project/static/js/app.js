@@ -1,39 +1,59 @@
-angular.module('betaApp', ['ngRoute', 'ngStorage'])
+angular.module('betaApp', ['ui.router', 'ngStorage'])
 
 // configure the routes
 .config([
-        '$routeProvider',
-        function($routeProvider) {
-            $routeProvider
-                .when('/', {
+        '$stateProvider', '$urlRouterProvider',
+        function($stateProvider, $urlRouterProvider) {
+            $stateProvider
+                .state('home', {
                     // route for the home page
+                    url: '/',
                     templateUrl: '../static/partials/home.html',
-                    controller: 'IndexController'
+                    controller: 'IndexController',
+                    controllerAs: 'vm'
                 })
-                .when('/signup', {
+                .state('signup', {
                     // route for the issue tracking
+                    url: '/signup',
                     templateUrl: '../static/partials/signup.html',
                     controller: 'SignupController'
                 })
-                .when('/project', {
+                .state('projects', {
                     // route for the project management
+                    url: '/projects',
+                    templateUrl: '../static/partials/projects.html',
+                    controller: 'ProjectsController',
+                    controllerAs: 'vm'
+                })
+                .state('project', {
+                    // route for the project management
+                    url: '/project',
                     templateUrl: '../static/partials/project.html',
-                    controller: 'ProjectController'
+                    controller: 'ProjectController',
+                    controllerAs: 'vm'
                 })
-                .when('/message', {
+                .state('messages', {
                     //route for the task page
-                    templateUrl: '../static/partials/message.html',
-                    controller: 'MessageController'
+                    url: 'messages',
+                    templateUrl: '../static/partials/messages.html',
+                    controller: 'MessagesController',
+                    controllerAs: 'vm'
                 })
-                .when('/issue', {
+                .state('issues', {
                     // route for the issue tracking
-                    templateUrl: '../static/partials/issue.html',
-                    controller: 'IssueController'
+                    url: '/issues',
+                    templateUrl: '../static/partials/issues.html',
+                    controller: 'IssuesController',
+                    controllerAs: 'vm'
                 })
-                .otherwise({
-                    // route for the home page
-                    redirectTo: '/'
-                });
+                .state('issue', {
+                    // route for the issue tracking
+                    url: '/issue',
+                    templateUrl: '../static/partials/issue.html',
+                    controller: 'IssueController',
+                    controllerAs: 'vm'
+                })
+            $urlRouterProvider.otherwise('/');
         }
     ])
     // from http://jasonwatmore.com/post/2016/04/05/angularjs-jwt-authentication-example-tutorial
@@ -45,22 +65,15 @@ angular.module('betaApp', ['ngRoute', 'ngStorage'])
 
         // redirect to login page if not logged in and trying to access a restricted page
         $rootScope.$on('$locationChangeStart', function(event, next, current) {
-            var publicPages = ['/login'];
+            var publicPages = ['/signup'];
             var restrictedPage = publicPages.indexOf($location.path()) === -1;
             if (restrictedPage && !$localStorage.currentUser) {
-                $location.path('/login');
+                $location.path('/signup');
             }
         });
     })
     // end from
-    .controller('HeaderController', ($scope, $location) => {
 
-        // for making active page link in navbar highlighted
-        $scope.isActive = (viewLocation) => {
-            return viewLocation === $location.path();
-        };
-
-    })
 
 .controller('IndexController', function($location, AuthenticationService) {
     // TODO
@@ -111,7 +124,7 @@ angular.module('betaApp', ['ngRoute', 'ngStorage'])
 })
 
 .controller('SignupController', [
-    '$scope', '$log', '$http',
+    '$scope', '$log', '$http', '$state',
     function($scope, $log, $http) {
 
         $scope.getNewUser = function() {
@@ -120,22 +133,40 @@ angular.module('betaApp', ['ngRoute', 'ngStorage'])
 
             let userInput = $scope.user;
 
-            $http.post('/signup', { "user": userInput })
-                .then(function(results) {
-                    $log.log(results);
+            $http.post('/createUser', { "user": userInput })
+                .then(function(results, $state) {
+                    $log.log("Successfully created user: " + JSON.stringify(results));
+                    $state.go('home');
                 })
                 .catch(function(error) {
-                    $log.log(error);
+                    $log.log("error creating user: " + error);
                 });
         }
     }
 ])
 
+.controller('ProjectsController', function($scope) {
+    // TODO
+    // sample data
+    $scope.projects = [{
+            id: 1,
+            name: "Project1",
+            status: "Waiting"
+        },
+        {
+            id: 2,
+            name: "Project2",
+            status: "In Progress"
+        }
+
+    ]
+})
+
 .controller('ProjectController', function() {
     // TODO
 })
 
-.controller('MessageController', function() {
+.controller('MessagesController', function() {
 
     // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
 
