@@ -29,6 +29,12 @@ def signup():
 def project():
     return render_template('projects.html')
 
+
+
+
+
+#################################### AJAX Routes ##########################################
+
 @app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
 
@@ -72,6 +78,20 @@ def login():
         return jsonify({"return_code": 200, "message": "Success", "data": result})
     else:
         return jsonify({"return_code": 500, "message": "Internal Server error"})
+
+
+# rouute to create a new project
+@app.route('/createProject', methods=["POST"])
+def crerate_project():
+
+    if request.method == "POST":
+
+        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 11}
+
+        result = database_wrapper.ProjectDB().create_project(json_data)
+
+        return result
+
 
 
 if __name__ == '__main__':

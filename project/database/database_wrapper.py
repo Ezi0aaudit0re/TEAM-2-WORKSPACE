@@ -103,9 +103,9 @@ class ProjectDB:
             db.session.add(project) # add in the queue
             db.session.commit() # commit to the database
 
-            return True
+            return jsonify({"code": 200, "message": "Successfully created user"})
 
         except Exception as e:
             print("error occured when creating a project")
             print(str(e))
-            return False
+            return jsonify({"code": 500, "message": "Error creating project"})
