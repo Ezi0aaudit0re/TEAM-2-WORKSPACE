@@ -26,36 +26,47 @@ def project():
 
 @app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
-    print("Here")
-
-    result = False
 
     if request.method == 'GET':
+
         # this is to test if the database query wrapper works
         fake_data = {"first_name": "Aman", "last_name": "Nagpal",\
-                     "user_name": "anagpal4", "password": "pass",\
-                     "email_id": "anagpal4@gmail.com"}
+                     "user_name": "test", "password": "pass",\
+                     "email_id": "test"}
 
         result = database_wrapper.UserDB().create_user(fake_data)
+        return result
 
     elif request.method == 'POST':
         # deals with the post requeust
         json_data = request.get_json()["user"]
-        print(json_data)
         data = {"first_name": json_data["firstName"], "last_name": json_data["lastName"] ,\
                 "user_name": json_data["username"], "password": json_data["password"],\
                 "email_id": json_data["emailAddress"]}
         result = database_wrapper.UserDB().create_user(data)
 
+    return result
 
+
+
+
+
+# route for loging in the user
+@app.route('/loginUser', methods=["POST"])
+def login():
+
+    if request.method == 'POST':
+
+        #json_data = request.get_json()
+        json_data = {'email_username': 'test', 'password': 'pass'}
+        result = database_wrapper.UserDB().get_user(json_data)
 
 
 
     if result:
-        return jsonify({"return_code": 200, "message": "Success"})
+        return jsonify({"return_code": 200, "message": "Success", "data": result})
     else:
         return jsonify({"return_code": 500, "message": "Internal Server error"})
-
 
 
 if __name__ == '__main__':
