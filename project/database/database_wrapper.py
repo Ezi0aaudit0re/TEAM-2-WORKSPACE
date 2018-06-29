@@ -28,7 +28,9 @@ class UserDB:
     """
     def create_user(self, kwargs):
         try:
-            if database_helper.get_id(User, {User.email_id: kwargs["email_id"]}) or database_helper.get_id(User, {User.user_name: kwargs["user_name"]}):
+
+            # check if user already exists
+            if database_helper.get_data(self.table, {self.table.email_id: kwargs["email_id"]}) or database_helper.get_data(self.table, {self.table.user_name: kwargs["user_name"]}):
                 return jsonify({"return_code": 403, "message": "User already exists"})
 
             # hash the password to create a layer of security
@@ -57,7 +59,7 @@ class UserDB:
         try:
             hashed_password = helper.hash_password(data['password'])
             # check if the first field matches username
-            id = database_helper.get_id(self.table, {self.table.user_name: data['email_username'], self.table.password: hashed_password})
+            id = database_helper.get_data(self.table, {self.table.user_name: data['email_username'], self.table.password: hashed_password})
 
 
             if id == None:
@@ -87,7 +89,7 @@ class UserDB:
 class ProjectDB:
 
     def __init__(self):
-        pass
+        self.table = Project
 
 
     """
@@ -97,8 +99,16 @@ class ProjectDB:
     """
     def create_project(self, kwargs):
         try:
-            print(kwargs)
-            project = Project(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
+            # check if the prorject by the same id created
+            instance = database_helper.get_data(self.table, {self.table.name: kwargs["name"], self.table.admin_id: kwargs["admin_id"]})
+
+            if instance:
+                return jsonify({"code": 403, "message": "Project name already exists by user"})
+
+
+
+
+            project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
 
             db.session.add(project) # add in the queue
             db.session.commit() # commit to the database

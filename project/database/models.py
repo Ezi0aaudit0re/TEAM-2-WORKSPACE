@@ -3,6 +3,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, INTEGER, String, Table, tex
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import time
+from flask_login import UserMixin
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -31,7 +32,7 @@ class Project(Base):
         self.admin_id = kwargs["admin_id"] #This is the id of the user who creates the project
 
 
-class User(Base):
+class User(UserMixin, Base):
 
     __tablename__ = 'users'
 

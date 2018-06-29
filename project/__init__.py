@@ -14,6 +14,8 @@ from application import *
 from flask import render_template, request, jsonify
 import database.database_wrapper as database_wrapper 
 from database.models import *
+ # login authentication extension
+from flask_login import login_user, login_required, logout_user
 
 
 @app.route('/') # home page
@@ -35,7 +37,9 @@ def project():
 
 #################################### AJAX Routes ##########################################
 
-@app.route('/createUser', methods=["GET", "POST"]) # create a user
+url_pre = "/api"
+
+@app.route(url_pre + '/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
 
     if request.method == 'GET':
@@ -59,11 +63,16 @@ def create_user():
     return result
 
 
+# login loader
+# src - https://www.youtube.com/watch?v=2dEM-s3mRLE
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.query(User).get(int(user_id))
 
 
 
 # route for loging in the user
-@app.route('/loginUser', methods=["POST"])
+@app.route(url_pre + '/authenticate', methods=["POST"])
 def login():
 
     if request.method == 'POST':
@@ -72,17 +81,32 @@ def login():
         json_data = {'email_username': 'test', 'password': 'pass'}
         result = database_wrapper.UserDB().get_user(json_data)
 
+        
+
+        # this is the part of flask_login module
+        login_user(result)
 
 
-    if result:
-        return jsonify({"return_code": 200, "message": "Success", "data": result})
-    else:
-        return jsonify({"return_code": 500, "message": "Internal Server error"})
 
+        if result:
+            return jsonify({"return_code": 200, "message": "Success"})
+        else:
+            return jsonify({"return_code": 500, "message": "User doesnot exist"})
+
+
+# logout the user
+@app.route(url_pre + '/logout', methods=["POST", "GET"])
+@login_required
+def logout():
+    logout_user()
+    return render_template('signup.html')
+
+    
 
 # rouute to create a new project
-@app.route('/createProject', methods=["POST"])
-def crerate_project():
+@app.route(url_pre + '/createProject', methods=["POST"])
+@login_required
+def create_project():
 
     if request.method == "POST":
 

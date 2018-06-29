@@ -13,3 +13,4 @@ MYSQL_DBNAME = "team_beta"
 
 # password hashing 
 SALT = "password"
+SECRET_KEY = "secret_key"
