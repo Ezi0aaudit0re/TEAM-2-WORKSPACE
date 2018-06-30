@@ -8,14 +8,14 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
                 .state('home', {
                     // route for the home page
                     url: '/',
-                    templateUrl: '../static/partials/home.html',
+                    templateUrl: '/static/partials/home.html',
                     controller: 'IndexController',
                     controllerAs: 'vm'
                 })
                 .state('signup', {
                     // route for the issue tracking
                     url: '/signup',
-                    templateUrl: '../static/partials/signup.html',
+                    templateUrl: "../static/partials/signup.html",
                     controller: 'SignupController'
                 })
                 .state('projects', {
@@ -34,7 +34,7 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
                 })
                 .state('messages', {
                     //route for the task page
-                    url: 'messages',
+                    url: '/messages',
                     templateUrl: '../static/partials/messages.html',
                     controller: 'MessagesController',
                     controllerAs: 'vm'
@@ -143,6 +143,7 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
         }
 
         $scope.login = function() {
+            // TODO
             $log.log($scope.user);
 
             let userInput = $scope.user;
@@ -179,13 +180,30 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
     // TODO
 })
 
-.controller('MessagesController', function() {
+.controller('MessagesController', function($scope) {
+
+    $scope.messages = [
+        { msg: "navigate to local project folder", user_id: "Dan" },
+        { msg: "git add ." },
+        { msg: "git branch" },
+        { msg: "git checkout -b developer_name" },
+        { msg: "git status" },
+        { msg: "git add ." },
+        { msg: "git commit -m 'update message here'" },
+        { msg: "git push -u origin developer_name" },
+
+        { msg: "git checkout [branch]" }
+    ]
 
     // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
 
     // socket.on('connect', () => {
     //     // connected
     // })
+})
+
+.controller('IssuesController', function() {
+    // TODO
 })
 
 .controller('IssueController', function() {
