@@ -133,10 +133,23 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
 
             let userInput = $scope.user;
 
-            $http.post('/createUser', { "user": userInput })
-                .then(function(results, $state) {
+            $http.post('/api/createUser', { "user": userInput })
+                .then(function(results) {
                     $log.log("Successfully created user: " + JSON.stringify(results));
-                    $state.go('home');
+                })
+                .catch(function(error) {
+                    $log.log("error creating user: " + error);
+                });
+        }
+
+        $scope.login = function() {
+            $log.log($scope.user);
+
+            let userInput = $scope.user;
+
+            $http.post('/api/authenticate', { "user": userInput })
+                .then(function(results) {
+                    $log.log("Successfully logged in: " + JSON.stringify(results));
                 })
                 .catch(function(error) {
                     $log.log("error creating user: " + error);
