@@ -7,6 +7,7 @@
 from constants import *
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 # Flask application
 app = Flask(__name__)
@@ -16,6 +17,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
+#login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+app.secret_key = SECRET_KEY
 
 # create an sqlalchemy orm of the app
 db = SQLAlchemy(app)
