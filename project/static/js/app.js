@@ -136,11 +136,19 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
             $http.post('/api/createUser', { "user": userInput })
                 .then(function(results) {
                     $log.log("Successfully created user: " + JSON.stringify(results));
+                    $log.log("Message: " + results.data.message)
+                    $log.log("return_code: " + results.data.return_code)
                 })
                 .catch(function(error) {
                     $log.log("error creating user: " + error);
                 });
         }
+    }
+])
+
+.controller('LoginController', [
+    '$scope', '$log', '$http', '$state',
+    function($scope, $log, $http) {
 
         $scope.login = function() {
             // TODO
@@ -153,7 +161,7 @@ angular.module('betaApp', ['ui.router', 'ngStorage'])
                     $log.log("Successfully logged in: " + JSON.stringify(results));
                 })
                 .catch(function(error) {
-                    $log.log("error creating user: " + error);
+                    $log.log("error creating user: " + JSON.stringify(error));
                 });
         }
     }
