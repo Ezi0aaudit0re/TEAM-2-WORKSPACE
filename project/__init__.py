@@ -104,7 +104,7 @@ def logout():
     
 
 # rouute to create a new project
-@app.route(url_pre + '/createProject', methods=["POST"])
+@app.route(url_pre + '/project/new', methods=["POST"])
 @login_required
 def create_project():
 

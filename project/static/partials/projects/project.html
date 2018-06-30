@@ -19,15 +19,14 @@
                 </div>
                 <div ng-repeat="task in project.tasks">
                     <div>
-                        {{task.id}}
-                    </div>
-                    <div>
                         {{task.name}}
                     </div>
                     <div>
                         {{task.status}}
                     </div>
+                    <button type="button" class="btn btn-primary" ng-click="showTask(task.id)">View</button>
                 </div>
+                <button type="button" class="btn btn-primary" ng-click="createNewTask()">New Task</button>
             </a>
         </li>
     </ul>
