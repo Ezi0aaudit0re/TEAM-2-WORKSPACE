@@ -48,13 +48,13 @@
 
     <!-- angular app -->
     <script src="../static/js/app.js"></script>
-    <script src="../static/js/controllers.js"></script>
+    <script src="../static/js/services/authentication.service.js"></script>
+    <script src="../static/js/services/projects.service.js"></script>
     <script src="../static/js/controllers/auth.js"></script>
     <script src="../static/js/controllers/issue.js"></script>
     <script src="../static/js/controllers/message.js"></script>
-    <script src="../static/js/controllers/project.js"></script>
-    <script src="../static/js/app-services/authentication.service.js"></script>
-
+    <script src="../static/js/controllers/projects.component.js"></script>
+    <script src="../static/js/controllers/project.component.js"></script>
 
 
     <link rel="icon" href="../static/beta.ico">
@@ -128,17 +128,9 @@
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form> -->
 
-                <div class="navbar navbar-form" ng-controller="LoginController">
-                    <form class="form-inline" ng-submit="login()">
-                        <div class="form-group">
-                            <input type="text" name="email_username" placeholder="Email or Username" class="form-control" ng-model="user.email_username">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="pass" placeholder="Password" class="form-control" ng-model="user.password">
-                        </div>
-                        <button type="submit" class="btn btn-success">Login</button>
-                    </form>
-                </div>
+
+                <login></login>
+
                 <!--/.navbar-collapse -->
             </div>
             <!-- /.navbar-collapse -->
