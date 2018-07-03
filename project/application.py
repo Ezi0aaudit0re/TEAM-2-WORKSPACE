@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 
 # connect to the databse
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
