@@ -15,7 +15,7 @@ angular.module('betaApp', ['ui.router'])
                     // route for the home page
                     name: 'home',
                     url: '/',
-                    templateUrl: '/static/partials/home.html',
+                    templateUrl: '/static/partials/home.html'
                 })
                 .state({
                     // route for the project management
