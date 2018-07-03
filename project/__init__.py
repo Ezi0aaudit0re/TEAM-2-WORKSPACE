@@ -110,7 +110,7 @@ def create_project():
 
     if request.method == "POST":
 
-        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 11}
+        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": }
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
