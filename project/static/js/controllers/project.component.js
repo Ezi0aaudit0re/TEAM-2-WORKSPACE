@@ -25,7 +25,7 @@ angular.module('betaApp')
                 <a ui-sref-active="active" ui-sref="projects.project.tasks"><h4>Tasks</h4></a>
                 <ui-view></ui-view>
             </div>
-            <button ui-sref="projects.project">Close</button>
+            <button ui-sref="projects">Close</button>
             `,
 
         controller: function () {
