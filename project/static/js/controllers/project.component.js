@@ -6,7 +6,7 @@ angular.module('betaApp')
 
         template: `
             <div>
-                hi {{$ctrl.project.id}} there
+                <h4>Project</h4>
                 <div>
                     Name: {{$ctrl.project.name}}
                 </div>
@@ -22,25 +22,23 @@ angular.module('betaApp')
                 <div>
                     Update Date: {{$ctrl.project.updated_date}}
                 </div>
-                <div ng-repeat="task in $ctrl.project.tasks">
-                    Task
-                    <div>
-                        {{task.name}}
-                    </div>
-                    <div>
-                        {{task.status}}
-                    </div>
-                    <button type="button" class="btn btn-primary" ng-click="showTask(task.id)">View</button>
+                <h5>Tasks</h5>
+                    <ul>
+                        <li ng-repeat="task in $ctrl.project.tasks">
+                            <a ui-sref-active="active" ui-sref="tasks.task({ taskId: task.id })">
+                                {{task.name}}: {{task.status}}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <button ui-sref="projects">Close</button>
+            <button ui-sref="projects.project">Close</button>
             `,
 
         controller: function ($log) {
             // TODO
 
-            $log.log("project controller running: " + this.project);
-
+            $log.log("project controller running: " + JSON.stringify(this.project));
 
 
             this.createNewTask = function () {

@@ -27,9 +27,6 @@ angular.module('betaApp', ['ui.router'])
                             return ProjectsService.getProjects();
                         }
                     }
-                    // templateUrl: '../static/partials/projects/projects.html',
-                    // controller: 'ProjectsController',
-                    // controllerAs: 'vm'
                 })
                 .state({
                     // route for the project management
@@ -37,19 +34,39 @@ angular.module('betaApp', ['ui.router'])
                     url: '/{projectId}',
                     component: 'project',
                     resolve: {
-                        project: function (projects, $stateParams) {
+                        project: function (projects, $transition$) {
                             return projects.find(function (project) {
-                                return project.id === $stateParams.personId;
-                            })
+                                return project.id === $transition$.params().projectId;
+                            });
                         }
                     }
-
-                    // templateUrl: '../static/partials/projects/project.html',
-                    // controller: 'ProjectController',
-                    // controllerAs: 'vm'
                 })
                 .state({
-                    //route for the task page
+                    // route for the task management
+                    name: 'tasks',
+                    url: '/tasks',
+                    component: 'tasks',
+                    resolve: {
+                        tasks: function (TasksService) {
+                            return TasksService.getTasks();
+                        }
+                    }
+                })
+                .state({
+                    // route for the task management
+                    name: 'tasks.task',
+                    url: '/{taskId}',
+                    component: 'task',
+                    resolve: {
+                        task: function (tasks, $transition$) {
+                            return tasks.find(function (task) {
+                                return task.id === $transition$.params().taskId;
+                            });
+                        }
+                    }
+                })
+                .state({
+                    //route for the messages page
                     name: 'messages',
                     url: '/messages',
                     templateUrl: '../static/partials/messages/messages.html',

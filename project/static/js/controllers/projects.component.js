@@ -5,38 +5,33 @@ angular.module('betaApp')
         },
 
         template: `
-            <div>
-                <div>
-                    <div ng-repeat="project in $ctrl.projects">
-
+            <div class="flex-h">
+                <div class="projects">
+                    <h3>Projects</h3>
+                    <ul>
+                        <li ng-repeat="project in $ctrl.projects">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
-                            <div>
-                                {{project.name}}
-                            </div>
-                            <div>
-                                {{project.status}}
-                            </div>
-                        </a>
-                        
-                    </div>
-                    <ui-view></ui-view>
+                                {{project.name}}: {{project.status}}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+                <ui-view></ui-view>
+            </div>
             `,
 
         controller: function ($http, $log) {
             // TODO
             $log.log("projects controller running " + JSON.stringify(this));
 
-            this.showProject = function (id) {
+            this.showProject = function () {
                 // TODO
 
-                $log.log(id);
-
-                $http.get("/api/project/:id", {
+                $http.get("/api/projects/:id", {
                         timeout: 3000
                     })
                     .then(function (response) {
-                        this.project = response.data.records;
+                        this.project = response.data;
                     });
             };
 
