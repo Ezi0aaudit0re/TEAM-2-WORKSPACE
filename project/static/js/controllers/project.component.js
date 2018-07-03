@@ -22,24 +22,14 @@ angular.module('betaApp')
                 <div>
                     Update Date: {{$ctrl.project.updated_date}}
                 </div>
-                <h5>Tasks</h5>
-                    <ul>
-                        <li ng-repeat="task in $ctrl.project.tasks">
-                            <a ui-sref-active="active" ui-sref="tasks.task({ taskId: task.id })">
-                                {{task.name}}: {{task.status}}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <a ui-sref-active="active" ui-sref="projects.project.tasks"><h4>Tasks</h4></a>
+                <ui-view></ui-view>
             </div>
             <button ui-sref="projects.project">Close</button>
             `,
 
-        controller: function ($log) {
+        controller: function () {
             // TODO
-
-            $log.log("project controller running: " + JSON.stringify(this.project));
-
 
             this.createNewTask = function () {
                 // TODO

@@ -3,7 +3,7 @@ angular.module('betaApp', ['ui.router'])
     // configure the routes
     .config([
         '$stateProvider', '$urlRouterProvider',
-        function ($stateProvider, $urlRouterProvider, $log) {
+        function ($stateProvider, $urlRouterProvider) {
             $stateProvider
                 .state({
                     // route for the issue tracking
@@ -43,18 +43,18 @@ angular.module('betaApp', ['ui.router'])
                 })
                 .state({
                     // route for the task management
-                    name: 'tasks',
+                    name: 'projects.project.tasks',
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (TasksService) {
-                            return TasksService.getTasks();
+                        tasks: function (ProjectsService) {
+                            return ProjectsService.getTasks();
                         }
                     }
                 })
                 .state({
                     // route for the task management
-                    name: 'tasks.task',
+                    name: 'projects.project.tasks.task',
                     url: '/{taskId}',
                     component: 'task',
                     resolve: {
