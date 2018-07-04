@@ -71,13 +71,7 @@ def login():
 
     if request.method == 'POST':
 
-<<<<<<< HEAD
-        json_data = request.get_json()["user"]
-        print(json_data)
-        #json_data = {'email_username': 'test', 'password': 'pass'}
-=======
         json_data = request.form
->>>>>>> b2c2a5fcca869bd709e34a3d21ca8a10a3e23698
         result = database_wrapper.UserDB().get_user(json_data)
 
         if result:
