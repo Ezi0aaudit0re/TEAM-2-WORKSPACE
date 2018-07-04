@@ -31,7 +31,7 @@ class UserDB:
 
             # check if user already exists
             if database_helper.get_data(self.table, {self.table.email_id: kwargs["email_id"]}) or database_helper.get_data(self.table, {self.table.user_name: kwargs["user_name"]}):
-                return jsonify({"return_code": 403, "message": "User already exists"})
+                return {"return_code": 403, "message": "User already exists"}
 
             # hash the password to create a layer of security
             # using shah512 to hash
@@ -42,7 +42,7 @@ class UserDB:
 
             db.session.add(user) # add in the queue
             db.session.commit() # commit to the database
-            return jsonify({"return_code": 200, "message": "User successfully created"})
+            return {"return_code": 200, "message": "User successfully created. Please login to view your dashboard"}
             
 
         except Exception as e:
@@ -59,12 +59,12 @@ class UserDB:
         try:
             hashed_password = helper.hash_password(data['password'])
             # check if the first field matches username
-            id = database_helper.get_data(self.table, {self.table.user_name: data['email_username'], self.table.password: hashed_password})
+            id = database_helper.get_data(self.table, {self.table.user_name: data['emailUsername'], self.table.password: hashed_password})
 
 
             if id == None:
 
-                id = database_helper.get_id(self.table,\
+                id = database_helper.get_data(self.table,\
                                             {self.table.email_id: data['email_username'], self.table.password: hashed_password})
 
 
