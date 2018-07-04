@@ -11,6 +11,13 @@ MYSQL_SERVER = "127.0.0.1"
 MYSQL_DBNAME = "team_beta"
 
 
+# databasee constants for the server
+#MYSQL_USER = "benongaruka"
+#MYSQL_PASS = "beta100!"
+#MYSQL_SERVER = "benongaruka.mysql.pythonanywhere-services.com"
+#MYSQL_DBNAME = "benongaruka$team_beta"
+
+
 # password hashing 
 SALT = "password"
 SECRET_KEY = "secret_key"

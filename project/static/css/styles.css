@@ -1,0 +1,14 @@
+.flex-h {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+
+.projects {
+  width: 30%;
+}
+
+.projects>ul {
+  list-style: none;
+  padding: 0.1em 0;
+}
