@@ -10,8 +10,6 @@ import hashlib, uuid
 from constants import SALT
 
 
-
-
 def hash_password(password):
     salt = uuid.uuid4().hex
     hashed_password = hashlib.sha512(str.encode(password + SALT)).hexdigest()
