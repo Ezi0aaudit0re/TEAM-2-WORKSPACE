@@ -27,7 +27,7 @@ angular.module('betaApp')
                                 placeholder="Username" required autofocus ng-model="$ctrl.user.username">
                             <label for="inputPassword" class="sr-only">Password</label>
                             <input type="password" id="inputPassword" class="form-control" 
-                                placeholder="Password" required ng-model="$ctrl.$ctrl.user.password">
+                                placeholder="Password" required ng-model="$ctrl.user.password">
                             <div class="checkbox">
                             </div>
                             <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="$ctrl.createNewUser()">Sign up</button>
@@ -91,6 +91,7 @@ angular.module('betaApp')
                     $log.log(this.user);
 
                     let userInput = this.user;
+
 
                     $http.post('/api/authenticate', {
                             "user": userInput
