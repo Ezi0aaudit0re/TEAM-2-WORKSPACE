@@ -5,10 +5,12 @@
 }
 
 .projects {
-  width: 30%;
+  width: 20%;
 }
 
 .projects>ul {
   list-style: none;
   padding: 0.1em 0;
 }
+
+.project {}

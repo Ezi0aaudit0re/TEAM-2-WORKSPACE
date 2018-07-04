@@ -22,21 +22,12 @@ angular.module('betaApp')
                 <div>
                     Update Date: {{$ctrl.project.updated_date}}
                 </div>
-                <a ui-sref-active="active" ui-sref="projects.project.tasks"><h4>Tasks</h4></a>
-                <ui-view></ui-view>
+                <a ui-sref="projects.project.tasks" ui-sref-active="active">Tasks</a>
+                <a ui-sref="projects.project.messages" ui-sref-active="active">Messages</a>
+                <a ui-sref="projects.project.issues" ui-sref-active="active">Issues</a>
+                
             </div>
-            <button ui-sref="projects.project">Close</button>
-            `,
-
-        controller: function () {
-            // TODO
-
-            this.createNewTask = function () {
-                // TODO
-            }
-
-            this.getTasksForUser = function () {
-                // TODO
-            }
-        }
+            <ui-view class="pull-right"></ui-view>
+            <button ui-sref="projects">Close Project</button>
+            `
     })

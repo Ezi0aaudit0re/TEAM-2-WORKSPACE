@@ -13,7 +13,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/testJSON.json", {
+                        return $http.get("../static/js/data/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -50,7 +50,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/testJSON.json", {
+                        return $http.get("../static/js/data/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -64,14 +64,21 @@ angular.module('betaApp')
                 $log.log("id: " + id)
 
                 function taskMatchesParam(task) {
-                    $log.log(task.id + id);
                     return task.id === id;
                 }
 
-                return service.getTasks().then(function (tasks, $log) {
-                    $log.log("hi");
+                return service.getTasks().then(function (tasks) {
                     return tasks.find(taskMatchesParam);
                 })
+            },
+
+            createNewTask: function ($log) {
+                // TODO
+                $log.log("I ran");
+            },
+
+            getTasksForUser: function () {
+                // TODO
             }
         };
 
