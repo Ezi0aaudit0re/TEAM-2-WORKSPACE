@@ -55,6 +55,7 @@ def create_user():
     elif request.method == 'POST':
         # deals with the post requeust
         json_data = request.get_json()["user"]
+        print(json_data)
         data = {"first_name": json_data["firstName"], "last_name": json_data["lastName"] ,\
                 "user_name": json_data["username"], "password": json_data["password"],\
                 "email_id": json_data["emailAddress"]}
