@@ -11,7 +11,7 @@ sys.path.insert(0, '../project')
 
 
 from application import *
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, redirect, url_for,flash, session
 import database.database_wrapper as database_wrapper 
 from database.models import *
  # login authentication extension
@@ -19,49 +19,42 @@ from flask_login import login_user, login_required, logout_user
 
 
 @app.route('/') # home page
+@login_required
 def index():
     return render_template('index.html')
 
-@app.route('/signup') # signup page
+
+
+
+# get routed to this page if the user has not signed up
+@app.route('/signup') # signup page 
+@login_manager.unauthorized_handler
 def signup():
     # this should also serve as a login page
     return render_template('signup.html')
 
-@app.route('/project') # signup page
-def project():
-    return render_template('projects.html')
 
 
 
 
 
-#################################### AJAX Routes ##########################################
 
-url_pre = "/api"
-
-@app.route(url_pre + '/createUser', methods=["GET", "POST"]) # create a user
+@app.route('/createUser', methods=["GET", "POST"]) # create a user
 def create_user():
 
-    if request.method == 'GET':
+    if request.method == 'POST':
 
-        # this is to test if the database query wrapper works
-        fake_data = {"first_name": "Aman", "last_name": "Nagpal",\
-                     "user_name": "test", "password": "pass",\
-                     "email_id": "test"}
-
-        result = database_wrapper.UserDB().create_user(fake_data)
-        return result
-
-    elif request.method == 'POST':
         # deals with the post requeust
-        json_data = request.get_json()["user"]
-        print(json_data)
+        json_data = request.form
+
         data = {"first_name": json_data["firstName"], "last_name": json_data["lastName"] ,\
                 "user_name": json_data["username"], "password": json_data["password"],\
                 "email_id": json_data["emailAddress"]}
         result = database_wrapper.UserDB().create_user(data)
 
-    return result
+
+        flash(result['message']) # flash success or failiure message 
+        return redirect('/signup')
 
 
 # login loader
@@ -73,36 +66,41 @@ def load_user(user_id):
 
 
 # route for loging in the user
-@app.route(url_pre + '/authenticate', methods=["POST"])
+@app.route('/authenticate', methods=["POST"])
 def login():
 
     if request.method == 'POST':
 
+<<<<<<< HEAD
         json_data = request.get_json()["user"]
         print(json_data)
         #json_data = {'email_username': 'test', 'password': 'pass'}
+=======
+        json_data = request.form
+>>>>>>> b2c2a5fcca869bd709e34a3d21ca8a10a3e23698
         result = database_wrapper.UserDB().get_user(json_data)
 
-        
-
-        # this is the part of flask_login module
-        login_user(result)
-
-
-
         if result:
-            return jsonify({"return_code": 200, "message": "Success"})
+            # this is the part of flask_login module
+            login_user(result)
+            session["user_id"] = result.id
+            return redirect("/")
         else:
-            return jsonify({"return_code": 500, "message": "User doesnot exist"})
+            flash("User doesnot exist")
+            return redirect("/signup")
 
 
 # logout the user
-@app.route(url_pre + '/logout', methods=["POST", "GET"])
+@app.route('/logout', methods=["POST", "GET"])
 @login_required
 def logout():
     logout_user()
     return render_template('signup.html')
 
+
+#################################### AJAX Routes ##########################################
+
+url_pre = "/api"
     
 
 # rouute to create a new project
@@ -112,7 +110,7 @@ def create_project():
 
     if request.method == "POST":
 
-        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 11}
+        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 10 }
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
