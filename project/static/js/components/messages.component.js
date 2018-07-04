@@ -15,18 +15,26 @@ angular.module('betaApp')
                 </div>
             </div>
         
-            <form ng-submit="createMessage()">
-                <input type="text" ng-model="text" placeholder="...">
+            <form ng-submit="$ctrl.createMessage()">
+                <input type="text" ng-model="$ctrl.message" placeholder="...">
                 <input type="submit" value="Send">
             </form>
             <button ui-sref="projects.project">Close Messages</button>
         </div>
     `,
 
-        controller: function ($http, $log) {
+        controller: function ($http, $log, socket) {
 
             $log.log("message controller")
 
+            // socket.forward('someEvent');
+            // this.$on('socket:someEvent', function (ev, data) {
+            //     this.theData = data;
+            // });
+
+            // this.createMessage = function () {
+            //     socket.emit();
+            // }
 
             // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
 

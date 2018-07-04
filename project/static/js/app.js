@@ -1,4 +1,4 @@
-angular.module('betaApp', ['ui.router'])
+angular.module('betaApp', ['ui.router', 'btford.socket-io'])
 
     // configure the routes
     .config([
@@ -90,4 +90,8 @@ angular.module('betaApp', ['ui.router'])
                 })
             $urlRouterProvider.otherwise('/');
         }
+
     ])
+    .factory('socket', function (socketFactory) {
+        return socketFactory()
+    })
