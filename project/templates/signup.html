@@ -1,5 +1,23 @@
-{% include 'index.html' %}
+{% include 'includes/header.html' %}
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Team Beta</a>
+        </div>
+        <form class="navbar-form navbar-right" action="/authenticate" method="POST">
+          <div class="form-group">
+            <input type="text" id="inputUsername" class="form-control" placeholder="Username or EmailID" required autofocus name="emailUsername">
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+          </div>
+          <button class="btn btn-primary" type="submit" id="login">Log In</button>
+        </form>
+    </div>
+</nav>
+
+
 <div class="container">
+
 
    {% with messages = get_flashed_messages() %}
         {% if messages %}

@@ -80,7 +80,8 @@ def login():
             session["user_id"] = result.id
             return redirect("/")
         else:
-            return jsonify({"return_code": 500, "message": "User doesnot exist"})
+            flash("User doesnot exist")
+            return redirect("/signup")
 
 
 # logout the user
