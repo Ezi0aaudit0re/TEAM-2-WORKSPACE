@@ -83,6 +83,9 @@ class UserDB:
 
 
 
+
+
+
 """
     This class deals with all the database methods related to project
 """
@@ -119,3 +122,20 @@ class ProjectDB:
             print("error occured when creating a project")
             print(str(e))
             return jsonify({"code": 500, "message": "Error creating project"})
+
+
+
+    """
+        This method gets all the projects associated with a user
+        :param: user_id -> THe id of the user
+        :return: all the information about the projects 
+    """
+    def get_projects(self, user_id):
+
+        data = database_helper.get_data(self.table, {self.table.admin_id:user_id})
+        print(data)
+        return data
+
+
+
+

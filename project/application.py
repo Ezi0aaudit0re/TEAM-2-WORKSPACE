@@ -8,9 +8,11 @@ from constants import *
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_marshmallow import Marshmallow
 
 # Flask application
 app = Flask(__name__)
+ma = Marshmallow(app)
 
 
 # connect to the databse

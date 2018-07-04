@@ -14,6 +14,7 @@ from application import *
 from flask import render_template, request, jsonify, redirect, url_for,flash, session
 import database.database_wrapper as database_wrapper 
 from database.models import *
+from database.schemas import *
  # login authentication extension
 from flask_login import login_user, login_required, logout_user
 
@@ -74,10 +75,17 @@ def login():
         json_data = request.form
         result = database_wrapper.UserDB().get_user(json_data)
 
+        print(result)
+
         if result:
+
+
             # this is the part of flask_login module
             login_user(result)
+
+
             session["user_id"] = result.id
+            print("Crossed")
             return redirect("/")
         else:
             flash("User doesnot exist")
@@ -109,6 +117,22 @@ def create_project():
         result = database_wrapper.ProjectDB().create_project(json_data)
 
         return result
+
+
+
+
+@app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
+@login_required
+def basic_info():
+
+    if session.get("user") is None:
+        return jsonify({"code": 500, "meessage": "Internal server error"})
+
+    # we have our user id in session["user_id"]
+    # now we get the projects that the user is a part of 
+    result = database_wrapper.ProjectDB().get_projects({"user_id": session['user_id']})
+
+
 
 
 
