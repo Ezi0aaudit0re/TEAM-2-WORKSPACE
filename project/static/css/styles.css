@@ -5,10 +5,25 @@
 }
 
 .projects {
-  width: 30%;
+  flex: .2
 }
 
-.projects>ul {
+.project {
+  flex: 2
+}
+
+.detail {
+  flex: 8
+}
+
+ul {
   list-style: none;
   padding: 0.1em 0;
+}
+
+.scroll {
+  background: white;
+  display: block;
+  height: 768px;
+  overflow: scroll
 }

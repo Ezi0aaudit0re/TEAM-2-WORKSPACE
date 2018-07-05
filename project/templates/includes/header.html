@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../beta.ico">
 
-    <title>Beta Project Management Homepage</title>
+    <title>Beta Project Management</title>
 
     <!-- angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
@@ -22,6 +22,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <!-- socketio -->
+    <script src="../static/js/messages/socket.js"></script>
+    <!-- <script src="/bower_components/socket.io-client/lib/socket.io.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
     <!-- BOOTSTRAP -->
@@ -40,27 +42,25 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 
-    <!-- Latest socket.io client from the CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-
-
-    <!-- authentication auth0 -->
-    <!-- <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script> -->
-
     <!-- angular app -->
     <script src="../static/js/app.js"></script>
-    <script src="../static/js/services/authentication.service.js"></script>
+    <!-- user -->
+    <!-- TODO -->
+    <!-- projects -->
     <script src="../static/js/services/projects.service.js"></script>
-    <script src="../static/js/controllers/auth.js"></script>
-    <script src="../static/js/controllers/issue.js"></script>
-    <script src="../static/js/controllers/message.js"></script>
-    <script src="../static/js/controllers/projects.component.js"></script>
-    <script src="../static/js/controllers/project.component.js"></script>
-    <script src="../static/js/controllers/tasks.component.js"></script>
-    <script src="../static/js/controllers/task.component.js"></script>
+    <script src="../static/js/components/projects.component.js"></script>
+    <script src="../static/js/components/project.component.js"></script>
+    <script src="../static/js/components/tasks.component.js"></script>
+    <script src="../static/js/components/task.component.js"></script>
+    <!-- messages -->
+    <script src="../static/js/services/messages.service.js"></script>
+    <script src="../static/js/components/messages.component.js"></script>
+    <!-- issues -->
+    <script src="../static/js/services/issues.service.js"></script>
+    <script src="../static/js/components/issues.component.js"></script>
+    <script src="../static/js/components/issue.component.js"></script>
 
     <link rel="stylesheet" href="../static/css/styles.css">
 
     <link rel="icon" href="../static/beta.ico">
 </head>
-

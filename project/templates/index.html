@@ -22,19 +22,16 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <!-- TODO -->
-                        <a ui-sref="projects" ui-sref-active="active">Projects
+                    <!-- <li> 
+                        <a ui-sref="projects.project.tasks" ui-sref-active="active">Tasks
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li>
-                        <!-- TODO -->
-                        <a ui-sref="messages" ui-sref-active="active">Messages</a>
+                        <a ui-sref="projects.project.messages" ui-sref-active="active">Messages</a>
                     </li>
                     <li>
-                        <!-- TODO -->
-                        <a ui-sref="issues" ui-sref-active="active">Issues</a>
+                        <a ui-sref="projects.project.issues" ui-sref-active="active">Issues</a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown
@@ -60,10 +57,9 @@
                             </li>
                         </ul>
                     </li>
-
+                -->
 
                     <li>
-                        <!-- TODO -->
                         <a href="/logout">Logout</a>
                     </li>
                 </ul>
@@ -87,7 +83,7 @@
     </nav>
 
     <div id="main">
-        <div class="container-fluid">
+        <div class="container-fluid row">
             <ui-view></ui-view>
         </div>
     </div>

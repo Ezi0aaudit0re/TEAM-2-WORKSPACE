@@ -6,28 +6,24 @@
             <a class="navbar-brand" href="/">Team Beta</a>
         </div>
         <form class="navbar-form navbar-right" action="/authenticate" method="POST">
-          <div class="form-group">
-            <input type="text" id="inputUsername" class="form-control" placeholder="Username or EmailID" required autofocus name="emailUsername">
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
-          </div>
-          <button class="btn btn-primary" type="submit" id="login">Log In</button>
+            <div class="form-group">
+                <input type="text" id="inputUsername" class="form-control" placeholder="Username or Email" required autofocus name="emailUsername">
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+            </div>
+            <button class="btn btn-primary" type="submit" id="login">Log In</button>
         </form>
     </div>
 </nav>
 
 
-<div class="container">
+<div class="container-fluid">
 
 
-   {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger">
-                    <h4>{{message}}</h4>
-                </div>
-            {% endfor %}
-        {% endif %}
-   {% endwith %}
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="alert alert-danger">
+        <h4>{{message}}</h4>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
 
     <div>
         <form class="form-signin" method="post" action="/createUser">
@@ -46,20 +42,8 @@
             <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
         </form>
-    </div>
 
-    <div>
-        <form class="form-signin" method="post" action='/authenticate'>
-            <h2 class=" form-signin-heading">Already signed up? Please log in</h2>
-
-            <label for="inputUsername" class="sr-only">Username or EmailID</label>
-            <input type="text" id="inputUsername" class="form-control" placeholder="Username or EmailID" required autofocus name="emailUsername">
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
-            <div class="checkbox">
-            </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" id="login">Log In</button>
-        </form>
+        <h2 class="form-signin form-signin-heading">Already signed up? Please log in at the top of the page</h2>
     </div>
 
 </div>

@@ -5,7 +5,8 @@ angular.module('betaApp')
         },
 
         template: `
-        <div>
+        <div class="col-sm-4">
+            <h4>Task</h4>
             <ul>
                 <li>
                     <div id={{$ctrl.task.id}}>
@@ -36,8 +37,9 @@ angular.module('betaApp')
                     </div>
                 </li>
             </ul>
+            <button class="btn btn-secondary" ui-sref="projects.project.tasks">Close Task</button>
         </div>
-        <button ui-sref="projects.project.tasks">Close Task</button>
+        
         `,
 
         controller: function ($stateParams, $log) {
