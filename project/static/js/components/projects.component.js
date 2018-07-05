@@ -5,7 +5,7 @@ angular.module('betaApp')
         },
 
         template: `
-            <div class="row">
+            <div class="row" ng-init="$ctrl.getBasicInfo()">
                 <div class="projects col-sm-2 sidebar ">
                     <h1>
                         Projects <!-- Button trigger modal -->
@@ -81,6 +81,20 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error creating project: " + JSON.stringify(error));
                     });
+            };
+
+            this.getBasicInfo = function() {
+
+
+                $http.post('/api/getBasicInfo')
+                .then(function (result){
+                    this.projects = result.data.data.projects
+                    console.log(this.projects)
+                })
+                .catch(function (error){
+                    $log.log("Front end error" + JSON.stringify(errorr));
+                })
+            
             };
         }
     })
