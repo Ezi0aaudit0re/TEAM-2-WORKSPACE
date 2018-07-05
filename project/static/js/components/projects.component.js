@@ -1,11 +1,11 @@
 angular.module('betaApp')
     .component('projects', {
         bindings: {
-            projects: '<'
+            user: '<'
         },
 
         template: `
-            <div class="row" ng-init="$ctrl.getBasicInfo()">
+            <div class="row" ng-init="">
                 <div class="projects col-sm-2 sidebar ">
                     <h1>
                         Projects <!-- Button trigger modal -->
@@ -14,7 +14,7 @@ angular.module('betaApp')
                         </button>
                     </h1>
                     <ul>
-                        <li ng-repeat="project in $ctrl.projects">
+                        <li ng-repeat="project in $ctrl.user.projects">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
                                 {{project.name}}: {{project.status}}
                             </a>
@@ -56,7 +56,7 @@ angular.module('betaApp')
 
         controller: function ($scope, $http, $log) {
             // TODO
-            $log.log(this.projects)
+            
 
             this.showProject = function () {
                 // TODO
@@ -86,11 +86,13 @@ angular.module('betaApp')
 
             this.getBasicInfo = function() {
 
+
+
                 $http.post('/api/getBasicInfo')
                 .then(function (result){
-                    $scope.user = result.data.data
-                    $scope.projects = $scope.user.projects
-                    console.log($scope.projects)
+                    this.user = result.data.data
+                    //this.projects = this.user.projects
+                    console.log(this.projects)
                 })
                 .catch(function (error){
                     console.log(error)

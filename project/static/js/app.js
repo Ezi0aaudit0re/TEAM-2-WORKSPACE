@@ -10,6 +10,12 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     name: 'projects',
                     url: '/',
                     component: 'projects',
+                    resolve: {
+                        user: function (ProjectsService) {
+                            return ProjectsService.getProjects();
+                        }
+                        
+                    }
                 })
                 .state({
                     // route for the project management
