@@ -73,9 +73,9 @@ def login():
     if request.method == 'POST':
 
         json_data = request.form
-        result = database_wrapper.UserDB().get_user(json_data)
+        result = database_wrapper.UserDB().authenticate_user(json_data)
 
-        print(result)
+
 
         if result:
 
@@ -85,8 +85,9 @@ def login():
 
 
             session["user_id"] = result.id
-            print("Crossed")
+
             return redirect("/")
+
         else:
             flash("User doesnot exist")
             return redirect("/signup")
@@ -125,12 +126,14 @@ def create_project():
 @login_required
 def basic_info():
 
-    if session.get("user") is None:
-        return jsonify({"code": 500, "meessage": "Internal server error"})
+    #if session.get("user") is None:
+        #return jsonify({"code": 500, "meessage": "Internal server error"})
 
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
-    result = database_wrapper.ProjectDB().get_projects({"user_id": session['user_id']})
+    result = database_wrapper.UserDB().get_user_data(session['user_id'])
+
+    return result
 
 
 
