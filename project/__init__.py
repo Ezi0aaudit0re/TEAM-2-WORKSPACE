@@ -113,7 +113,9 @@ def create_project():
 
     if request.method == "POST":
 
-        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 10 }
+        data = request.get_json()['project']
+
+        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"] }
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
