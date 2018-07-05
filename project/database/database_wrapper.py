@@ -9,7 +9,7 @@ from database.models import *
 from database.schemas import *
 import helper
 import database.database_helper as database_helper
-from flask import jsonify
+from flask import jsonify, session
 
 
 
@@ -84,6 +84,7 @@ class UserDB:
         if data is None:
             return jsonify({"code": 500, "message": "Internal Server error"})
         else:
+            session['user'] = data.json()
             return jsonify({"code": 200, "message": "Success", "data": data.json()})
 
 

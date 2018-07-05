@@ -54,8 +54,9 @@ angular.module('betaApp')
             </div>
             `,
 
-        controller: function ($http, $log) {
+        controller: function ($scope, $http, $log) {
             // TODO
+            $log.log(this.projects)
 
             this.showProject = function () {
                 // TODO
@@ -85,14 +86,15 @@ angular.module('betaApp')
 
             this.getBasicInfo = function() {
 
-
                 $http.post('/api/getBasicInfo')
                 .then(function (result){
-                    this.projects = result.data.data.projects
-                    console.log(this.projects)
+                    $scope.user = result.data.data
+                    $scope.projects = $scope.user.projects
+                    console.log($scope.projects)
                 })
                 .catch(function (error){
-                    $log.log("Front end error" + JSON.stringify(errorr));
+                    console.log(error)
+                    $log.log("Front end error" + JSON.stringify(error));
                 })
             
             };

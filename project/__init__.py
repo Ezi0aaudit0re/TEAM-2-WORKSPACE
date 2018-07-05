@@ -133,11 +133,29 @@ def basic_info():
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
 
+
+
     return result
 
 
 
 
 
+
+########################## Sockets for message ########################
+@socketio.on('message')
+def handle_message(msg):
+    print("Message recieved: " + msg)
+    socketio.emit('message', msg)
+
+
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, debug=True)
+
+
+
+
+
+
+
+
