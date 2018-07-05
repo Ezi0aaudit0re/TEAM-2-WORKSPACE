@@ -6,7 +6,14 @@ angular.module('betaApp')
         },
 
         template: `
-            <div>
+            <div class="col-sm-2">
+            <h3>
+                Tasks 
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
+                    Add
+                </button>
+            </h3>
                 <ul>
                     <li ng-repeat="task in $ctrl.tasks">
                         <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: task.id })">
@@ -14,12 +21,15 @@ angular.module('betaApp')
                         </a>
                     </li>
                 </ul>
-                <ui-view></ui-view>
+                <!-- Button trigger modal -->
+                
+                <button class="btn btn-secondary" ui-sref="projects.project">Close Tasks</button>
             </div>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
-                Add New Task
-            </button>
+            
+            <ui-view></ui-view>
+            
+
+            
         
             <!-- Modal -->
             <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskModalLabel" aria-hidden="true">
@@ -46,7 +56,6 @@ angular.module('betaApp')
                     </div>
                 </div>
             </div>
-            <button ui-sref="projects.project">Close Tasks</button>
         `,
 
         controller: [

@@ -5,8 +5,8 @@ angular.module('betaApp')
         },
 
         template: `
-            <div>
-                <h4>Project</h4>
+            <div class="col-sm-2">
+                <h2>Project</h2>
                 <div>
                     Name: {{$ctrl.project.name}}
                 </div>
@@ -22,12 +22,20 @@ angular.module('betaApp')
                 <div>
                     Update Date: {{$ctrl.project.updated_date}}
                 </div>
+                <div>
+                    <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
+                </div>
+
+                
+
+            </div>
+            
+            <ui-view>
                 <a ui-sref="projects.project.tasks" ui-sref-active="active">Tasks</a>
                 <a ui-sref="projects.project.messages" ui-sref-active="active">Messages</a>
                 <a ui-sref="projects.project.issues" ui-sref-active="active">Issues</a>
-                
-            </div>
-            <ui-view class="pull-right"></ui-view>
-            <button ui-sref="projects">Close Project</button>
+            </ui-view>
+            
+            
             `
     })

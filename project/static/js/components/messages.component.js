@@ -5,12 +5,15 @@ angular.module('betaApp')
             messages: '<'
         },
         template: `
-        <div>
-            <div class="container-fluid" id="chatwindow">
+        <div class="col-sm-8">
+            <h3>
+                Messages
+            </h3>
+            <div class="container-fluid scroll" id="chatwindow">
                 <div ng-repeat="msg in $ctrl.messages">
                     <div class="row">
-                        <div class="col-sm-8">{{msg.msg}}</div>
-                        <div class="col-sm-2">{{msg.user_id}}</div>
+                        <div class="col-sm-3">{{msg.username}}:</div>
+                        <div class="col-sm-5">{{msg.msg}}</div>
                     </div>
                 </div>
             </div>

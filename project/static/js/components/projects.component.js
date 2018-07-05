@@ -5,9 +5,14 @@ angular.module('betaApp')
         },
 
         template: `
-            <div class="flex-h">
-                <div class="projects pa-sidebar well well-small">
-                    <h3>Projects</h3>
+            <div class="row">
+                <div class="projects col-sm-2 sidebar ">
+                    <h1>
+                        Projects <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProjectModal">
+                            Add
+                        </button>
+                    </h1>
                     <ul>
                         <li ng-repeat="project in $ctrl.projects">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
@@ -19,10 +24,7 @@ angular.module('betaApp')
                 <ui-view></ui-view>
             </div>
 
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProjectModal">
-                Add New Project
-            </button>
+            
 
             <!-- Modal -->
             <div class="modal fade" id="newProjectModal" tabindex="-1" role="dialog" aria-labelledby="newProjectModalLabel" aria-hidden="true">

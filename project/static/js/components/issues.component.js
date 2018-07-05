@@ -6,7 +6,9 @@ angular.module('betaApp')
 
         template: `
             <div>
-            Issues
+                <h3>
+                    Issues
+                </h3>
                 <ul>
                     <li ng-repeat="issue in $ctrl.issues">
                         <a ui-sref-active="active" ui-sref="projects.project.issues.issue({ issueId: issue.id })">
