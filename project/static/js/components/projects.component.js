@@ -1,11 +1,11 @@
 angular.module('betaApp')
     .component('projects', {
         bindings: {
-            projects: '<'
+            user: '<'
         },
 
         template: `
-            <div class="row">
+            <div class="row" ng-init="">
                 <div class="projects col-sm-2 sidebar ">
                     <h1>
                         Projects <!-- Button trigger modal -->
@@ -14,7 +14,7 @@ angular.module('betaApp')
                         </button>
                     </h1>
                     <ul>
-                        <li ng-repeat="project in $ctrl.projects">
+                        <li ng-repeat="project in $ctrl.user.projects">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
                                 {{project.name}}: {{project.status}}
                             </a>
@@ -54,8 +54,9 @@ angular.module('betaApp')
             </div>
             `,
 
-        controller: function ($http, $log) {
+        controller: function ($scope, $http, $log) {
             // TODO
+            
 
             this.showProject = function () {
                 // TODO
@@ -81,6 +82,23 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error creating project: " + JSON.stringify(error));
                     });
+            };
+
+            this.getBasicInfo = function() {
+
+
+
+                $http.post('/api/getBasicInfo')
+                .then(function (result){
+                    this.user = result.data.data
+                    //this.projects = this.user.projects
+                    console.log(this.projects)
+                })
+                .catch(function (error){
+                    console.log(error)
+                    $log.log("Front end error" + JSON.stringify(error));
+                })
+            
             };
         }
     })

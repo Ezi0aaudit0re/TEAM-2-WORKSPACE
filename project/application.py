@@ -9,10 +9,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_marshmallow import Marshmallow
+from flask_socketio import SocketIO, send
 
 # Flask application
 app = Flask(__name__)
 ma = Marshmallow(app)
+socketio = SocketIO(app)
 
 
 # connect to the databse

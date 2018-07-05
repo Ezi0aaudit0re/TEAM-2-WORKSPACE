@@ -74,7 +74,10 @@ class User(UserMixin, Base):
         serialized_projects = list()
 
         for project in self.projects:
-            serialized_projects.append(project.name)
+            serialized_projects.append({'id': project.id, \
+                                        'status': project.status, \
+                                        'name': project.name \
+            })
 
         return {'id': self.id, \
                'first_name': self.first_name,\
