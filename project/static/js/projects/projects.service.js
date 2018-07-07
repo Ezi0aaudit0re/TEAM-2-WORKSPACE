@@ -1,14 +1,36 @@
 angular.module('betaApp')
     .service('ProjectsService', function ($http, $log) {
         var service = {
-            getProjects: function () {
-                // called on page load to get all user projects
-                return $http.get("/api/getBasicInfo", {
+            getBasicInfo: function () {
+                // called on page load to get all user projects "/api/getBasicInfo"
+                return $http.get("../static/js/projects/projects.json", {
                         cache: true,
                         timeout: 3000
                     })
                     .then(function (response) {
+                        $log.log(response.data.data);
                         return response.data.data;
+                    })
+                    .catch(function (error) {
+                        $log.log("error getting projects: " + JSON.stringify(error));
+                        // get sample data instead
+                        return $http.get("../static/js/projects/projects.json", {
+                                cache: true,
+                                timeout: 3000
+                            })
+                            .then(function (response) {
+                                return response.data;
+                            })
+                    });
+            },
+            getProjects: function () {
+                // called on page load to get all user projects "/api/getProjects"
+                return $http.get("../static/js/projects/projects.json", {
+                        cache: true,
+                        timeout: 3000
+                    })
+                    .then(function (response) {
+                        return response.data.data.projects;
                     })
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
@@ -45,17 +67,18 @@ angular.module('betaApp')
                         timeout: 3000
                     })
                     .then(function (response) {
-                        return response.data;
+                        return response.data.data;
                     })
                     .catch(function (error) {
                         $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/projects.json", {
+                        return $http.get("../static/js/projects/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
                             .then(function (response) {
-                                return response.data[0].tasks;
+                                $log.log(response.data)
+                                return response.data.data.projects[0].tasks;
                             })
                     });
             },
