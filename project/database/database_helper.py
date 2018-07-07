@@ -15,28 +15,28 @@ from helper import hash_password
     :param: table -> The table to query 
     :param: kwargs -> key value argument to check two things 
 """
-def get_data(table, kwargs):
+def get_data(table, kwargs, one=True):
     try:
         keys = list(kwargs.keys())
         values = list(kwargs.values())
 
         if(len(keys) == 2):
 
-            result = db.session.query(table).filter((keys[0] == values[0]), (keys[1] == values[1])).first()
+            result = db.session.query(table).filter((keys[0] == values[0]), (keys[1] == values[1]))
 
         elif(len(keys) == 1):
-            result = db.session.query(table).filter((keys[0] == values[0])).first()
+            result = db.session.query(table).filter((keys[0] == values[0]))
 
 
-        return result
+        if one:
+            return result.first()
+        else:
+            return result.all()
 
     except Exception as e:
         print("Problem in get_id function in helper")
         print(str(e))
         return None
-
-
-
 
 
 

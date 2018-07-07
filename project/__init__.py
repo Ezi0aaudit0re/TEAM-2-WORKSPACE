@@ -14,6 +14,7 @@ from application import *
 from flask import render_template, request, jsonify, redirect, url_for,flash, session
 import database.database_wrapper as database_wrapper 
 from database.models import *
+from database.schemas import *
  # login authentication extension
 from flask_login import login_user, login_required, logout_user
 
@@ -72,13 +73,21 @@ def login():
     if request.method == 'POST':
 
         json_data = request.form
-        result = database_wrapper.UserDB().get_user(json_data)
+        result = database_wrapper.UserDB().authenticate_user(json_data)
+
+
 
         if result:
+
+
             # this is the part of flask_login module
             login_user(result)
+
+
             session["user_id"] = result.id
+
             return redirect("/")
+
         else:
             flash("User doesnot exist")
             return redirect("/signup")
@@ -104,7 +113,9 @@ def create_project():
 
     if request.method == "POST":
 
-        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 10 }
+        data = request.get_json()['project']
+
+        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"] }
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
@@ -112,5 +123,41 @@ def create_project():
 
 
 
+
+@app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
+@login_required
+def basic_info():
+
+    #if session.get("user") is None:
+        #return jsonify({"code": 500, "meessage": "Internal server error"})
+
+    # we have our user id in session["user_id"]
+    # now we get the projects that the user is a part of 
+    result = database_wrapper.UserDB().get_user_data(session['user_id'])
+
+
+
+    return result
+
+
+
+
+
+
+########################## Sockets for message ########################
+@socketio.on('message')
+def handle_message(msg):
+    print("Message recieved: " + msg)
+    socketio.emit('message', msg)
+
+
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, debug=True)
+
+
+
+
+
+
+
+

@@ -6,9 +6,10 @@ __author__ = "TEAM BETA"
 
 from application import db
 from database.models import *
+from database.schemas import *
 import helper
 import database.database_helper as database_helper
-from flask import jsonify
+from flask import jsonify, session
 
 
 
@@ -55,20 +56,20 @@ class UserDB:
        :param: data -> THe json data used to match username and password
        :return: id -> The id of the user
     """
-    def get_user(self, data):
+    def authenticate_user(self, data):
         try:
             hashed_password = helper.hash_password(data['password'])
             # check if the first field matches username
-            id = database_helper.get_data(self.table, {self.table.user_name: data['emailUsername'], self.table.password: hashed_password})
+            user = database_helper.get_data(self.table, {self.table.user_name: data['emailUsername'], self.table.password: hashed_password})
 
 
-            if id == None:
+            if user == None:
 
-                id = database_helper.get_data(self.table,\
+                user = database_helper.get_data(self.table,\
                                             {self.table.email_id: data['email_username'], self.table.password: hashed_password})
 
 
-            return id
+            return user
 
 
 
@@ -76,6 +77,17 @@ class UserDB:
             print("Prorblem with get user database_wrapper file")
             print(str(e))
             return False
+
+
+    def get_user_data(self, user_id):
+        data = database_helper.get_data(self.table, {self.table.id: user_id})
+        if data is None:
+            return jsonify({"code": 500, "message": "Internal Server error"})
+        else:
+            session['user'] = data.json()
+            return jsonify({"code": 200, "message": "Success", "data": data.json()})
+
+
 
 
 
@@ -119,3 +131,23 @@ class ProjectDB:
             print("error occured when creating a project")
             print(str(e))
             return jsonify({"code": 500, "message": "Error creating project"})
+
+
+
+    """
+        This method gets all the projects associated with a user
+        :param: user_id -> THe id of the user
+        :return: all the information about the projects 
+    """
+    def get_projects(self, user_id):
+
+        data = database_helper.get_data(self.table, {self.table.admin_id:user_id})
+
+        if data is None:
+            return jsonify({"code": 404, "message": "User is not the admin of any project"})
+        else:
+            return jsonify({"code": 200, "message": "success", "data": data})
+
+
+
+

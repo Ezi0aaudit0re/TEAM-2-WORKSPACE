@@ -4,10 +4,16 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import time
 from flask_login import UserMixin
+from application import db
 
 Base = declarative_base()
 metadata = Base.metadata
 
+t_users_has_projects = Table(
+    'users_has_projects', metadata,
+    Column('users_id', ForeignKey('users.id'), primary_key=True, nullable=False, index=True),
+    Column('projects_id', ForeignKey('projects.id'), primary_key=True, nullable=False, index=True)
+)
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -20,7 +26,7 @@ class Project(Base):
     admin_id = Column(String(45), nullable=False)
     status = Column(INTEGER(), nullable=False, server_default=text("'0'"))
 
-    userss = relationship('User', secondary='users_has_projects')
+    users = relationship('User', secondary='users_has_projects')
 
     def __init__(self, **kwargs):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -31,6 +37,11 @@ class Project(Base):
         self.updated_at = current_time
         self.admin_id = kwargs["admin_id"] #This is the id of the user who creates the project
 
+    def json(self):
+        return {'id': self.id,\
+                'name': self.name,\
+                'description': self.description\
+               }
 
 class User(UserMixin, Base):
 
@@ -43,6 +54,7 @@ class User(UserMixin, Base):
     password = Column(String(255), nullable=False)
     email_id = Column(String(255), nullable=False, unique=True)
     privilege = Column(INTEGER(), nullable=False, server_default=text("'0'"))
+    projects = relationship('Project', secondary=t_users_has_projects)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
@@ -57,6 +69,25 @@ class User(UserMixin, Base):
         self.privilege = 0
         self.created_at = current_time
         self.updated_at = current_time
+
+    def json(self):
+        serialized_projects = list()
+
+        for project in self.projects:
+            serialized_projects.append({'id': project.id, \
+                                        'status': project.status, \
+                                        'name': project.name \
+            })
+
+        return {'id': self.id, \
+               'first_name': self.first_name,\
+               'last_name': self.last_name,\
+               'user_name': self.user_name,\
+               'email_id': self.email_id,\
+               'privilege': self.privilege,\
+               'projects': serialized_projects,\
+               'created_at': self.created_at, \
+               'updated_at': self.updated_at }
 
 
 
@@ -112,11 +143,6 @@ class Task(Base):
     projects = relationship('Project')
 
 
-t_users_has_projects = Table(
-    'users_has_projects', metadata,
-    Column('users_id', ForeignKey('users.id'), primary_key=True, nullable=False, index=True),
-    Column('projects_id', ForeignKey('projects.id'), primary_key=True, nullable=False, index=True)
-)
 
 
 class Comment(Base):
