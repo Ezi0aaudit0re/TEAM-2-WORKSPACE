@@ -1,0 +1,29 @@
+.flex-h {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+
+.projects {
+  flex: .2
+}
+
+.project {
+  flex: 2
+}
+
+.detail {
+  flex: 8
+}
+
+ul {
+  list-style: none;
+  padding: 0.1em 0;
+}
+
+.scroll {
+  background: white;
+  display: block;
+  height: 768px;
+  overflow: scroll
+}

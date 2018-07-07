@@ -1,149 +1,98 @@
-angular.module('betaApp', ['ngRoute', 'ngStorage'])
+angular.module('betaApp', ['ui.router', 'btford.socket-io'])
 
-// configure the routes
-.config([
-        '$routeProvider',
-        function($routeProvider) {
-            $routeProvider
-                .when('/', {
-                    // route for the home page
-                    templateUrl: '../static/partials/home.html',
-                    controller: 'IndexController'
-                })
-                .when('/signup', {
-                    // route for the issue tracking
-                    templateUrl: '../static/partials/signup.html',
-                    controller: 'SignupController'
-                })
-                .when('/project', {
+    // configure the routes
+    .config([
+        '$stateProvider', '$urlRouterProvider',
+        function ($stateProvider, $urlRouterProvider) {
+            $stateProvider
+                .state({
                     // route for the project management
-                    templateUrl: '../static/partials/project.html',
-                    controller: 'ProjectController'
-                })
-                .when('/message', {
-                    //route for the task page
-                    templateUrl: '../static/partials/message.html',
-                    controller: 'MessageController'
-                })
-                .when('/issue', {
-                    // route for the issue tracking
-                    templateUrl: '../static/partials/issue.html',
-                    controller: 'IssueController'
-                })
-                .otherwise({
-                    // route for the home page
-                    redirectTo: '/'
-                });
-        }
-    ])
-    // from http://jasonwatmore.com/post/2016/04/05/angularjs-jwt-authentication-example-tutorial
-    .run(function($rootScope, $http, $location, $localStorage) {
-        // keep user logged in after page refresh
-        if ($localStorage.currentUser) {
-            $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.currentUser.token;
-        }
-
-        // redirect to login page if not logged in and trying to access a restricted page
-        $rootScope.$on('$locationChangeStart', function(event, next, current) {
-            var publicPages = ['/login'];
-            var restrictedPage = publicPages.indexOf($location.path()) === -1;
-            if (restrictedPage && !$localStorage.currentUser) {
-                $location.path('/login');
-            }
-        });
-    })
-    // end from
-    .controller('HeaderController', ($scope, $location) => {
-
-        // for making active page link in navbar highlighted
-        $scope.isActive = (viewLocation) => {
-            return viewLocation === $location.path();
-        };
-
-    })
-
-.controller('IndexController', function($location, AuthenticationService) {
-    // TODO
-    // from http://jasonwatmore.com/post/2016/04/05/angularjs-jwt-authentication-example-tutorial
-    var vm = this;
-
-    vm.login = login;
-
-    initController();
-
-    function initController() {
-        // reset login status
-        AuthenticationService.Logout();
-    }
-
-    function login() {
-        vm.loading = true;
-        AuthenticationService.Login(vm.username, vm.password, function(result) {
-            if (result === true) {
-                $location.path('/');
-            } else {
-                vm.error = 'Username or password is incorrect';
-                vm.loading = false;
-            }
-        });
-    }
-    // end from
-
-    // home page will load data from json file or storage
-    /*
-        $scope.message = 'Welcome to the home page!';
-
-            // this section needed to designate JSON, as otherwise interprets as XML and fails
-            $.ajaxSetup({
-                beforeSend: (xhr) => {
-                    if (xhr.overrideMimeType) {
-                        xhr.overrideMimeType("application/json");
+                    name: 'projects',
+                    url: '/',
+                    component: 'projects',
+                    resolve: {
+                        user: function (ProjectsService) {
+                            return ProjectsService.getProjects();
+                        }
+                        
                     }
-                }
-            });
-            // load data
-            $.getJSON("data.json", { format: "json" }, { async: false })
-                .done((data) => {
-                    window.localStorage.setItem("data", JSON.stringify(data));
                 })
-        }
-        */
-})
-
-.controller('SignupController', [
-    '$scope', '$log', '$http',
-    function($scope, $log, $http) {
-
-        $scope.getNewUser = function() {
-            // TODO
-            $log.log($scope.user);
-
-            let userInput = $scope.user;
-
-            $http.post('/signup', { "user": userInput })
-                .then(function(results) {
-                    $log.log(results);
+                .state({
+                    // route for the project management
+                    name: 'projects.project',
+                    url: '/{projectId}',
+                    component: 'project',
+                    resolve: {
+                        project: function (projects, $transition$) {
+                            return projects.find(function (project) {
+                                return project.id === $transition$.params().projectId;
+                            });
+                        }
+                    }
                 })
-                .catch(function(error) {
-                    $log.log(error);
-                });
+                .state({
+                    // route for the task management
+                    name: 'projects.project.tasks',
+                    url: '/tasks',
+                    component: 'tasks',
+                    resolve: {
+                        tasks: function (ProjectsService) {
+                            return ProjectsService.getTasks();
+                        }
+                    }
+                })
+                .state({
+                    // route for the task management
+                    name: 'projects.project.tasks.task',
+                    url: '/{taskId}',
+                    component: 'task',
+                    resolve: {
+                        task: function (tasks, $transition$) {
+                            return tasks.find(function (task) {
+                                return task.id === $transition$.params().taskId;
+                            });
+                        }
+                    }
+                })
+                .state({
+                    //route for the messages page
+                    name: 'projects.project.messages',
+                    url: '/messages',
+                    component: 'messages',
+                    resolve: {
+                        messages: function (MessagesService) {
+                            return MessagesService.getMessages();
+                        }
+                    }
+                })
+                .state({
+                    // route for the issue tracking
+                    name: 'projects.project.issues',
+                    url: '/issues',
+                    component: 'issues',
+                    resolve: {
+                        issues: function (IssuesService) {
+                            return IssuesService.getIssues();
+                        }
+                    }
+                })
+                .state({
+                    // route for the issue tracking
+                    name: 'projects.project.issues.issue',
+                    url: '/{issueId}',
+                    component: 'issue',
+                    resolve: {
+                        issue: function (issues, $transition$) {
+                            return issues.find(function (issue) {
+                                return issue.id === $transition$.params().issueId;
+                            });
+                        }
+                    }
+                })
+            $urlRouterProvider.otherwise('/');
         }
-    }
-])
 
-.controller('ProjectController', function() {
-    // TODO
-})
-
-.controller('MessageController', function() {
-
-    // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
-
-    // socket.on('connect', () => {
-    //     // connected
-    // })
-})
-
-.controller('IssueController', function() {
-    // TODO
-})
+    ])
+    .factory('socket', function (socketFactory) {
+        return socketFactory()
+    })

@@ -1,1 +1,51 @@
-<h1> Sign up / Login page </h1>
+{% include 'includes/header.html' %}
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Team Beta</a>
+        </div>
+        <form class="navbar-form navbar-right" action="/authenticate" method="POST">
+            <div class="form-group">
+                <input type="text" id="inputUsername" class="form-control" placeholder="Username or Email" required autofocus name="emailUsername">
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+            </div>
+            <button class="btn btn-primary" type="submit" id="login">Log In</button>
+        </form>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="alert alert-danger">
+        <h4>{{message}}</h4>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <div>
+        <form class="form-signin" method="post" action="/createUser">
+            <h2 class=" form-signin-heading">Please sign up</h2>
+
+            <label for="inputFirstName" class="sr-only">First Name</label>
+            <input type="text" id="inputFirstName" class="form-control" placeholder="First Name" required autofocus name="firstName">
+            <label for="inputLastName" class="sr-only">Last Name</label>
+            <input type="text" id="inputLastName" class="form-control" placeholder="Last Name" required autofocus name="lastName">
+
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="emailAddress">
+            <label for="inputUsername" class="sr-only">Username</label>
+            <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus name="username">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        </form>
+
+        <h2 class="form-signin form-signin-heading">Already signed up? Please log in at the top of the page</h2>
+    </div>
+
+</div>
+
+<!-- /container -->

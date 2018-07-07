@@ -3,3 +3,4 @@
 *.swp
 *.pyc
 __pychache__
+__pychache__/*
