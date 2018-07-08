@@ -26,7 +26,7 @@ angular.module('betaApp')
         </div>
     `,
 
-        controller: function ($http, $log, $scope) {
+        controller: function ($log, $scope) {
 
             $log.log("message controller")
             $log.log(typeof this.messages)
