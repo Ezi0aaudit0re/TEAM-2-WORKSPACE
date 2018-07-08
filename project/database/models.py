@@ -94,7 +94,7 @@ class User(UserMixin, Base):
 class Issue(Base):
     __tablename__ = 'issues'
 
-    id = Column(INTEGER(), primary_key=True)
+    id = Column(INTEGER(), primary_key=True, unique=True)
     subject = Column(String(45), nullable=False)
     description = Column(String(255))
     priority = Column(INTEGER(), nullable=False, server_default=text("'0'"))
@@ -109,6 +109,36 @@ class Issue(Base):
     assigned_to_user = relationship('User', primaryjoin='Issue.assigned_to_user_id == User.id')
     created_by_user = relationship('User', primaryjoin='Issue.created_by_user_id == User.id')
     projects = relationship('Project')
+
+        def __init__(self, **kwargs):
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+            self.subject = kwargs["subject"]
+            self.description = kwargs["description"]
+            self.projects_id = kwargs["projects_id"]
+            self.created_by_user_id = kwargs["created_by_user_id"]
+            self.assigned_to_user_id = kwargs["created_by_user_id"]
+            self.created_at = current_time
+            self.updated_at = current_time
+
+        def json(self):
+            serialized_projects = list()
+
+            for project in self.projects:
+                serialized_projects.append({'id': project.id, \
+                                            'status': project.status, \
+                                            'name': project.name \
+                })
+
+            return {'id': self.id, \
+                   'first_name': self.first_name,\
+                   'last_name': self.last_name,\
+                   'user_name': self.user_name,\
+                   'email_id': self.email_id,\
+                   'privilege': self.privilege,\
+                   'projects': serialized_projects,\
+                   'created_at': self.created_at, \
+                   'updated_at': self.updated_at }
 
 
 class Message(Base):
