@@ -51,26 +51,20 @@ angular.module('betaApp')
             var socket = io.connect('http://127.0.0.1:5000')
 
             socket.on('connect', function () {
-                socket.send('user has connected')
-
-
+                socket.send({
+                    "username": "bot",
+                    "msg": 'user has connected'
+                })
             })
 
             socket.on('message', function (msg) {
                 $log.log(msg)
-                $("#chatwindow").append('<li>' + msg + '</li>')
+                // $("#chatwindow").append('<li>' + msg + '</li>')
                 $log.log($scope.$ctrl.messages)
                 $scope.$ctrl.messages.push({
-                    "username": "un",
+                    "username": "me",
                     "msg": msg
                 })
-
-            })
-
-            $('#send').on('click', function () {
-                socket.send($('#message').val())
-                $('#message').val('')
-
 
             })
 

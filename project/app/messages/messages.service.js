@@ -14,7 +14,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting messages: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/messages/messages.json", {
+                        return $http.get("../app/messages/messages.json", {
                                 cache: true,
                                 timeout: 3000
                             })

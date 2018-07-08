@@ -2,8 +2,9 @@ angular.module('betaApp')
     .service('ProjectsService', function ($http, $log) {
         var service = {
             getBasicInfo: function () {
-                // called on page load to get all user projects "/api/getBasicInfo"
-                return $http.get("../static/js/projects/projects.json", {
+                // called on page load to get all user projects 
+                // DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
+                return $http.get("/api/getBasicInfo", {
                         cache: true,
                         timeout: 3000
                     })
@@ -14,7 +15,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/projects/projects.json", {
+                        return $http.get("../app/projects/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -25,7 +26,7 @@ angular.module('betaApp')
             },
             getProjects: function () {
                 // called on page load to get all user projects "/api/getProjects"
-                return $http.get("../static/js/projects/projects.json", {
+                return $http.get("../app/projects/projects.json", {
                         cache: true,
                         timeout: 3000
                     })
@@ -35,7 +36,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/projects.json", {
+                        return $http.get("../app/data/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -72,7 +73,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/projects/projects.json", {
+                        return $http.get("../app/projects/projects.json", {
                                 cache: true,
                                 timeout: 3000
                             })
