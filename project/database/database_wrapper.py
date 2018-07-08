@@ -44,7 +44,7 @@ class UserDB:
             db.session.add(user) # add in the queue
             db.session.commit() # commit to the database
             return {"return_code": 200, "message": "User successfully created. Please login to view your dashboard"}
-            
+
 
         except Exception as e:
             print("error occured when creating a user")
@@ -52,7 +52,7 @@ class UserDB:
             return False
 
     """
-       This method is used to get the instace of the user 
+       This method is used to get the instace of the user
        :param: data -> THe json data used to match username and password
        :return: id -> The id of the user
     """
@@ -137,7 +137,7 @@ class ProjectDB:
     """
         This method gets all the projects associated with a user
         :param: user_id -> THe id of the user
-        :return: all the information about the projects 
+        :return: all the information about the projects
     """
     def get_projects(self, user_id):
 
@@ -148,6 +148,55 @@ class ProjectDB:
         else:
             return jsonify({"code": 200, "message": "success", "data": data})
 
+"""
+    This class deals with all the database methods related to project
+"""
+class IssueDB:
+
+    def __init__(self):
+        self.table = Issue
+
+
+    """
+        This method crreates a project in the database
+        :param: kwargs -> key value arguments of the colums in the table
+        :return: True/False
+    """
+    def create_issue(self, kwargs):
+        try:
+            # check if the prorject by the same id created
+            instance = database_helper.get_data(self.table, {self.table.name: kwargs["name"], self.table.admin_id: kwargs["admin_id"]})
+
+            if instance:
+                return jsonify({"code": 403, "message": "Project name already exists by user"})
 
 
 
+
+            project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
+
+            db.session.add(project) # add in the queue
+            db.session.commit() # commit to the database
+
+            return jsonify({"code": 200, "message": "Successfully created user"})
+
+        except Exception as e:
+            print("error occured when creating a project")
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error creating project"})
+
+
+
+    """
+        This method gets all the projects associated with a user
+        :param: user_id -> THe id of the user
+        :return: all the information about the projects
+    """
+    def get_projects(self, user_id):
+
+        data = database_helper.get_data(self.table, {self.table.admin_id:user_id})
+
+        if data is None:
+            return jsonify({"code": 404, "message": "User is not the admin of any project"})
+        else:
+            return jsonify({"code": 200, "message": "success", "data": data})

@@ -117,26 +117,18 @@ class Issue(Base):
             self.description = kwargs["description"]
             self.projects_id = kwargs["projects_id"]
             self.created_by_user_id = kwargs["created_by_user_id"]
-            self.assigned_to_user_id = kwargs["created_by_user_id"]
+            self.assigned_to_user_id = kwargs["assigned_to_user_id"]
             self.created_at = current_time
             self.updated_at = current_time
 
         def json(self):
-            serialized_projects = list()
-
-            for project in self.projects:
-                serialized_projects.append({'id': project.id, \
-                                            'status': project.status, \
-                                            'name': project.name \
-                })
-
             return {'id': self.id, \
-                   'first_name': self.first_name,\
-                   'last_name': self.last_name,\
-                   'user_name': self.user_name,\
-                   'email_id': self.email_id,\
-                   'privilege': self.privilege,\
-                   'projects': serialized_projects,\
+                   'subject': self.subject,\
+                   'description': self.description,\
+                   'priority': self.priority,\
+                   'projects_id': self.projects_id,\
+                   'created_by_user_id': self.created_by_user_id,\
+                   'assigned_to_user_id': self.assigned_to_user_id,\
                    'created_at': self.created_at, \
                    'updated_at': self.updated_at }
 
