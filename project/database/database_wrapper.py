@@ -148,6 +148,43 @@ class ProjectDB:
         else:
             return jsonify({"code": 200, "message": "success", "data": data})
 
+######################## Message class ######################
+"""
+    THis class consists of all the methods required for creating message
+"""
+
+class MessageDB:
+
+    def __init__(self):
+        self.table = Message
+
+    """
+        This method gets various messages 
+        loops through them and inserts each one into the database
+    """
+    def create_messages(self, data):
+
+        try:
+            messages = list()
+            for message in data:
+                msg = self.table(msg = message['msg'],\
+                                 user_id = message["user_id"],\
+                                 project_id = message["project_id"])
+                db.session.add(msg)
+
+            db.session.commit()
+
+            return jsonify({'code': 200, 'message': "Succeess"})
+
+        except Exception as e:
+
+            print("error occured when storing message in database")
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error storing message in database"})
+            
+
+
+
 
 
 

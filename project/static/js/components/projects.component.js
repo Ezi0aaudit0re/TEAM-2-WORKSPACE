@@ -1,7 +1,7 @@
 angular.module('betaApp')
     .component('projects', {
         bindings: {
-            user: '<'
+            user: '<',
         },
 
         template: `

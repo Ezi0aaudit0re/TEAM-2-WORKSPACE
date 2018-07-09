@@ -137,6 +137,20 @@ def basic_info():
 
     return result
 
+@app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
+#@login_required
+def store_message():
+
+    #data = request.get_json()
+    json_data = [{'user_id': session['user_id'], 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
+                
+                 {'user_id': session['user_id'], 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
+
+    result = database_wrapper.MessageDB().create_messages(json_data)
+
+
+    return result
+    
 
 
 
