@@ -13,7 +13,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting issues: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/issues.json", {
+                        return $http.get("../static/js/issues/issues.json", {
                                 cache: true,
                                 timeout: 3000
                             })

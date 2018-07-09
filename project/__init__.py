@@ -106,14 +106,16 @@ def logout():
 url_pre = "/api"
     
 
-# rouute to create a new project
+# route to create a new project
 @app.route(url_pre + '/project/new', methods=["POST"])
 @login_required
 def create_project():
 
     if request.method == "POST":
 
-        json_data = {"name": "Test PRoject", "description": "Test descrription", "admin_id": 10 }
+        data = request.get_json()['project']
+
+        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"] }
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
@@ -121,7 +123,8 @@ def create_project():
 
 
 
-
+# DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
+# or projects/1 or /2 via URLto bypass
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
 def basic_info():

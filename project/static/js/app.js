@@ -8,13 +8,16 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                 .state({
                     // route for the project management
                     name: 'projects',
-                    url: '/',
+                    url: '/projects',
                     component: 'projects',
                     resolve: {
+                        projects: function (ProjectsService) {
+                            return ProjectsService.getBasicInfo();
+                        },
                         user: function (ProjectsService) {
-                            return ProjectsService.getProjects();
+                            return ProjectsService.getBasicInfo();
                         }
-                        
+
                     }
                 })
                 .state({
@@ -23,8 +26,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/{projectId}',
                     component: 'project',
                     resolve: {
-                        project: function (projects, $transition$) {
-                            return projects.find(function (project) {
+                        project: function (user, $transition$) {
+                            return user.projects.find(function (project) {
                                 return project.id === $transition$.params().projectId;
                             });
                         }
@@ -89,7 +92,7 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                         }
                     }
                 })
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/projects');
         }
 
     ])
