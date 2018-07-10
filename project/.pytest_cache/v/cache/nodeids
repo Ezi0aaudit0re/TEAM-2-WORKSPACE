@@ -1,0 +1,3 @@
+[
+  "tests/test_database_wrapper.py::test_login_logout"
+]

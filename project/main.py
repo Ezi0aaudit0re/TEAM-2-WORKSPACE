@@ -5,9 +5,9 @@
 
 __author__ = "TEAM BETA"
 
-import sys 
+import sys, os
 
-sys.path.insert(0, '../project')
+sys.path.append(os.getcwd())
 
 
 from application import *
@@ -135,6 +135,7 @@ def basic_info():
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
+    
 
 
 

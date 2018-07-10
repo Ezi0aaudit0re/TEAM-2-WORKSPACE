@@ -4,6 +4,7 @@
 """
 __author__ = "TEAM BETA"
 
+
 from application import db
 from database.models import *
 from database.schemas import *
@@ -32,7 +33,7 @@ class UserDB:
 
             # check if user already exists
             if database_helper.get_data(self.table, {self.table.email_id: kwargs["email_id"]}) or database_helper.get_data(self.table, {self.table.user_name: kwargs["user_name"]}):
-                return {"return_code": 403, "message": "User already exists"}
+                return {"code": 403, "message": "User already exists"}
 
             # hash the password to create a layer of security
             # using shah512 to hash
@@ -43,7 +44,7 @@ class UserDB:
 
             db.session.add(user) # add in the queue
             db.session.commit() # commit to the database
-            return {"return_code": 200, "message": "User successfully created. Please login to view your dashboard"}
+            return {"code": 200, "message": "User successfully created. Please login to view your dashboard"}
             
 
         except Exception as e:
@@ -63,10 +64,12 @@ class UserDB:
             user = database_helper.get_data(self.table, {self.table.user_name: data['emailUsername'], self.table.password: hashed_password})
 
 
+
             if user == None:
 
+
                 user = database_helper.get_data(self.table,\
-                                            {self.table.email_id: data['email_username'], self.table.password: hashed_password})
+                                            {self.table.email_id: data['emailUsername'], self.table.password: hashed_password})
 
 
             return user
@@ -87,6 +90,7 @@ class UserDB:
             session['user'] = data.json()
             return jsonify({"code": 200, "message": "Success", "data": data.json()})
 
+    
 
 
 

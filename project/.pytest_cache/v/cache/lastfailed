@@ -1,0 +1,4 @@
+{
+  "tests/test_database_wrapper.py::test_empty_db": true,
+  "tests/test_database_wrapper.py::test_login_logout": true
+}
