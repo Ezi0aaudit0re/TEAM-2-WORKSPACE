@@ -184,13 +184,15 @@ class IssueDB:
     """
         This method gets all the issues associated with a user
         :param: user_id -> THe id of the user
-        :return: all the information about the issue
+        :return: all issues assigned to user: subject, priority, project_id, status, created_by_user_id, created_at, updated_at
     """
-    def get_projects(self, user_id):
-
-        data = database_helper.get_data(self.table, {self.table.admin_id:user_id})
-
-        if data is None:
-            return jsonify({"code": 404, "message": "User is not the admin of any project"})
-        else:
+    def get_user_issues(self, user_id):
+        try:
+            #data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id}, False)
+            data = db.session.query(self.table.subject, self.table.priority, self.table.project_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
             return jsonify({"code": 200, "message": "success", "data": data})
+        except Exception as e:
+            print("error getting user issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error getting user issues"})

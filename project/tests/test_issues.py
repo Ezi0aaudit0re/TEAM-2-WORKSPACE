@@ -16,11 +16,11 @@ from flask import json
 """
     This unit test tests creation of a new issue
 """
-def test_create_new_issue(test_client,db, project_id, user_id):
+def test_create_new_issue(test_client, project_id, user_id):
     response = IssueDB().create_issue({"subject":"Test issue 1", "description":"This is a test issue for unit tests",\
     "projects_id":project_id, "created_by_user_id":user_id, "assigned_to_user_id":user_id,})
     assert response.status_code == 200
 
-def test_get_user_issues(test_client, db, user_id):
+def test_get_user_issues(test_client, user_id):
     response = IssueDB().get_user_issues(user_id)
     assert response.status_code == 200
