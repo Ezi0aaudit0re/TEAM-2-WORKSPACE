@@ -110,27 +110,27 @@ class Issue(Base):
     created_by_user = relationship('User', primaryjoin='Issue.created_by_user_id == User.id')
     projects = relationship('Project')
 
-        def __init__(self, **kwargs):
-            current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-            self.subject = kwargs["subject"]
-            self.description = kwargs["description"]
-            self.projects_id = kwargs["projects_id"]
-            self.created_by_user_id = kwargs["created_by_user_id"]
-            self.assigned_to_user_id = kwargs["assigned_to_user_id"]
-            self.created_at = current_time
-            self.updated_at = current_time
+        self.subject = kwargs["subject"]
+        self.description = kwargs["description"]
+        self.projects_id = kwargs["projects_id"]
+        self.created_by_user_id = kwargs["created_by_user_id"]
+        self.assigned_to_user_id = kwargs["assigned_to_user_id"]
+        self.created_at = current_time
+        self.updated_at = current_time
 
-        def json(self):
-            return {'id': self.id, \
-                   'subject': self.subject,\
-                   'description': self.description,\
-                   'priority': self.priority,\
-                   'projects_id': self.projects_id,\
-                   'created_by_user_id': self.created_by_user_id,\
-                   'assigned_to_user_id': self.assigned_to_user_id,\
-                   'created_at': self.created_at, \
-                   'updated_at': self.updated_at }
+    def json(self):
+        return {'id': self.id, \
+                 'subject': self.subject,\
+                 'description': self.description,\
+                 'priority': self.priority,\
+                 'projects_id': self.projects_id,\
+                 'created_by_user_id': self.created_by_user_id,\
+                 'assigned_to_user_id': self.assigned_to_user_id,\
+                 'created_at': self.created_at, \
+                 'updated_at': self.updated_at }
 
 
 class Message(Base):

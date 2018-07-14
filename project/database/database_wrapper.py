@@ -164,33 +164,27 @@ class IssueDB:
     """
     def create_issue(self, kwargs):
         try:
-            # check if the prorject by the same id created
-            instance = database_helper.get_data(self.table, {self.table.name: kwargs["name"], self.table.admin_id: kwargs["admin_id"]})
 
-            if instance:
-                return jsonify({"code": 403, "message": "Project name already exists by user"})
+            issue = self.table(name=kwargs["subject"], description=kwargs["description"], projects_id=kwargs["projects_id"], created_by_user_id=kwargs["created_by_user_id"],\
+            assigned_to_user_id=kwargs["assigned_to_user_id"])
 
-
-
-
-            project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
-
-            db.session.add(project) # add in the queue
+            db.session.add(issue) # add in the queue
             db.session.commit() # commit to the database
 
-            return jsonify({"code": 200, "message": "Successfully created user"})
+            return jsonify({"code": 200, "message": "Successfully created issue"})
 
         except Exception as e:
-            print("error occured when creating a project")
+            print("error occured when creating a issue")
+            db.session.rollback()
             print(str(e))
             return jsonify({"code": 500, "message": "Error creating project"})
 
 
 
     """
-        This method gets all the projects associated with a user
+        This method gets all the issues associated with a user
         :param: user_id -> THe id of the user
-        :return: all the information about the projects
+        :return: all the information about the issue
     """
     def get_projects(self, user_id):
 
