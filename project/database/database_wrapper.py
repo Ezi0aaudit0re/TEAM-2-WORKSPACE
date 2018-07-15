@@ -198,14 +198,17 @@ class IssueDB:
     def __init__(self):
         self.table = Issue
     """
-        This method crreates a project in the database
+        This method crreates an issue in the database
         :param: kwargs -> key value arguments of the colums in the table
         :return: True/False
     """
     def create_issue(self, kwargs):
         try:
 
-            issue = self.table(name=kwargs["subject"], description=kwargs["description"], projects_id=kwargs["projects_id"], created_by_user_id=kwargs["created_by_user_id"],\
+            issue = self.table(subject=kwargs["subject"], \
+            description=kwargs["description"], \
+            projects_id=kwargs["projects_id"], \
+            created_by_user_id=kwargs["created_by_user_id"],\
             assigned_to_user_id=kwargs["assigned_to_user_id"])
 
             db.session.add(issue) # add in the queue
@@ -217,7 +220,7 @@ class IssueDB:
             print("error occured when creating a issue")
             db.session.rollback()
             print(str(e))
-            return jsonify({"code": 500, "message": "Error creating project"})
+            return jsonify({"code": 500, "message": "Error creating issue"})
 
 
 
@@ -229,10 +232,25 @@ class IssueDB:
     def get_user_issues(self, user_id):
         try:
             #data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id}, False)
-            data = db.session.query(self.table.subject, self.table.priority, self.table.project_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
+            data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
             return jsonify({"code": 200, "message": "success", "data": data})
         except Exception as e:
             print("error getting user issues")
             db.session.rollback()
             print(str(e))
-            return jsonify({"code": 500, "message": "Error getting user issues"})
+            return jsonify({"code": 500, "message": "Error getting user Issues"})
+    
+    """
+        This method gets all issue details
+        :param: issue_id -> The id of the issue
+        :return: subject, description, priority, project_id, status, assigned_to_user_id, updated_at
+    """
+    def get_issue_details(self, issue_id):
+        try:
+            data = database_helper.get_data(self.table, {self.table.id:issue_id})
+            return jsonify({"code":200, "message":"success", "data":data})
+        except Exception as e:
+            print("error getting user issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message":"Error getting Issue details"})
