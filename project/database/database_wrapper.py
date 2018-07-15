@@ -4,6 +4,7 @@
 """
 __author__ = "TEAM BETA"
 
+
 from application import db
 from database.models import *
 from database.schemas import *
@@ -32,7 +33,7 @@ class UserDB:
 
             # check if user already exists
             if database_helper.get_data(self.table, {self.table.email_id: kwargs["email_id"]}) or database_helper.get_data(self.table, {self.table.user_name: kwargs["user_name"]}):
-                return {"return_code": 403, "message": "User already exists"}
+                return {"code": 403, "message": "User already exists"}
 
             # hash the password to create a layer of security
             # using shah512 to hash
@@ -43,7 +44,7 @@ class UserDB:
 
             db.session.add(user) # add in the queue
             db.session.commit() # commit to the database
-            return {"return_code": 200, "message": "User successfully created. Please login to view your dashboard"}
+            return {"code": 200, "message": "User successfully created. Please login to view your dashboard"}
 
 
         except Exception as e:
@@ -63,10 +64,12 @@ class UserDB:
             user = database_helper.get_data(self.table, {self.table.user_name: data['emailUsername'], self.table.password: hashed_password})
 
 
+
             if user == None:
 
+
                 user = database_helper.get_data(self.table,\
-                                            {self.table.email_id: data['email_username'], self.table.password: hashed_password})
+                                            {self.table.email_id: data['emailUsername'], self.table.password: hashed_password})
 
 
             return user
@@ -86,6 +89,7 @@ class UserDB:
         else:
             session['user'] = data.json()
             return jsonify({"code": 200, "message": "Success", "data": data.json()})
+
 
 
 
@@ -148,6 +152,44 @@ class ProjectDB:
         else:
             return jsonify({"code": 200, "message": "success", "data": data})
 
+######################## Message class ######################
+"""
+    THis class consists of all the methods required for creating message
+"""
+
+class MessageDB:
+
+    def __init__(self):
+        self.table = Message
+
+    """
+        This method gets various messages
+        loops through them and inserts each one into the database
+    """
+    def create_messages(self, data):
+
+        try:
+            messages = list()
+            for message in data:
+                msg = self.table(msg = message['msg'],\
+                                 user_id = message["user_id"],\
+                                 project_id = message["project_id"])
+                db.session.add(msg)
+
+            db.session.commit()
+
+            return jsonify({'code': 200, 'message': "Succeess"})
+
+        except Exception as e:
+
+            print("error occured when storing message in database")
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error storing message in database"})
+
+
+
+
+
 """
     This class deals with all the database methods related to project
 """
@@ -155,8 +197,6 @@ class IssueDB:
 
     def __init__(self):
         self.table = Issue
-
-
     """
         This method crreates a project in the database
         :param: kwargs -> key value arguments of the colums in the table

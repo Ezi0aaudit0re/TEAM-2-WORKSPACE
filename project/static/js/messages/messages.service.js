@@ -9,17 +9,17 @@ angular.module('betaApp')
                         timeout: 3000
                     })
                     .then(function (response) {
-                        return response.data;
+                        return response.data.data;
                     })
                     .catch(function (error) {
                         $log.log("error getting messages: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/data/messages.json", {
+                        return $http.get("../static/js/messages/messages.json", {
                                 cache: true,
                                 timeout: 3000
                             })
                             .then(function (response) {
-                                return response.data;
+                                return response.data.data;
                             })
                     });
             }

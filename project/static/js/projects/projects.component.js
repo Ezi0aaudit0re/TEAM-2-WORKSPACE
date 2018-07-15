@@ -1,10 +1,11 @@
 angular.module('betaApp')
     .component('projects', {
         bindings: {
-            user: '<'
+            user: '<',
         },
 
         template: `
+            Hi {{$ctrl.user.first_name}}!
             <div class="row" ng-init="">
                 <div class="projects col-sm-2 sidebar ">
                     <h1>
@@ -14,6 +15,7 @@ angular.module('betaApp')
                         </button>
                     </h1>
                     <ul>
+                        <span ng-if="$ctrl.user.projects.length==0">Please create a project</span>
                         <li ng-repeat="project in $ctrl.user.projects">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
                                 {{project.name}}: {{project.status}}
@@ -56,7 +58,7 @@ angular.module('betaApp')
 
         controller: function ($scope, $http, $log) {
             // TODO
-            
+
 
             this.showProject = function () {
                 // TODO
@@ -84,21 +86,19 @@ angular.module('betaApp')
                     });
             };
 
-            this.getBasicInfo = function() {
-
-
+            this.getBasicInfo = function () {
 
                 $http.post('/api/getBasicInfo')
-                .then(function (result){
-                    this.user = result.data.data
-                    //this.projects = this.user.projects
-                    console.log(this.projects)
-                })
-                .catch(function (error){
-                    console.log(error)
-                    $log.log("Front end error" + JSON.stringify(error));
-                })
-            
+                    .then(function (result) {
+                        this.user = result.data.data
+                        //this.projects = this.user.projects
+                        console.log(this.projects)
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                        $log.log("Front end error" + JSON.stringify(error));
+                    })
+
             };
         }
     })

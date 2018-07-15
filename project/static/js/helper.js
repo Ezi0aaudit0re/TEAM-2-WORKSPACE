@@ -1,22 +1,12 @@
+function checkIfSuccess(data) {
 
-
-
-
-
-function checkIfSuccess(data){
-
-    if(data["code"] == 200){
+    if (data["code"] == 200) {
         console.log("Success")
         console.log(data["data"])
-    }
-    else{
+    } else {
 
         console.log("Error")
-    
-    
+
+
     }
-
-
-
-
 }

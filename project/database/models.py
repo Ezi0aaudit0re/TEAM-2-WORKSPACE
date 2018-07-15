@@ -9,6 +9,7 @@ from application import db
 Base = declarative_base()
 metadata = Base.metadata
 
+
 t_users_has_projects = Table(
     'users_has_projects', metadata,
     Column('users_id', ForeignKey('users.id'), primary_key=True, nullable=False, index=True),
@@ -140,9 +141,20 @@ class Message(Base):
     msg = Column(String(255), nullable=False)
     users_id = Column(ForeignKey('users.id'), nullable=False, index=True)
     projects_id = Column(ForeignKey('projects.id'), nullable=False, index=True)
+    created_at = Column(DateTime)
+    stored_at = Column(DateTime)
 
     projects = relationship('Project')
     users = relationship('User')
+
+    def __init__(self, **data):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        self.msg = data['msg']
+        self.user_id = data['user_id']
+        self.projects_id = data['project_id']
+        self.created_at = data['created_at']
+        self.stored_at = current_time
 
 
 class Task(Base):

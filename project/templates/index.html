@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <div class="chat-room">
+    <!-- <div class="chat-room">
 
         <ul class="messages">
         </ul>
@@ -98,35 +98,10 @@
 
     
     
-    </div>
+    </div> -->
 
     <script>
-        $(function(){
-            var socket = io.connect('http://127.0.0.1:5000')
-
-            socket.on('connect', function(){
-                socket.send('user has connected')
-            
-            
-            })
-
-            socket.on('message', function(msg){
-                console.log(msg)
-                $(".messages").append('<li>' + msg + '</li>')
-            
-            })
-
-            $('#send').on('click', function(){
-                socket.send($('#message').val())
-                $('#message').val('')
-            
-            
-            })
         
-        
-        
-        })
-    
     
     </script>
 </body>

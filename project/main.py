@@ -5,9 +5,9 @@
 
 __author__ = "TEAM BETA"
 
-import sys 
+import sys, os
 
-sys.path.insert(0, '../project')
+sys.path.append(os.getcwd())
 
 
 from application import *
@@ -106,7 +106,7 @@ def logout():
 url_pre = "/api"
     
 
-# rouute to create a new project
+# route to create a new project
 @app.route(url_pre + '/project/new', methods=["POST"])
 @login_required
 def create_project():
@@ -123,7 +123,8 @@ def create_project():
 
 
 
-
+# DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
+# or projects/1 or /2 via URLto bypass
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
 def basic_info():
@@ -134,11 +135,26 @@ def basic_info():
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
+    
 
 
 
     return result
 
+@app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
+#@login_required
+def store_message():
+
+    #data = request.get_json()
+    json_data = [{'user_id': session['user_id'], 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
+                
+                 {'user_id': session['user_id'], 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
+
+    result = database_wrapper.MessageDB().create_messages(json_data)
+
+
+    return result
+    
 
 
 
