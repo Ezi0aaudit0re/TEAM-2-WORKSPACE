@@ -182,6 +182,17 @@ class ProjectDBTest(BaseClass):
         self.assertGreaterEqual(len(response['data']['projects']), 1, 'Problem retrieving project'  )
 
 
+    """
+        Test if user is getting added to the project
+    """
+    def test_add_member(self):
+
+        pass
+
+
+
+
+
 
 
 

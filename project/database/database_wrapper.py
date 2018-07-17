@@ -82,6 +82,11 @@ class UserDB:
             return False
 
 
+
+    """
+        This method gets the basic user data
+        Including the projects that the user has created
+    """
     def get_user_data(self, user_id):
         data = database_helper.get_data(self.table, {self.table.id: user_id})
         if data is None:
@@ -123,11 +128,21 @@ class ProjectDB:
 
 
 
+            user = database_helper.get_data(User, {User.id: session['user_id']} )
 
             project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
 
+            
+
             db.session.add(project) # add in the queue
             db.session.commit() # commit to the database
+
+
+            # this will update the many to many table 
+            # this happens through the backref 'user' in Project model 
+            project.users.append(user)
+
+            db.session.commit()
 
             return jsonify({"code": 200, "message": "Successfully created user"})
 
@@ -135,6 +150,35 @@ class ProjectDB:
             print("error occured when creating a project")
             print(str(e))
             return jsonify({"code": 500, "message": "Error creating project"})
+
+
+    """
+        This method is used to add members to the project
+    """
+    def add_members(self, kwargs):
+
+
+        try:
+            project = db.session.query(self.table).filter((self.table.id == kwargs["project_id"])).first()
+
+            if project:
+                user = db.session.query(User).filter((User.email_id == kwargs["email"])).first()
+                if user:
+                    project.users.append(user)
+                    # commit to the databse
+                    db.session.commit()
+                    return jsonify({'code': 200, 'message': "User: {}, added as member".format(user.first_name + " " + user.last_name)})
+                else:
+                    return jsonify({'code': 403, 'message': 'User doesnot exist'})
+            else:
+                    return jsonify({'code': 403, 'message': 'Project doesnot exist'})
+
+
+
+
+        except Exception as e:
+            print(str(e))
+            return jsonify({"code": 500, "message": "Internal Server Error"})
 
 
 

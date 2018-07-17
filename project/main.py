@@ -142,7 +142,7 @@ def basic_info():
     return result
 
 @app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
-#@login_required
+@login_required
 def store_message():
 
     #data = request.get_json()
@@ -155,6 +155,17 @@ def store_message():
 
     return result
     
+
+@app.route(url_pre + '/addMember', methods=["POST"])
+#@login_required
+def add_member():
+
+    #data = request.get_json()
+    json_data = {'email': "test3@test.com", 'project_id': 33}
+    result = database_wrapper.ProjectDB().add_members(json_data)
+
+    return result
+
 
 
 
