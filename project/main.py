@@ -17,6 +17,7 @@ from database.models import *
 from database.schemas import *
  # login authentication extension
 from flask_login import login_user, login_required, logout_user
+from flask import json
 
 
 @app.route('/') # home page
@@ -135,10 +136,7 @@ def basic_info():
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
-    
-
-
-
+    print(json.loads(result.data))
     return result
 
 @app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
@@ -155,8 +153,24 @@ def store_message():
 
     return result
     
+@app.route(url_pre + '/issue/new', methods=["POST", "GET"])
+def create_issue():
+    if request.method == "POST":
+        data = request.get_json()["issue"]
+        json_data = {"subject":data["subject"], \
+                    "description":data["description"], \
+                    "projects_id":data["projects_id"], \
+                    "created_by_user_id":session["user_id"], \
+                    "assigned_to_user_id":data["assigned_to_user_id"]}
+        result = database_wrapper.IssueDB().create_issue(json_data)
+    return result
 
-
+@app.route(url_pre + '/getProjectIssues', methods=['POST', 'GET'])
+def get_project_issues():
+    if request.method == "GET":
+        user_id = session["user_id"]
+        result = database_wrapper.IssueDB().get_user_issues(user_id)
+    return result
 
 
 
