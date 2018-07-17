@@ -117,6 +117,7 @@ class UserDBTest(BaseClass):
 
 
 
+
     def tearDown(self):
         super().tearDown()
 
@@ -166,6 +167,19 @@ class ProjectDBTest(BaseClass):
         from main import db
         db.session.query(Project).filter((Project.name == self.new_project['name'])).delete()
         db.session.commit()
+
+    """
+        This tests if the get basic info call gets projects also 
+    """
+    def test_get_basic_info_has_projects(self):
+        self.test_create_new_project()
+
+        # make the request
+        response = super().make_request('/api/getBasicInfo')
+
+
+        #check if we get projects also
+        self.assertGreaterEqual(len(response['data']['projects']), 1, 'Problem retrieving project'  )
 
 
 
