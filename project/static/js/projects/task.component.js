@@ -6,7 +6,10 @@ angular.module('betaApp')
 
         template: `
         <div class="col-sm-4">
-            <h4>Task</h4>
+            <h4>
+                Task
+                <button class="btn btn-primary" ui-sref="projects.project.tasks.task.edit">Edit</button>
+            </h4>
             <ul>
                 <li>
                     <div id={{$ctrl.task.id}}>
@@ -42,9 +45,10 @@ angular.module('betaApp')
         
         `,
 
-        controller: function ($stateParams, $log) {
-            // TODO
-
-            $log.log("taskId: " + $stateParams.taskId);
-        }
-    })
+        controller: ['$scope', '$stateParams', '$state', function (
+            $scope, $stateParams, $state) {
+            $scope.edit = function () {
+                $state.go('.edit', $stateParams);
+            };
+        }]
+    });

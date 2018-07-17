@@ -90,15 +90,15 @@ angular.module('betaApp')
 
                 $http.post('/api/getBasicInfo')
                     .then(function (result) {
-                        this.user = result.data.data
+                        this.user = result.data.data;
                         //this.projects = this.user.projects
-                        console.log(this.projects)
+                        console.log(this.projects);
                     })
                     .catch(function (error) {
-                        console.log(error)
+                        console.log(error);
                         $log.log("Front end error" + JSON.stringify(error));
-                    })
+                    });
 
             };
         }
-    })
+    });

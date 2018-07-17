@@ -12,7 +12,7 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     component: 'projects',
                     resolve: {
                         projects: function (ProjectsService) {
-                            return ProjectsService.getBasicInfo();
+                            return ProjectsService.getProjects();
                         },
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
@@ -26,10 +26,41 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/{projectId}',
                     component: 'project',
                     resolve: {
-                        project: function (user, $transition$) {
-                            return user.projects.find(function (project) {
+                        // project: function (user, $transition$) {
+                        //     return user.projects.find(function (project) {
+                        //         return project.id === $transition$.params().projectId;
+                        //     });
+                        // }
+                        project: function (projects, $transition$) {
+                            return projects.find(function (project) {
                                 return project.id === $transition$.params().projectId;
                             });
+                        }
+                    }
+                })
+                .state({
+                    name: 'projects.project.edit',
+                    views: {
+                        '@projects': {
+                            templateUrl: 'static/js/projects/projects.project.edit.html',
+                            resolve: {
+
+                                project: function (projects, $transition$) {
+                                    return projects.find(function (project) {
+                                        return project.id === $transition$.params().projectId;
+                                    });
+                                }
+                            },
+                            controller: ['$scope', '$stateParams', '$state',
+
+                                function ($scope, $stateParams, $state) {
+                                    // console.log(JSON.stringify(project));
+                                    $scope.done = function () {
+
+                                        $state.go('^', $stateParams);
+                                    };
+                                }
+                            ]
                         }
                     }
                 })
@@ -54,6 +85,22 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                             return tasks.find(function (task) {
                                 return task.id === $transition$.params().taskId;
                             });
+                        }
+                    }
+                })
+                .state({
+                    name: 'projects.project.tasks.task.edit',
+                    views: {
+                        '@tasks': {
+                            templateUrl: 'static/js/projects/projects.project.tasks.task.edit.html',
+                            controller: ['$scope', '$stateParams', '$state', 'task',
+                                function ($scope, $stateParams, $state, task) {
+                                    console.log(task);
+                                    $scope.done = function () {
+                                        $state.go('projects.project.tasks.task', $stateParams);
+                                    };
+                                }
+                            ]
                         }
                     }
                 })
@@ -91,11 +138,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                             });
                         }
                     }
-                })
+                });
             $urlRouterProvider.otherwise('/projects');
         }
 
     ])
     .factory('socket', function (socketFactory) {
-        return socketFactory()
-    })
+        return socketFactory();
+    });

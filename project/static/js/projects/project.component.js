@@ -6,7 +6,11 @@ angular.module('betaApp')
 
         template: `
             <div class="col-sm-2">
-                <h2>Project</h2>
+                <h2>
+                    Project
+                    <button class="btn btn-primary" ng-click="edit()">Edit</button>
+                </h2>
+                
                 <div>
                     Name: {{$ctrl.project.name}}
                 </div>
@@ -26,8 +30,6 @@ angular.module('betaApp')
                     <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
                 </div>
 
-                
-
             </div>
             
             <ui-view>
@@ -37,5 +39,11 @@ angular.module('betaApp')
             </ui-view>
             
             
-            `
-    })
+            `,
+        controller: ['$scope', '$stateParams', '$state', function (
+            $scope, $stateParams, $state) {
+            $scope.edit = function () {
+                $state.go('.edit', $stateParams);
+            };
+        }]
+    });
