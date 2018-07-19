@@ -56,6 +56,8 @@ angular.module('betaApp')
 
             socket.on('message', function (msg) {
                 $log.log(msg)
+                // notification
+                notifyMe(msg, "Test User")
                 // $("#chatwindow").append('<li>' + msg + '</li>')
                 $log.log($scope.$ctrl.messages)
                 $scope.$ctrl.messages.push({
