@@ -229,6 +229,71 @@ class MessageDB:
             print("error occured when storing message in database")
             print(str(e))
             return jsonify({"code": 500, "message": "Error storing message in database"})
+
+
+
+
+######################## Task class ######################
+"""
+    THis class consists of all the methods required for Tasks
+"""
+
+class TaskDB:
+
+    def __init__(self):
+        self.table = Task
+
+
+    """
+        This method deals with creating a task
+        Makes sure that the user trying to create the task
+        is a part of the project
+    """
+    def create_task(self, kwargs):
+
+        try:
+
+            # check if user is a part of the project
+            project = database_helper.get_data(Project, {Project.id: kwargs['project_id']})
+
+            if project:
+                ids = [ user.id for user in project.users] 
+                if kwargs['assigned_by_user_id'] not in ids:
+                    return jsonify({'code': 403, 'message': 'User is not a part of the project'})
+
+                # create the task
+                print(kwargs)
+                task = self.table(name=kwargs['name'],\
+                                  description=kwargs['description'],\
+                                  priority=kwargs['priority'],\
+                                  due_date=kwargs['due_date'],\
+                                  assigned_to_user_id=kwargs['assigned_to_user_id'],\
+                                  assigned_by_user_id=kwargs['assigned_by_user_id'],\
+                                  projects_id=kwargs['project_id'],\
+                                  status=kwargs['status']
+                                 )
+
+                db.session.add(task)
+                db.session.commit()
+
+                return jsonify({'code': 200, 'message': 'Task successfully created'})
+
+
+
+
+            else:
+                return jsonify({'code': 404, 'message': 'Project with the specified ID doesenot exist'})
+
+        except Exception as e:
+            print("Error occured when creating a task in databae_wrapper")
+            print(str(e))
+            return jsonify({'code': 500, 'message': 'Internal Server eror'})
+
+
+
+
+
+
             
 
 
