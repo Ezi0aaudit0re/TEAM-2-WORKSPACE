@@ -304,19 +304,45 @@ class TaskDB:
 
 
     """
-        This method gets all the tasks assigned to a user
+        This method gets all the tasks assigned to a user [DEFAULT]
+        gets tasks assigned in a project
+        gets tasks assigned to other users
         :pararm: user_id -> The id of the user 
     """
-    def get_assigned_task(self, user_id):
+    def get_assigned_task(self, id, colum_as_key=None):
+
+        if colum_as_key is None:
+            colum_as_key = self.table.assigned_to_user_id
 
         try:
-            task = database_helper.get_data(self.table, {self.table.assigned_to_user_id: user_id})
+            task = database_helper.get_data(self.table, {colum_as_key: id})
 
-            return database_helper.check_exists_and_return_json(task, 'There are no tasks for the user')
+            return database_helper.check_exists_and_return_json(task, 'There are no tasks')
 
         except Exception as e:
             msg = "Error occured when retrieving users in databae_wrapper"
             return database_helper.exception(msg, e)
+    
+
+
+    def get_task_by_project(self, project_id):
+
+        # call get_assigned_task method with self.table.project_id as param to colum as key
+        return self.get_assigned_task(project_id, self.table.projects_id)
+
+
+
+    """
+        Get tasks that you have assigned
+    """
+    def get_task_assigned_by_user(self, user_id):
+
+        # call get_assigned_task method with self.table.assigned_by_user_id as param to colum as key
+        return self.get_assigned_task(user_id, self.table.assigned_by_user_id)
+
+    
+
+
 
 
 

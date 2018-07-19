@@ -169,6 +169,8 @@ def add_member():
 
 
 
+####################### Task Routes ########################
+
 @app.route(url_pre + '/newTask', methods=["POST"])
 @login_required
 def add_task():
@@ -190,13 +192,32 @@ def get_task():
     return database_wrapper.TaskDB().get_task(id)
 
 
-@app.route(url_pre + '/getAssignedTasks', methods=['POST'])
-#@login_required
+@app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])
+@login_required
 def get_assigned_task():
     # this method gets all the task assigned to a user
-    user_id = 19
+    user_id = session['user_id']
 
     return database_wrapper.TaskDB().get_assigned_task(user_id)
+
+
+@app.route(url_pre + '/Task/Project', methods=['POST'])
+@login_required
+def get_assigned_task_by_project():
+    # this method gets all the task assigned to a user
+    project_id = 17
+
+    return database_wrapper.TaskDB().get_task_by_project(project_id)
+
+
+@app.route(url_pre + '/Task/UserAssigned', methods=['POST'])
+@login_required
+def get_assigned_task_by_user():
+    # this method gets all the task assigned to a user
+    user_id = session['user_id']
+
+    return database_wrapper.TaskDB().get_task_assigned_by_user(user_id)
+
 
 
 
