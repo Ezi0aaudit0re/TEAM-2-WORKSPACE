@@ -169,8 +169,8 @@ def add_member():
 
 
 
-@app.route(url_pre + '/newTask', methods=["POST", "GET"])
-#@login_required
+@app.route(url_pre + '/newTask', methods=["POST"])
+@login_required
 def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -180,6 +180,23 @@ def add_task():
                  'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': 21, 'status': 1, 'project_id': 17 }
 
     return database_wrapper.TaskDB().create_task(json_data)
+
+
+@app.route(url_pre + '/getTask', methods=['POST'])
+@login_required
+def get_task():
+    id = 1
+
+    return database_wrapper.TaskDB().get_task(id)
+
+
+@app.route(url_pre + '/getAssignedTasks', methods=['POST'])
+#@login_required
+def get_assigned_task():
+    # this method gets all the task assigned to a user
+    user_id = 19
+
+    return database_wrapper.TaskDB().get_assigned_task(user_id)
 
 
 

@@ -250,9 +250,7 @@ class TaskDB:
         is a part of the project
     """
     def create_task(self, kwargs):
-
         try:
-
             # check if user is a part of the project
             project = database_helper.get_data(Project, {Project.id: kwargs['project_id']})
 
@@ -262,7 +260,6 @@ class TaskDB:
                     return jsonify({'code': 403, 'message': 'User is not a part of the project'})
 
                 # create the task
-                print(kwargs)
                 task = self.table(name=kwargs['name'],\
                                   description=kwargs['description'],\
                                   priority=kwargs['priority'],\
@@ -279,8 +276,6 @@ class TaskDB:
                 return jsonify({'code': 200, 'message': 'Task successfully created'})
 
 
-
-
             else:
                 return jsonify({'code': 404, 'message': 'Project with the specified ID doesenot exist'})
 
@@ -288,6 +283,41 @@ class TaskDB:
             print("Error occured when creating a task in databae_wrapper")
             print(str(e))
             return jsonify({'code': 500, 'message': 'Internal Server eror'})
+
+
+    """
+        This method is used to get information about the task based on the id    
+    """
+    def get_task(self, id):
+        try:
+
+            task = database_helper.get_data(self.table, {self.table.id: id})
+            
+            if task:
+                return jsonify({'code': 200, 'message': 'Success', 'data': task.json()})
+            else:
+                return jsonify({'code': 404, 'message': 'Task with the particular ID does not exist'})
+        except Exception as e:
+            print("Error occured when retrieving a task in databae_wrapper")
+            print(str(e))
+            return jsonify({'code': 500, 'message': 'Internal Server eror'})
+
+
+    """
+        This method gets all the tasks assigned to a user
+        :pararm: user_id -> The id of the user 
+    """
+    def get_assigned_task(self, user_id):
+
+        try:
+            task = database_helper.get_data(self.table, {self.table.assigned_to_user_id: user_id})
+
+            return database_helper.check_exists_and_return_json(task, 'There are no tasks for the user')
+
+        except Exception as e:
+            msg = "Error occured when retrieving users in databae_wrapper"
+            return database_helper.exception(msg, e)
+
 
 
 
