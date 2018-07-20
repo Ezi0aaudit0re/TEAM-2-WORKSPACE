@@ -217,7 +217,9 @@ class MessageDB:
             for message in data:
                 msg = self.table(msg = message['msg'],\
                                  user_id = message["user_id"],\
-                                 project_id = message["project_id"])
+                                 project_id = message["project_id"],\
+                                 created_at = message["created_at"]
+                                )
                 db.session.add(msg)
 
             db.session.commit()
@@ -251,9 +253,10 @@ class TaskDB:
     """
     def create_task(self, kwargs):
         try:
-            # check if user is a part of the project
+            # get the project info based on the project id
             project = database_helper.get_data(Project, {Project.id: kwargs['project_id']})
 
+            # check if user is a part of the project
             if project:
                 ids = [ user.id for user in project.users] 
                 if kwargs['assigned_by_user_id'] not in ids:

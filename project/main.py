@@ -137,24 +137,25 @@ def basic_info():
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
     
-
-
-
     return result
 
-@app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
-@login_required
+
+
+@app.route(url_pre + '/storeMessage', methods=["POST"])
+#@login_required
 def store_message():
 
     #data = request.get_json()
-    json_data = [{'user_id': session['user_id'], 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
+    json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
-                 {'user_id': session['user_id'], 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
+                 {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
 
     result = database_wrapper.MessageDB().create_messages(json_data)
 
 
     return result
+
+
     
 
 @app.route(url_pre + '/addMember', methods=["POST"])

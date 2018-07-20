@@ -129,7 +129,7 @@ class Message(Base):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
         self.msg = data['msg']
-        self.user_id = data['user_id']
+        self.users_id = data['user_id']
         self.projects_id = data['project_id']
         self.created_at = data['created_at']
         self.stored_at = current_time
