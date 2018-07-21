@@ -117,6 +117,7 @@ class UserDBTest(BaseClass):
 
 
 
+
     def tearDown(self):
         super().tearDown()
 
@@ -160,12 +161,58 @@ class ProjectDBTest(BaseClass):
         pass
 
 
+
+    """
+        This tests if the get basic info call gets projects also 
+    """
+    def test_get_basic_info_has_projects(self):
+        self.test_create_new_project()
+
+        # make the request
+        response = super().make_request('/api/getBasicInfo')
+
+
+        #check if we get projects also
+        self.assertGreaterEqual(len(response['data']['projects']), 1, 'Problem retrieving project'  )
+
+
+    """
+        Test if user is getting added to the project
+    """
+    def test_add_member(self):
+        # get first user from the database 
+
+        pass
+
+        self.new_user= {"first_name": "Add to",\
+                        "last_name": "Project",\
+                        "user_name": "add_to_test", \
+                        "password": "pass", \
+                        "email_id": "addtoproject@test.com"}
+
+        super().create_user()
+
+        # get project id 
+
+
+        params = {'email': self.new_user["email_id"], 'project_id': 13 } 
+
+        super().make_request('/api/addMember', params)
+        
+        # assign that user also to the project created 
+        # finally delete that user from the project TODO
+
+
+
     def tearDown(self):
         super().tearDown()
         from database.models import Project
         from main import db
         db.session.query(Project).filter((Project.name == self.new_project['name'])).delete()
         db.session.commit()
+
+
+
 
 
 

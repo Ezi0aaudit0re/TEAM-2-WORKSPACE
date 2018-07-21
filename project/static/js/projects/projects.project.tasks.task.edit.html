@@ -1,0 +1,45 @@
+<div class="col-sm-4">
+    <h4>
+        Task
+        <button class="btn btn-success" ng-click="done()">Done</button>
+    </h4>
+    <ul>
+        <li>
+            <div>
+                <div>
+                    Name: {{$ctrl.projects.project.tasks.task.name}}
+                    <input type="text" ng-model="$ctrl.task.name" />
+                </div>
+                <div>
+                    Description:
+                    <input type="text" ng-model="$ctrl.task.description" />
+                </div>
+                <div>
+                    Priority:
+                    <input type="text" ng-model="$ctrl.task.priority" />
+                </div>
+                <div>
+                    Status:
+                    <input type="text" ng-model="$ctrl.task.status" />
+                </div>
+                <div>
+                    Created At:
+                    <input type="text" ng-model="$ctrl.task.created_at" />
+                </div>
+                <div>
+                    Updated At:
+                    <input type="text" ng-model="$ctrl.task.updated_at" />
+                </div>
+                <div>
+                    Assigned To User:
+                    <input type="text" ng-model="$ctrl.task.assigned_to_user" />
+                </div>
+                <div>
+                    Assigned By User:
+                    <input type="text" ng-model="$ctrl.task.assigned_by_user" />
+                </div>
+            </div>
+        </li>
+    </ul>
+    <button class="btn btn-secondary" ui-sref="projects.project.tasks">Close Task</button>
+</div>

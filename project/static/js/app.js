@@ -1,4 +1,7 @@
-angular.module('betaApp', ['ui.router', 'btford.socket-io'])
+angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
+
+    .constant('loc', 'http://127.0.0.1:5000')
+    // .constant('loc', 'http://benongaruka.pythonanywhere.com')
 
     // configure the routes
     .config([
@@ -12,24 +15,24 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     component: 'projects',
                     resolve: {
                         projects: function (ProjectsService) {
-                            return ProjectsService.getBasicInfo();
+                            return ProjectsService.getProjects();
                         },
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
                         }
-
                     }
                 })
                 .state({
                     // route for the project management
                     name: 'projects.project',
-                    url: '/{projectId}',
+                    url: '/:projectId',
                     component: 'project',
                     resolve: {
-                        project: function (user, $transition$) {
-                            return user.projects.find(function (project) {
-                                return project.id === $transition$.params().projectId;
-                            });
+                        project: function (ProjectsService, $transition$) {
+                            return ProjectsService.getProject($transition$.params().projectId);
+                        },
+                        projectId: function ($transition$) {
+                            return $transition$.params().projectId;
                         }
                     }
                 })
@@ -39,21 +42,37 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (ProjectsService) {
-                            return ProjectsService.getTasks();
+                        tasks: function (ProjectsService, project) {
+                            console.log("p: " + JSON.stringify(project));
+                            return ProjectsService.getTasks(project.projectId);
                         }
                     }
                 })
                 .state({
                     // route for the task management
                     name: 'projects.project.tasks.task',
-                    url: '/{taskId}',
+                    url: '/:taskId',
                     component: 'task',
                     resolve: {
                         task: function (tasks, $transition$) {
                             return tasks.find(function (task) {
                                 return task.id === $transition$.params().taskId;
                             });
+                        }
+                    }
+                })
+                .state({
+                    name: 'projects.project.tasks.task.edit',
+                    views: {
+                        '@tasks': {
+                            templateUrl: 'static/js/projects/projects.project.tasks.task.edit.html',
+                            controller: ['$scope', '$stateParams', '$state',
+                                function ($scope, $stateParams, $state) {
+                                    $scope.done = function () {
+                                        $state.go('^', $stateParams);
+                                    };
+                                }
+                            ]
                         }
                     }
                 })
@@ -91,11 +110,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                             });
                         }
                     }
-                })
+                });
             $urlRouterProvider.otherwise('/projects');
         }
 
     ])
     .factory('socket', function (socketFactory) {
-        return socketFactory()
-    })
+        return socketFactory();
+    });
