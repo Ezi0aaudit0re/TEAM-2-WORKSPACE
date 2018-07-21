@@ -23,7 +23,7 @@ ul {
 
 .scroll {
   background: white;
-  display: block;
-  height: 768px;
+  /* display: block; */
+  height: 384px;
   overflow: scroll
 }

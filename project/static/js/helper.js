@@ -1,11 +1,11 @@
 function checkIfSuccess(data) {
 
-    if (data.code == 200) {
-        console.log("Success");
-        console.log(data.data);
-    } else {
-        console.log("Error");
-    }
+  if (data.code == 200) {
+    console.log("Success");
+    console.log(data.data);
+  } else {
+    console.log("Error");
+  }
 }
 
 
@@ -20,24 +20,23 @@ document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission();
 });
 
-function notifyMe(msg, user="Test") {
+function notifyMe(msg, user = "Test") {
   if (Notification.permission !== "granted")
     // if user has not allowed notification 
-    // ask perrmission for nitification
+    // ask permission for notification
     Notification.requestPermission();
   else {
     var notification = new Notification('Message from ' + user, {
-        // TODO add our website logo
+      // TODO add our website logo
       icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
       body: msg,
     });
 
     notification.onclick = function () {
-        // TODO change link here
+      // TODO change link here
       window.open("http://stackoverflow.com/a/13328397/1269037");
     };
 
   }
 
 }
-        

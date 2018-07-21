@@ -90,7 +90,7 @@ def login():
             return redirect("/")
 
         else:
-            flash("User doesnot exist")
+            flash("User does not exist")
             return redirect("/signup")
 
 
@@ -171,7 +171,7 @@ def add_member():
 
 ####################### Task Routes ########################
 
-@app.route(url_pre + '/newTask', methods=["POST"])
+@app.route(url_pre + '/task/new', methods=["POST"])
 @login_required
 def add_task():
 

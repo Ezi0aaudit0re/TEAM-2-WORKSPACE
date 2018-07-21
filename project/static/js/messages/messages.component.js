@@ -29,7 +29,7 @@ angular.module('betaApp')
         controller: function ($log, $scope, loc) {
 
             $log.log("message controller");
-            $log.log(typeof this.messages);
+            $log.log(typeof $scope.$ctrl.messages);
 
             // socket.forward('someEvent');
             // this.$on('socket:someEvent', function (ev, data) {
@@ -41,24 +41,18 @@ angular.module('betaApp')
                 $('#message').val('');
             };
 
-            // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
-
-            // socket.on('connect', () => {
-            //     // connected
-            // })
-
-
             var socket = io.connect(loc);
 
             socket.on('connect', function () {
                 socket.send('user has connected');
+                $('#chatwindow').scrollTop($('#chatwindow')[0].scrollHeight);
             });
 
             socket.on('message', function (msg) {
-                $log.log(msg)
+                $log.log(msg);
                 // notification
-                notifyMe(msg, "Test User")
-                // $("#chatwindow").append('<li>' + msg + '</li>')
+                notifyMe(msg, "Test User");
+
                 $log.log($scope.$ctrl.messages);
                 $scope.$ctrl.messages.push({
                     "username": "me",

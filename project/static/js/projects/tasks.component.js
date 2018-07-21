@@ -40,6 +40,7 @@ angular.module('betaApp')
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                            <flash-message name="flash-newtask"></flash-message>
                         </div>
                         <div class="modal-body">
                             <form>
@@ -58,29 +59,17 @@ angular.module('betaApp')
             </div>
         `,
 
-        controller: [
-            '$log', '$http',
-            function ($log, $http) {
+        controller: function ($log, $http, ProjectsService) {
+            // TODO
+
+            this.getTasksForUser = function () {
                 // TODO
+            };
 
-                this.getTasksForUser = function () {
-                    // TODO
-                }
+            this.createNewTask = function () {
+                $log.log(this.task);
 
-                this.createNewTask = function () {
-                    $log.log(this.task);
-
-
-                    $http.post('/api/task/new', {
-                            "task": this.task
-                        })
-                        .then(function (results) {
-                            $log.log("Successfully created task: " + JSON.stringify(results));
-                        }, function (error) {
-                            $log.log("error creating task: " + JSON.stringify(error));
-                            this.error = error.statusText;
-                        });
-                }
-            }
-        ]
-    })
+                ProjectsService.postNewTask(this.task);
+            };
+        }
+    });

@@ -37,68 +37,61 @@ angular.module('betaApp')
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                            <flash-message name="flash-newproject"></flash-message>
                         </div>
                         <div class="modal-body">
                             <form>
                                 <label for="inputProjectName" class="sr-only">Project Name</label>
-                                <input type="text" id="inputProjectName" class="form-control" placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
+                                <input type="text" id="inputProjectName" class="form-control" 
+                                    placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
                                 <label for="inputProjectDescription" class="sr-only">Project Description</label>
-                                <input type="text" id="inputProjectDescription" class="form-control" placeholder="Project Description" required autofocus
-                                    ng-model="$ctrl.project.description">
+                                <input type="text" id="inputProjectDescription" class="form-control" 
+                                    placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
+
+                                <span ng-repeat="user in $ctrl.project.users">
+                                    <label for="inputProjectUser" class="sr-only">Project Users</label> 
+                                    <input type="email" id="inputProjectUser" class="form-control" required 
+                                        placeholder="Enter email address of user to add" autofocus 
+                                        ng-model="$ctrl.project.users[$index].email" value='' />
+                                    <button class="btn btn-danger" ng-show="$last" ng-click="$ctrl.removeUserFromProject()">-</button>
+                                </span>
+                                <button type="button" class="btn btn-primary" ng-click="$ctrl.addUserToProject()">Add a user</button>
+                            
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" ng-click="$ctrl.newProject()">Create New Project</button>
+                            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newProject()">Create New Project</button>
                         </div>
                     </div>
                 </div>
             </div>
             `,
 
-        controller: function ($scope, $http, $log) {
+        controller: function ($scope, $http, $log, ProjectsService) {
             // TODO
 
+            this.project = {};
+            this.project.users = [];
 
-            this.showProject = function () {
-                // TODO
+            this.addUserToProject = function () {
+                // push an empty object to create blank field
+                $log.log(this.project.users);
+                this.project.users.push({});
+            };
 
-                $http.get("/api/projects/:id", {
-                        timeout: 3000
-                    })
-                    .then(function (response) {
-                        this.project = response.data;
-                    });
+            this.removeUserFromProject = function () {
+                // remove the last entry
+                this.project.users.splice(this.project.users.length - 1);
             };
 
             this.newProject = function () {
                 // TODO
+
                 $log.log(this.project);
-
-                $http.post('/api/project/new', {
-                        "project": this.project
-                    })
-                    .then(function (results) {
-                        $log.log("Successfully created project: " + JSON.stringify(results));
-                    })
-                    .catch(function (error) {
-                        $log.log("error creating project: " + JSON.stringify(error));
-                    });
-            };
-
-            this.getBasicInfo = function () {
-
-                $http.post('/api/getBasicInfo')
-                    .then(function (result) {
-                        this.user = result.data.data;
-                        //this.projects = this.user.projects
-                        console.log(this.projects);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        $log.log("Front end error" + JSON.stringify(error));
-                    });
+                ProjectsService.postNewProject(this.project);
 
             };
+
         }
     });

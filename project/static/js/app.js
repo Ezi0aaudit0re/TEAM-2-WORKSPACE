@@ -1,4 +1,4 @@
-angular.module('betaApp', ['ui.router', 'btford.socket-io'])
+angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
 
     .constant('loc', 'http://127.0.0.1:5000')
     // .constant('loc', 'http://benongaruka.pythonanywhere.com')
