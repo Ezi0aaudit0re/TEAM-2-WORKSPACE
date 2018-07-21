@@ -18,8 +18,12 @@ socketio = SocketIO(app)
 
 
 # connect to the databse
+<<<<<<< HEAD
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
+=======
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(MYSQL_USER, MYSQL_PASS, MYSQL_SERVER, MYSQL_DBNAME)
+>>>>>>> 13a65244745f6d61dc0804def8a83c044e1789db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

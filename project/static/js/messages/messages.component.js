@@ -26,10 +26,13 @@ angular.module('betaApp')
         </div>
     `,
 
-        controller: function ($log, $scope) {
+        controller: function ($log, $scope, loc) {
 
-            $log.log("message controller")
-            $log.log(typeof this.messages)
+            $log.log("message controller");
+            $log.log(typeof $scope.$ctrl.messages);
+
+            var userName = $scope.$parent.$resolve.user.user_name;
+            $log.log(userName);
 
             // socket.forward('someEvent');
             // this.$on('socket:someEvent', function (ev, data) {
@@ -38,32 +41,27 @@ angular.module('betaApp')
 
             this.createMessage = function () {
                 socket.send($('#message').val());
-                $('#message').val('')
-            }
+                $('#message').val('');
+            };
 
-            // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
-
-            // socket.on('connect', () => {
-            //     // connected
-            // })
-
-
-            var socket = io.connect('http://127.0.0.1:5000')
+            var socket = io.connect(loc);
 
             socket.on('connect', function () {
-                socket.send('user has connected')
-            })
+                socket.send(userName + ' has connected');
+                $('#chatwindow').scrollTop($('#chatwindow')[0].scrollHeight);
+            });
 
             socket.on('message', function (msg) {
-                $log.log(msg)
-                // $("#chatwindow").append('<li>' + msg + '</li>')
-                $log.log($scope.$ctrl.messages)
+                $log.log(msg);
+                // notification
+                notifyMe(msg, userName);
+
+                $log.log($scope.$ctrl.messages);
                 $scope.$ctrl.messages.push({
-                    "username": "me",
+                    "username": userName,
                     "msg": msg
-                })
+                });
 
-            })
-
+            });
         }
-    })
+    });

@@ -12,8 +12,8 @@ metadata = Base.metadata
 
 t_users_has_projects = Table(
     'users_has_projects', metadata,
-    Column('users_id', ForeignKey('users.id'), primary_key=True, nullable=False, index=True),
-    Column('projects_id', ForeignKey('projects.id'), primary_key=True, nullable=False, index=True)
+    Column('users_id', ForeignKey('users.id'), primary_key=True, nullable=False, index=True ),
+    Column('projects_id', ForeignKey('projects.id'), primary_key=True, nullable=False, index=True )
 )
 
 class Project(Base):
@@ -27,7 +27,7 @@ class Project(Base):
     admin_id = Column(String(45), nullable=False)
     status = Column(INTEGER(), nullable=False, server_default=text("'0'"))
 
-    users = relationship('User', secondary='users_has_projects')
+    users = relationship('User', secondary=t_users_has_projects, backref=db.backref('users'))
 
     def __init__(self, **kwargs):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -55,7 +55,7 @@ class User(UserMixin, Base):
     password = Column(String(255), nullable=False)
     email_id = Column(String(255), nullable=False, unique=True)
     privilege = Column(INTEGER(), nullable=False, server_default=text("'0'"))
-    projects = relationship('Project', secondary=t_users_has_projects)
+    projects = relationship('Project', secondary=t_users_has_projects, backref=db.backref('projects'), cascade="delete")
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
@@ -154,6 +154,32 @@ class Task(Base):
     assigned_to_user = relationship('User', primaryjoin='Task.assigned_to_user_id == User.id')
     projects = relationship('Project')
 
+
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+        self.name = kwargs['name']
+        self.description = kwargs['description']
+        self.priority = kwargs['priority']
+        self.created_at = current_time
+        self.updated_at = current_time
+        self.due_date = kwargs['due_date']
+        self.assigned_to_user_id = kwargs['assigned_to_user_id']
+        self.assigned_by_user_id = kwargs['assigned_by_user_id']
+        self.projects_id = kwargs['projects_id']
+        self.status = kwargs['status']
+
+
+    def json(self):
+        return {'id': self.id,\
+                'name': self.name,\
+                'description': self.description,\
+                'priority': self.priority, \
+                'due_date': self.due_date,\
+                'assigned_to_user_id': self.assigned_to_user_id,\
+                'assigned_by_user_id': self.assigned_by_user_id,\
+                'projects_id': self.projects_id,\
+                'status': self.status,\
+               }
 
 
 
