@@ -8,6 +8,7 @@ __email__ = "anagpal4@bu.edu"
 
 from application import db
 from helper import hash_password
+from flask import jsonify
 
 """
     This function gets the id of the colum of the table with two checks
@@ -38,5 +39,22 @@ def get_data(table, kwargs, one=True):
         print(str(e))
         return None
 
+
+def exception(msg, e):
+    print(msg)
+    print(str(e))
+    return jsonify({'code': 500, 'message': 'Internal Server eror'})
+
+
+
+"""
+    This method checks if value is there or is it none
+    It returns json also
+"""
+def check_exists_and_return_json(data, msg):
+    if data:
+        return jsonify({'code': 200, 'message': 'Success', 'data': data.json()})
+    else:
+        return jsonify({'code': 404, 'message': msg})
 
 

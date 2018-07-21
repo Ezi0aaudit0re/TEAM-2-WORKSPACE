@@ -55,7 +55,13 @@ angular.module('betaApp')
             });
 
             socket.on('message', function (msg) {
+<<<<<<< HEAD
                 $log.log(msg);
+=======
+                $log.log(msg)
+                // notification
+                notifyMe(msg, "Test User")
+>>>>>>> b6be9fa742bf80cc190b7062f5a0247ebd87ca10
                 // $("#chatwindow").append('<li>' + msg + '</li>')
                 $log.log($scope.$ctrl.messages);
                 $scope.$ctrl.messages.push({
@@ -65,4 +71,8 @@ angular.module('betaApp')
 
             });
         }
+<<<<<<< HEAD
     });
+=======
+    })
+>>>>>>> b6be9fa742bf80cc190b7062f5a0247ebd87ca10

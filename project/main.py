@@ -6,6 +6,7 @@
 __author__ = "TEAM BETA"
 
 import sys, os
+import time
 
 sys.path.append(os.getcwd())
 
@@ -157,7 +158,7 @@ def store_message():
     
 
 @app.route(url_pre + '/addMember', methods=["POST"])
-#@login_required
+@login_required
 def add_member():
 
     #data = request.get_json()
@@ -166,6 +167,56 @@ def add_member():
 
     return result
 
+
+
+####################### Task Routes ########################
+
+@app.route(url_pre + '/newTask', methods=["POST"])
+@login_required
+def add_task():
+
+    current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+    #data = reequest.get_json()
+    json_data = {'name': 'Task Name', 'description': 'Description', 'priority': 1, \
+                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': 21, 'status': 1, 'project_id': 17 }
+
+    return database_wrapper.TaskDB().create_task(json_data)
+
+
+@app.route(url_pre + '/getTask', methods=['POST'])
+@login_required
+def get_task():
+    id = 1
+
+    return database_wrapper.TaskDB().get_task(id)
+
+
+@app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])
+@login_required
+def get_assigned_task():
+    # this method gets all the task assigned to a user
+    user_id = session['user_id']
+
+    return database_wrapper.TaskDB().get_assigned_task(user_id)
+
+
+@app.route(url_pre + '/Task/Project', methods=['POST'])
+@login_required
+def get_assigned_task_by_project():
+    # this method gets all the task assigned to a user
+    project_id = 17
+
+    return database_wrapper.TaskDB().get_task_by_project(project_id)
+
+
+@app.route(url_pre + '/Task/UserAssigned', methods=['POST'])
+@login_required
+def get_assigned_task_by_user():
+    # this method gets all the task assigned to a user
+    user_id = session['user_id']
+
+    return database_wrapper.TaskDB().get_task_assigned_by_user(user_id)
 
 
 

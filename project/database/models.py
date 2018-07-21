@@ -155,6 +155,32 @@ class Task(Base):
     projects = relationship('Project')
 
 
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+        self.name = kwargs['name']
+        self.description = kwargs['description']
+        self.priority = kwargs['priority']
+        self.created_at = current_time
+        self.updated_at = current_time
+        self.due_date = kwargs['due_date']
+        self.assigned_to_user_id = kwargs['assigned_to_user_id']
+        self.assigned_by_user_id = kwargs['assigned_by_user_id']
+        self.projects_id = kwargs['projects_id']
+        self.status = kwargs['status']
+
+
+    def json(self):
+        return {'id': self.id,\
+                'name': self.name,\
+                'description': self.description,\
+                'priority': self.priority, \
+                'due_date': self.due_date,\
+                'assigned_to_user_id': self.assigned_to_user_id,\
+                'assigned_by_user_id': self.assigned_by_user_id,\
+                'projects_id': self.projects_id,\
+                'status': self.status,\
+               }
+
 
 
 class Comment(Base):
