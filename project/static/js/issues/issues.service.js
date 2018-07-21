@@ -35,7 +35,25 @@ angular.module('betaApp')
                 // .catch(function (error) {
                 //     $log.log(JSON.stringify(error));
                 // });
-            }
-        }
+            },
+
+            postNewIssue: function (issue) {
+                return $http.post('/api/issue/new', {
+                        "issue": this.issue
+                    })
+                    .then(function (results) {
+                        var code = results.data.code;
+                        var msg = results.data.message;
+                        Flash.create('success', msg, 0);
+                        $log.log("Successfully created issue: " + JSON.stringify(results));
+                        return true;
+                    })
+                    .catch(function (error) {
+                        Flash.create('danger', 'There was an issue creating the issue', 0);
+                        $log.log("error creating issue: " + error);
+                        return false;
+                    });
+            },
+        };
         return service;
     })

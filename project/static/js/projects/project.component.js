@@ -7,26 +7,38 @@ angular.module('betaApp')
         template: `
             <div class="col-sm-2">
                 <h2>
-                    Project
-                    <button class="btn btn-primary" ng-click="edit()">Edit</button>
+                    Project 
+                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
+                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
+                    </button>
+                    
                 </h2>
-                
+                <form name="projectForm">
+                    <span>
+                        Name:
+                        <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.name" />
+                    </span>
+                    <div>
+                        Description:
+                        <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.description" />
+                    </div>
+                    <div>
+                        Status:
+                        <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.status" />
+                    </div>
+                    <div ng-show="$ctrl.readonly">
+                        Created Date: 
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.created_date" />
+                    </div>
+                    <div ng-show="$ctrl.readonly">
+                        Update Date: 
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.updated_date" />
+                    </div>
+                </form>
                 <div>
-                    Name: {{$ctrl.project.name}}
-                </div>
-                <div>
-                    Description: {{$ctrl.project.description}}
-                </div>
-                <div>
-                    Status: {{$ctrl.project.status}}
-                </div>
-                <div>
-                    Created Date: {{$ctrl.project.created_date}}
-                </div>
-                <div>
-                    Update Date: {{$ctrl.project.updated_date}}
-                </div>
-                <div>
+                    <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="updateProject()">
+                        Submit Changes
+                    </button>
                     <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
                 </div>
 
@@ -42,8 +54,17 @@ angular.module('betaApp')
             `,
         controller: ['$scope', '$stateParams', '$state', function (
             $scope, $stateParams, $state) {
+
+            this.readonly = true;
+
             $scope.edit = function () {
-                $state.go('.edit', $stateParams);
+                this.readonly = !this.readonly;
+                console.log(readonly);
+                // $state.go('.edit', $stateParams);
             };
+
+            this.updateProject = function () {
+                ProjectsService.updateProject();
+            }
         }]
     });

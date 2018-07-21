@@ -171,7 +171,7 @@ def add_member():
 
 ####################### Task Routes ########################
 
-@app.route(url_pre + '/task/new', methods=["POST"])
+@app.route(url_pre + '/newTask', methods=["POST"])
 @login_required
 def add_task():
 

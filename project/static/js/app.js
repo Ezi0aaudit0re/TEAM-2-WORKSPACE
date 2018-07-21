@@ -20,50 +20,19 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
                         }
-
                     }
                 })
                 .state({
                     // route for the project management
                     name: 'projects.project',
-                    url: '/{projectId}',
+                    url: '/:projectId',
                     component: 'project',
                     resolve: {
-                        // project: function (user, $transition$) {
-                        //     return user.projects.find(function (project) {
-                        //         return project.id === $transition$.params().projectId;
-                        //     });
-                        // }
-                        project: function (projects, $transition$) {
-                            return projects.find(function (project) {
-                                return project.id === $transition$.params().projectId;
-                            });
-                        }
-                    }
-                })
-                .state({
-                    name: 'projects.project.edit',
-                    views: {
-                        '@projects': {
-                            templateUrl: 'static/js/projects/projects.project.edit.html',
-                            resolve: {
-
-                                project: function (projects, $transition$) {
-                                    return projects.find(function (project) {
-                                        return project.id === $transition$.params().projectId;
-                                    });
-                                }
-                            },
-                            controller: ['$scope', '$stateParams', '$state',
-
-                                function ($scope, $stateParams, $state) {
-                                    // console.log(JSON.stringify(project));
-                                    $scope.done = function () {
-
-                                        $state.go('^', $stateParams);
-                                    };
-                                }
-                            ]
+                        project: function (ProjectsService, $transition$) {
+                            return ProjectsService.getProject($transition$.params().projectId);
+                        },
+                        projectId: function ($transition$) {
+                            return $transition$.params().projectId;
                         }
                     }
                 })
@@ -73,15 +42,16 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (ProjectsService) {
-                            return ProjectsService.getTasks();
+                        tasks: function (ProjectsService, project) {
+                            console.log("p: " + JSON.stringify(project));
+                            return ProjectsService.getTasks(project.projectId);
                         }
                     }
                 })
                 .state({
                     // route for the task management
                     name: 'projects.project.tasks.task',
-                    url: '/{taskId}',
+                    url: '/:taskId',
                     component: 'task',
                     resolve: {
                         task: function (tasks, $transition$) {
@@ -96,11 +66,10 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     views: {
                         '@tasks': {
                             templateUrl: 'static/js/projects/projects.project.tasks.task.edit.html',
-                            controller: ['$scope', '$stateParams', '$state', 'task',
-                                function ($scope, $stateParams, $state, task) {
-                                    console.log(task);
+                            controller: ['$scope', '$stateParams', '$state',
+                                function ($scope, $stateParams, $state) {
                                     $scope.done = function () {
-                                        $state.go('projects.project.tasks.task', $stateParams);
+                                        $state.go('^', $stateParams);
                                     };
                                 }
                             ]

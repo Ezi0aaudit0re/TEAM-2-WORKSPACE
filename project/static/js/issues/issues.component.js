@@ -19,7 +19,7 @@ angular.module('betaApp')
                 <ui-view></ui-view>
             </div>
             
-            <form ng-submit="send()">
+            <form ng-submit="$ctrl.postIssue()">
                 <input type="text" ng-model="text" placeholder="...">
                 <input type="submit" value="Send">
             </form>
@@ -32,6 +32,11 @@ angular.module('betaApp')
 
             this.getIssuesForUser = function () {
                 // TODO
+            }
+
+            this.postIssue = function () {
+                // TODO
+                IssueService.postNewIssue();
             }
         }
     })

@@ -50,22 +50,30 @@ angular.module('betaApp')
 
             getProject: function (id) {
 
-                function projectMatchesParam(project) {
-                    return project.id === id;
-                }
-
-                return service.getProjects().then(function (projects) {
-                    return projects.find(projectMatchesParam);
-                });
-                // .catch(function (error) {
-                //     $log.log(JSON.stringify(error));
-                // });
+                return $http.get("api/projects/" + id, {
+                        cache: true,
+                        timeout: 3000
+                    })
+                    .then(function (response) {
+                        return response.data.data.project;
+                    })
+                    .catch(function (error) {
+                        $log.log("error getting project: " + JSON.stringify(error));
+                        // get sample data instead
+                        return $http.get(testProjDataLocation, {
+                                cache: true,
+                                timeout: 3000
+                            })
+                            .then(function (response) {
+                                return response.data.data.projects[1];
+                            });
+                    });
             },
 
 
-            getTasks: function () {
+            getTasks: function (id) {
 
-                return $http.get("/api/projects/?id/tasks", {
+                return $http.get("/api/projects/" + id + "/tasks", {
                         cache: true,
                         timeout: 3000
                     })
@@ -81,7 +89,7 @@ angular.module('betaApp')
                             })
                             .then(function (response) {
                                 $log.log(response.data);
-                                return response.data.data.projects[0].tasks;
+                                return response.data.data.projects[1].tasks;
                             });
                     });
             },
@@ -118,7 +126,7 @@ angular.module('betaApp')
             },
 
             postNewTask: function (task) {
-                return $http.post('/api/task/new', {
+                return $http.post('/api/newTask', {
                         "task": this.task
                     })
                     .then(function (results) {
