@@ -26,10 +26,10 @@ angular.module('betaApp')
         </div>
     `,
 
-        controller: function ($log, $scope) {
+        controller: function ($log, $scope, loc) {
 
-            $log.log("message controller")
-            $log.log(typeof this.messages)
+            $log.log("message controller");
+            $log.log(typeof this.messages);
 
             // socket.forward('someEvent');
             // this.$on('socket:someEvent', function (ev, data) {
@@ -38,8 +38,8 @@ angular.module('betaApp')
 
             this.createMessage = function () {
                 socket.send($('#message').val());
-                $('#message').val('')
-            }
+                $('#message').val('');
+            };
 
             // let socket = io.connect('http://' + document.domain + ':' + location.port + '/')
 
@@ -48,22 +48,21 @@ angular.module('betaApp')
             // })
 
 
-            var socket = io.connect('http://127.0.0.1:5000')
+            var socket = io.connect(loc);
 
             socket.on('connect', function () {
-                socket.send('user has connected')
-            })
+                socket.send('user has connected');
+            });
 
             socket.on('message', function (msg) {
-                $log.log(msg)
+                $log.log(msg);
                 // $("#chatwindow").append('<li>' + msg + '</li>')
-                $log.log($scope.$ctrl.messages)
+                $log.log($scope.$ctrl.messages);
                 $scope.$ctrl.messages.push({
                     "username": "me",
                     "msg": msg
-                })
+                });
 
-            })
-
+            });
         }
-    })
+    });
