@@ -26,7 +26,7 @@ angular.module('betaApp')
         </div>
     `,
 
-        controller: function ($log, $scope, loc) {
+        controller: function ($log, $scope, loc, MessagesService, $state, $interval) {
 
             $log.log("message controller");
             $log.log(typeof $scope.$ctrl.messages);
@@ -51,17 +51,23 @@ angular.module('betaApp')
                 $('#chatwindow').scrollTop($('#chatwindow')[0].scrollHeight);
             });
 
-            socket.on('message', function (msg) {
+            socket.on('message', function (msg, timestamp) {
                 $log.log(msg);
                 // notification
                 notifyMe(msg, userName);
 
                 $log.log($scope.$ctrl.messages);
+                $log.log(this.messages);
+
+                MessagesService.postMessage(msg, timestamp);
+
                 $scope.$ctrl.messages.push({
                     "username": userName,
-                    "msg": msg
+                    "msg": msg,
+                    "timestamp": new Date().toISOString().slice(0, 19).replace('T', ' ')
                 });
 
             });
+            // $interval($state.reload(), 3000);
         }
     });
