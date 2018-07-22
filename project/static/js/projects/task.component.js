@@ -27,6 +27,10 @@ angular.module('betaApp')
                     <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.priority" />
                 </div>
                 <div>
+                    Due Date:
+                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.due_date" />
+                </div>
+                <div>
                     Status:
                     <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.status" />
                 </div>
@@ -48,7 +52,7 @@ angular.module('betaApp')
                 </div>
 
             </form>
-            <button ng-show="taskForm.$dirty" class="btn btn-primary" ng-click="updateTask()">
+            <button ng-show="taskForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateTask()">
                 Submit Changes
             </button>
             <button class="btn btn-secondary" ui-sref="projects.project.tasks">Close Task</button>

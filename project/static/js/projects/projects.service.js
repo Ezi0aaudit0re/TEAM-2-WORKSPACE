@@ -159,11 +159,49 @@ angular.module('betaApp')
 
             updateProject: function () {
                 // TODO
-
+                return $http.post('/api/project/' + this.project.id + '/update', {
+                        "project": {
+                            "id": this.project.id,
+                            "status": this.project.status,
+                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            "users_id": this.project.users_id
+                        }
+                    })
+                    .then(function (results) {
+                        Flash.create('success', 'Project Updated!', 0);
+                        $log.log("Successfully updated project: " + JSON.stringify(results));
+                        return true;
+                    })
+                    .catch(function (error) {
+                        Flash.create('danger', 'There was an issue updating the project', 0);
+                        $log.log("error creating project: " + error);
+                        return false;
+                    });
             },
 
             updateTask: function () {
                 // TODO
+
+                return $http.post('/api/project/' + this.project.id + '/tasks/' + this.task.id + '/update', {
+                        "task": {
+                            "id": this.task.id,
+                            "name": this.project.tasks[taskId].name,
+                            "status": this.project.tasks[taskId].status,
+                            "priority": this.project.tasks[taskId].priority,
+                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            "assigned_to_user": this.project.tasks[taskId].assigned_to_user
+                        }
+                    })
+                    .then(function (results) {
+                        Flash.create('success', 'Task Updated!', 0);
+                        $log.log("Successfully updated task: " + JSON.stringify(results));
+                        return true;
+                    })
+                    .catch(function (error) {
+                        Flash.create('danger', 'There was an issue updating the task', 0);
+                        $log.log("error creating task: " + error);
+                        return false;
+                    });
             },
 
             getTasksForUser: function () {

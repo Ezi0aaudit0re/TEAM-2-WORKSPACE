@@ -124,8 +124,6 @@ def create_project():
 
 
 
-# DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
-# or projects/1 or /2 via URLto bypass
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
 def basic_info():
@@ -177,7 +175,7 @@ def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    #data = reequest.get_json()
+    #data = request.get_json()
     json_data = {'name': 'Task Name', 'description': 'Description', 'priority': 1, \
                  'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': 21, 'status': 1, 'project_id': 17 }
 

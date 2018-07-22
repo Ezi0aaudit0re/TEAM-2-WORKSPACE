@@ -48,7 +48,7 @@ angular.module('betaApp')
                 </div>
 
             </form>
-            <button ng-show="issueForm.$dirty" class="btn btn-primary" ng-click="updateIssue()">
+            <button ng-show="issueForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateIssue()">
                 Submit Changes
             </button>
         </div>

@@ -36,7 +36,7 @@ angular.module('betaApp')
                     </div>
                 </form>
                 <div>
-                    <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="updateProject()">
+                    <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateProject()">
                         Submit Changes
                     </button>
                     <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
@@ -52,7 +52,7 @@ angular.module('betaApp')
             
             
             `,
-        controller: function () {
+        controller: function ($log) {
 
             this.readonly = true;
 
