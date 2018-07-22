@@ -370,6 +370,15 @@ class IssueDB:
     """
     def create_issue(self, kwargs):
         try:
+            #check project exists and user is assigned to that project
+            projects = database_helper.get_data(Project, {Project.id:kwargs["projects_id"]})
+            if projects == None: 
+                return jsonify("code":404, "message":"Project does not exist")
+
+            user_ids = [ user.id for user in project.users] 
+
+            if kwargs["created_by_user_id"] not in user_ids:
+                return jsonify("code":404, "message": "User not assigned to project")
 
             issue = self.table(subject=kwargs["subject"], \
             description=kwargs["description"], \
@@ -391,15 +400,23 @@ class IssueDB:
 
 
     """
-        This method gets all the issues associated with a user
+        This method gets all the issues associated with a user, filtered by created_by_user_id, or assigned_to_user_id
         :param: user_id -> THe id of the user
+        :param: user_type -> (assigned_to_user, created_by)
         :return: all issues assigned to user: subject, priority, project_id, status, created_by_user_id, created_at, updated_at
     """
-    def get_user_issues(self, user_id):
+    def get_user_issues(self, user_id, user_type_filter=None):
         try:
-            #data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id}, False)
-            data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
-            return jsonify({"code": 200, "message": "success", "data": data})
+            if user_type_filter == None:
+                data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id})
+            else:              
+                data = database_helper.get_data(self.table, {user_type_filter:user_id}, False)
+                #data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
+            if data == None:
+                return jsonify({"code": 404, "message": "No issue assigned to user"})
+            else:
+                return jsonify({"code":200, "message": "Successfully retrieved user issues", "data":data})
+            
         except Exception as e:
             print("error getting user issues")
             db.session.rollback()
@@ -414,9 +431,39 @@ class IssueDB:
     def get_issue_details(self, issue_id):
         try:
             data = database_helper.get_data(self.table, {self.table.id:issue_id})
+            if data == None:
+                return jsonify({"code":404, "message":"No issue with given issue id"})
+            else:
+                return jsonify({"code":500, "message":"Successfully retrieved issue details"})
             return jsonify({"code":200, "message":"success", "data":data})
         except Exception as e:
             print("error getting user issues")
             db.session.rollback()
             print(str(e))
             return jsonify({"code":500, "message":"Error getting Issue details"})
+
+    """
+        This method gets all issues in a project. No care for issue status
+        :param: project_id
+        :return: issues
+    """
+
+    def get_project_issues(self, projects_id):
+
+        try:
+
+            #check if project exists
+            project = database_helper.get_data(Project, {Project.id:projects_d})
+
+            if project == None:
+                return jsonify({"code":404, "message":"No project with given id"})
+            
+            data = database_helper.get_data(self.table, {self.table.projects_id:projects_id}, False)
+
+            return jsonify({"code":200, "message":"Successfully retrived issues", "data":data})
+        
+        except Exception as e:
+            print("error getting project issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message": "Error getting project issues"})

@@ -153,18 +153,6 @@ def store_message():
 
 
     return result
-    
-@app.route(url_pre + '/issue/new', methods=["POST", "GET"])
-def create_issue():
-    if request.method == "POST":
-        data = request.get_json()["issue"]
-        json_data = {"subject":data["subject"], \
-                    "description":data["description"], \
-                    "projects_id":data["projects_id"], \
-                    "created_by_user_id":session["user_id"], \
-                    "assigned_to_user_id":data["assigned_to_user_id"]}
-        result = database_wrapper.IssueDB().create_issue(json_data)
-    return result
 
 @app.route(url_pre + '/addMember', methods=["POST"])
 @login_required
@@ -177,7 +165,35 @@ def add_member():
     return result
 
 
+####################### Issue Routes ########################  
 
+@app.route(url_pre + '/issue/new', methods=["POST"])
+@login_required
+def create_issue():
+    data = request.get_json()["issue"]
+    json_data = {"subject":data["subject"], \
+                "description":data["description"], \
+                "projects_id":data["projects_id"], \
+                "created_by_user_id":session["user_id"], \
+                "assigned_to_user_id":data["assigned_to_user_id"]}
+    result = database_wrapper.IssueDB().create_issue(json_data)
+
+    return result
+
+@app.route(url_pre + '/getUserIssues', methods=["GET"])
+@login_required
+def get_user_issues():
+    user_id = session["user_id"]
+    result = database_wrapper.IssueDB().get_user_issues(user_id)
+    
+    return result
+
+@app.route(url_pre + '/getProjectIssues', methods=["GET"])
+def get_project_issues():
+    project_id = request.get_json("project_id")
+    result = database_wrapper.IssueDB().get_project_issue(project_id)
+    return result
+    
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])
