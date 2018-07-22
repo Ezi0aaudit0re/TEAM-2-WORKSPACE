@@ -146,6 +146,15 @@ angular.module('betaApp')
                     });
             },
 
+            updateProject: function () {
+                // TODO
+
+            },
+
+            updateTask: function () {
+                // TODO
+            },
+
             getTasksForUser: function () {
                 // TODO
             }

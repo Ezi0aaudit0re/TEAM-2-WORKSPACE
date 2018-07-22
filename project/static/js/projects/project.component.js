@@ -52,19 +52,16 @@ angular.module('betaApp')
             
             
             `,
-        controller: ['$scope', '$stateParams', '$state', function (
-            $scope, $stateParams, $state) {
+        controller: function () {
 
             this.readonly = true;
 
-            $scope.edit = function () {
+            this.edit = function () {
                 this.readonly = !this.readonly;
-                console.log(readonly);
-                // $state.go('.edit', $stateParams);
             };
 
             this.updateProject = function () {
                 ProjectsService.updateProject();
-            }
-        }]
+            };
+        }
     });
