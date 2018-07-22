@@ -49,7 +49,7 @@ angular.module('betaApp')
             },
 
             getProject: function (id) {
-
+                // called on click of project to get details
                 return $http.get("api/projects/" + id, {
                         cache: true,
                         timeout: 3000
@@ -71,9 +71,9 @@ angular.module('betaApp')
             },
 
 
-            getTasks: function (id) {
-
-                return $http.get("/api/projects/" + id + "/tasks", {
+            getTasks: function (projectId) {
+                // called on click of tasks for a project
+                return $http.get("/api/projects/" + projectId + "/tasks", {
                         cache: true,
                         timeout: 3000
                     })
@@ -94,19 +94,30 @@ angular.module('betaApp')
                     });
             },
 
-            getTask: function (id) {
-                $log.log("id: " + id);
-
-                function taskMatchesParam(task) {
-                    return task.id === id;
-                }
-
-                return service.getTasks().then(function (tasks) {
-                    return tasks.find(taskMatchesParam);
-                });
+            getTask: function (projectId, taskId) {
+                // called on click of task to get details
+                return $http.get("/api/projects/" + projectId + "/tasks/" + taskId, {
+                        cache: true,
+                        timeout: 3000
+                    })
+                    .then(function (response) {
+                        return response.data.data;
+                    })
+                    .catch(function (error) {
+                        $log.log("error getting task: " + JSON.stringify(error));
+                        // get sample data instead
+                        return $http.get(testProjDataLocation, {
+                                cache: true,
+                                timeout: 3000
+                            })
+                            .then(function (response) {
+                                $log.log(response.data);
+                                return response.data.data.projects[1].tasks[taskId];
+                            });
+                    });
             },
 
-            postNewProject: function (proj) {
+            postNewProject: function () {
                 return $http.post('/api/project/new', {
                         "project": this.project
                     })
@@ -125,7 +136,7 @@ angular.module('betaApp')
                     });
             },
 
-            postNewTask: function (task) {
+            postNewTask: function (projectId) {
                 return $http.post('/api/newTask', {
                         "task": this.task
                     })

@@ -14,12 +14,13 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/projects',
                     component: 'projects',
                     resolve: {
-                        projects: function (ProjectsService) {
-                            return ProjectsService.getProjects();
-                        },
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
+                        },
+                        projects: function (ProjectsService) {
+                            return ProjectsService.getProjects();
                         }
+
                     }
                 })
                 .state({
@@ -30,9 +31,6 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     resolve: {
                         project: function (ProjectsService, $transition$) {
                             return ProjectsService.getProject($transition$.params().projectId);
-                        },
-                        projectId: function ($transition$) {
-                            return $transition$.params().projectId;
                         }
                     }
                 })
@@ -42,9 +40,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (ProjectsService, project) {
-                            console.log("p: " + JSON.stringify(project));
-                            return ProjectsService.getTasks(project.projectId);
+                        projectId: function (project) {
+                            return project.id;
+                        },
+                        tasks: function (ProjectsService, projectId) {
+                            return ProjectsService.getTasks(projectId);
                         }
                     }
                 })
@@ -54,10 +54,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/:taskId',
                     component: 'task',
                     resolve: {
-                        task: function (tasks, $transition$) {
-                            return tasks.find(function (task) {
-                                return task.id === $transition$.params().taskId;
-                            });
+                        task: function (ProjectsService, projectId, $transition$) {
+                            return ProjectsService.getTask(projectId, $transition$.params().taskId);
                         }
                     }
                 })
@@ -67,8 +65,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/messages',
                     component: 'messages',
                     resolve: {
-                        messages: function (MessagesService, projectId) {
-                            return MessagesService.getMessages(projectId);
+                        messages: function (MessagesService, project) {
+                            return MessagesService.getMessages(project.id);
                         }
                     }
                 })
@@ -78,6 +76,9 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/issues',
                     component: 'issues',
                     resolve: {
+                        projectId: function (project) {
+                            return project.id;
+                        },
                         issues: function (IssuesService, projectId) {
                             return IssuesService.getIssues(projectId);
                         }
@@ -86,13 +87,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                 .state({
                     // route for the issue tracking
                     name: 'projects.project.issues.issue',
-                    url: '/{issueId}',
+                    url: '/:issueId',
                     component: 'issue',
                     resolve: {
-                        issue: function (issues, $transition$) {
-                            return issues.find(function (issue) {
-                                return issue.id === $transition$.params().issueId;
-                            });
+                        issue: function (IssuesService, projectId, $transition$) {
+                            return IssuesService.getIssue(projectId, $transition$.params().issueId);
                         }
                     }
                 });

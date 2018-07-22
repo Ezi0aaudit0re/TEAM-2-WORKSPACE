@@ -1,9 +1,11 @@
 angular.module('betaApp')
     .service('IssuesService', function ($http, $log, Flash) {
+        var testIssueDataLocation = "../static/js/issues/issues.json";
+
         var service = {
-            getIssues: function (id) {
+            getIssues: function (projectId) {
                 // called on page load to get all project issues
-                return $http.get("/api/projects/" + id + "/issues", {
+                return $http.get("/api/projects/" + projectId + "/issues", {
                         cache: true,
                         timeout: 3000
                     })
@@ -13,7 +15,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting issues: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/issues/issues.json", {
+                        return $http.get(testIssueDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -23,15 +25,27 @@ angular.module('betaApp')
                     });
             },
 
-            getIssue: function (id) {
-
-                function issueMatchesParam(issue) {
-                    return issue.id === id;
-                }
-
-                return service.getIssues().then(function (issues) {
-                    return issues.find(issueMatchesParam);
-                });
+            getIssue: function (projectId, issueId) {
+                // called on click of issue to get details
+                return $http.get("/api/projects/" + projectId + "/issues/" + issueId, {
+                        cache: true,
+                        timeout: 3000
+                    })
+                    .then(function (response) {
+                        return response.data.data;
+                    })
+                    .catch(function (error) {
+                        $log.log("error getting issue: " + JSON.stringify(error));
+                        // get sample data instead
+                        return $http.get(testIssueDataLocation, {
+                                cache: true,
+                                timeout: 3000
+                            })
+                            .then(function (response) {
+                                $log.log(response.data);
+                                return response.data.data[issueId];
+                            });
+                    });
             },
 
             postNewIssue: function (issue) {
@@ -43,14 +57,21 @@ angular.module('betaApp')
                         var msg = results.data.message;
                         Flash.create('success', msg, 0);
                         $log.log("Successfully created issue: " + JSON.stringify(results));
+                        $('#newIssueModal').modal('hide');
                         return true;
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue creating the issue', 0);
+                        Flash.create('danger', 'There was an issue creating the issue', 0, {
+                            container: 'flash-newissue'
+                        });
                         $log.log("error creating issue: " + error);
                         return false;
                     });
             },
+
+            updateIssue: function () {
+                // TODO
+            }
         };
         return service;
-    })
+    });
