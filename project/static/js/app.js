@@ -62,28 +62,13 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     }
                 })
                 .state({
-                    name: 'projects.project.tasks.task.edit',
-                    views: {
-                        '@tasks': {
-                            templateUrl: 'static/js/projects/projects.project.tasks.task.edit.html',
-                            controller: ['$scope', '$stateParams', '$state',
-                                function ($scope, $stateParams, $state) {
-                                    $scope.done = function () {
-                                        $state.go('^', $stateParams);
-                                    };
-                                }
-                            ]
-                        }
-                    }
-                })
-                .state({
                     //route for the messages page
                     name: 'projects.project.messages',
                     url: '/messages',
                     component: 'messages',
                     resolve: {
-                        messages: function (MessagesService) {
-                            return MessagesService.getMessages();
+                        messages: function (MessagesService, projectId) {
+                            return MessagesService.getMessages(projectId);
                         }
                     }
                 })
@@ -93,8 +78,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/issues',
                     component: 'issues',
                     resolve: {
-                        issues: function (IssuesService) {
-                            return IssuesService.getIssues();
+                        issues: function (IssuesService, projectId) {
+                            return IssuesService.getIssues(projectId);
                         }
                     }
                 })
