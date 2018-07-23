@@ -373,12 +373,16 @@ class IssueDB:
             #check project exists and user is assigned to that project
             projects = database_helper.get_data(Project, {Project.id:kwargs["projects_id"]})
             if projects == None: 
-                return jsonify("code":404, "message":"Project does not exist")
+                return jsonify({"code":404, "message":"Project does not exist"})
 
-            user_ids = [ user.id for user in project.users] 
+            user_ids = [user.id for user in projects.users] 
+            user_ids.append(int(projects.admin_id))
 
             if kwargs["created_by_user_id"] not in user_ids:
-                return jsonify("code":404, "message": "User not assigned to project")
+                return jsonify({"code":404, "message": "Creating user is not assigned to the project"})
+
+            if kwargs["assigned_to_user_id"] not in user_ids:
+                return jsonify({"code":404, "message": "Assigned to user is not assigned to the project"})
 
             issue = self.table(subject=kwargs["subject"], \
             description=kwargs["description"], \
@@ -395,7 +399,7 @@ class IssueDB:
             print("error occured when creating a issue")
             db.session.rollback()
             print(str(e))
-            return jsonify({"code": 500, "message": "Error creating issue"})
+            return jsonify({"code": 500, "message": "Error occured creating issue: {}".format(str(e))})
 
 
 

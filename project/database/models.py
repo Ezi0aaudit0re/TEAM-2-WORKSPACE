@@ -24,10 +24,10 @@ class Project(Base):
     description = Column(String(255))
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-    admin_id = Column(String(45), nullable=False)
+    admin_id = Column(String(45), nullable=False)#this should be an integer
     status = Column(INTEGER(), nullable=False, server_default=text("'0'"))
 
-    users = relationship('User', secondary=t_users_has_projects, backref=db.backref('users'))
+    users = relationship('User', secondary=t_users_has_projects, backref=db.backref('users', cascade="all, delete"))
 
     def __init__(self, **kwargs):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
