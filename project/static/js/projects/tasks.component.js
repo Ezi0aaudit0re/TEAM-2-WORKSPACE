@@ -7,13 +7,13 @@ angular.module('betaApp')
 
         template: `
             <div class="col-sm-2">
-            <h3>
-                Tasks 
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
-                    Add
-                </button>
-            </h3>
+                <h3>
+                    Tasks 
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
+                        Add
+                    </button>
+                </h3>
                 <ul>
                     <li ng-repeat="task in $ctrl.tasks">
                         <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: task.id })">
@@ -21,15 +21,11 @@ angular.module('betaApp')
                         </a>
                     </li>
                 </ul>
-                <!-- Button trigger modal -->
                 
                 <button class="btn btn-secondary" ui-sref="projects.project">Close Tasks</button>
             </div>
             
             <ui-view></ui-view>
-            
-
-            
         
             <!-- Modal -->
             <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskModalLabel" aria-hidden="true">
@@ -40,6 +36,7 @@ angular.module('betaApp')
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                            <flash-message name="flash-newtask"></flash-message>
                         </div>
                         <div class="modal-body">
                             <form>
@@ -58,29 +55,17 @@ angular.module('betaApp')
             </div>
         `,
 
-        controller: [
-            '$log', '$http',
-            function ($log, $http) {
+        controller: function ($log, ProjectsService) {
+            // TODO
+
+            this.getTasksForUser = function () {
                 // TODO
+            };
 
-                this.getTasksForUser = function () {
-                    // TODO
-                }
+            this.createNewTask = function () {
+                $log.log(this.task);
 
-                this.createNewTask = function () {
-                    $log.log(this.task);
-
-
-                    $http.post('/api/task/new', {
-                            "task": this.task
-                        })
-                        .then(function (results) {
-                            $log.log("Successfully created task: " + JSON.stringify(results));
-                        }, function (error) {
-                            $log.log("error creating task: " + JSON.stringify(error));
-                            this.error = error.statusText;
-                        });
-                }
-            }
-        ]
-    })
+                ProjectsService.postNewTask(this.task);
+            };
+        }
+    });

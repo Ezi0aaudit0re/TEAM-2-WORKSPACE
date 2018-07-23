@@ -90,7 +90,7 @@ def login():
             return redirect("/")
 
         else:
-            flash("User doesnot exist")
+            flash("User does not exist")
             return redirect("/signup")
 
 

@@ -1,4 +1,7 @@
-angular.module('betaApp', ['ui.router', 'btford.socket-io'])
+angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
+
+    .constant('loc', 'http://127.0.0.1:5000')
+    // .constant('loc', 'http://benongaruka.pythonanywhere.com')
 
     // configure the routes
     .config([
@@ -12,24 +15,24 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     component: 'projects',
                     resolve: {
                         projects: function (ProjectsService) {
-                            return ProjectsService.getBasicInfo();
+                            return ProjectsService.getProjects();
                         },
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
                         }
-
                     }
                 })
                 .state({
                     // route for the project management
                     name: 'projects.project',
-                    url: '/{projectId}',
+                    url: '/:projectId',
                     component: 'project',
                     resolve: {
-                        project: function (user, $transition$) {
-                            return user.projects.find(function (project) {
-                                return project.id === $transition$.params().projectId;
-                            });
+                        project: function (ProjectsService, $transition$) {
+                            return ProjectsService.getProject($transition$.params().projectId);
+                        },
+                        projectId: function ($transition$) {
+                            return $transition$.params().projectId;
                         }
                     }
                 })
@@ -39,15 +42,16 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (ProjectsService) {
-                            return ProjectsService.getTasks();
+                        tasks: function (ProjectsService, project) {
+                            console.log("p: " + JSON.stringify(project));
+                            return ProjectsService.getTasks(project.projectId);
                         }
                     }
                 })
                 .state({
                     // route for the task management
                     name: 'projects.project.tasks.task',
-                    url: '/{taskId}',
+                    url: '/:taskId',
                     component: 'task',
                     resolve: {
                         task: function (tasks, $transition$) {
@@ -63,8 +67,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/messages',
                     component: 'messages',
                     resolve: {
-                        messages: function (MessagesService) {
-                            return MessagesService.getMessages();
+                        messages: function (MessagesService, projectId) {
+                            return MessagesService.getMessages(projectId);
                         }
                     }
                 })
@@ -74,8 +78,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                     url: '/issues',
                     component: 'issues',
                     resolve: {
-                        issues: function (IssuesService) {
-                            return IssuesService.getIssues();
+                        issues: function (IssuesService, projectId) {
+                            return IssuesService.getIssues(projectId);
                         }
                     }
                 })
@@ -91,11 +95,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io'])
                             });
                         }
                     }
-                })
+                });
             $urlRouterProvider.otherwise('/projects');
         }
 
     ])
     .factory('socket', function (socketFactory) {
-        return socketFactory()
-    })
+        return socketFactory();
+    });
