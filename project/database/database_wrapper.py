@@ -232,6 +232,38 @@ class MessageDB:
             print(str(e))
             return jsonify({"code": 500, "message": "Error storing message in database"})
 
+    """
+        This method retrieves the messages based on the product_id
+    """
+    def retrieve_messages(self, project_id):
+
+        user_id = session['user_id']
+
+        json_messages = list()
+
+        # make sure current user is part of the project
+        if database_helper.check_user_in_project(Project, user_id , project_id):
+
+            messages = database_helper.get_data(self.table, {self.table.projects_id: project_id}, False)
+
+            
+
+            if messages is None:
+                return jsonify({'code': 404, "message": "There arer no messages in this project"})
+            else:
+                for message in messages:
+                    json_messages.append(message.json())
+
+
+            return jsonify({'code': 200, 'message': "Success", \
+                                    'data': json_messages
+                                   })
+        else:
+            return jsonify({'code': 403, 'message': 'User is not part of the project'})
+
+
+
+
 
 
 

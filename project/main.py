@@ -141,6 +141,8 @@ def basic_info():
 
 
 
+################### Message api calls ################
+
 @app.route(url_pre + '/storeMessage', methods=["POST"])
 #@login_required
 def store_message():
@@ -154,6 +156,25 @@ def store_message():
 
 
     return result
+
+
+
+@app.route(url_pre + '/retrieveMessage', methods=["POST"])
+@login_required
+def retrieve_messages():
+    project_id = 1
+
+    result = database_wrapper.MessageDB().retrieve_messages(project_id)
+
+    return result
+
+
+
+
+
+
+
+########################################################
 
 
     
@@ -173,7 +194,7 @@ def add_member():
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])
-@login_required
+#@login_required
 def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')

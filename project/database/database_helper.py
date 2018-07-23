@@ -58,3 +58,22 @@ def check_exists_and_return_json(data, msg):
         return jsonify({'code': 404, 'message': msg})
 
 
+
+"""
+    This method checks if the user is part of a project
+    :param: user_id -> The user id of the project 
+    :param: project_id -> The id of the project
+"""
+def check_user_in_project(table, user_id, project_id):
+    # get the project info based on the project id
+    project = get_data(table, {table.id: project_id})
+
+    # check if user is a part of the project
+    if project:
+        ids = [ user.id for user in project.users] 
+        if user_id not in ids:
+            return False
+        else: 
+            return True
+
+

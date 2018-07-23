@@ -135,6 +135,16 @@ class Message(Base):
         self.stored_at = current_time
 
 
+    def json(self):
+        return {"msg": self.msg,\
+                "user_id": self.users_id,\
+                "created_at": self.created_at
+               }
+        
+        
+                
+
+
 class Task(Base):
     __tablename__ = 'tasks'
 
