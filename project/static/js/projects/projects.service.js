@@ -1,5 +1,5 @@
 angular.module('betaApp')
-    .service('ProjectsService', function ($http, $log, Flash) {
+    .service('ProjectsService', function ($http, $log, Flash, $state) {
         var testProjDataLocation = "../static/js/projects/projects.json";
 
         var service = {
@@ -117,14 +117,15 @@ angular.module('betaApp')
                     });
             },
 
-            postNewProject: function () {
+            postNewProject: function (project) {
                 return $http.post('/api/project/new', {
-                        "project": this.project
+                        "project": project
                     })
                     .then(function (results) {
                         Flash.create('success', 'Your new project is now ready!', 0);
                         $log.log("Successfully created project: " + JSON.stringify(results));
                         $('#newProjectModal').modal('hide');
+                        $state.reload();
                         return true;
                     })
                     .catch(function (error) {
@@ -136,10 +137,10 @@ angular.module('betaApp')
                     });
             },
 
-            postNewTask: function (projectId) {
+            postNewTask: function (projectId, task) {
                 return $http.post('/api/newTask', {
                         "project": projectId,
-                        "task": this.task
+                        "task": task
                     })
                     .then(function (results) {
                         var code = results.data.code;

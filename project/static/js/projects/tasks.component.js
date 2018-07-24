@@ -86,9 +86,9 @@ angular.module('betaApp')
             this.createNewTask = function () {
                 $log.log(this.task);
 
-                $log.log($ctrl.projectId);
+                $log.log(this.projectId);
 
-                ProjectsService.postNewTask($ctrl.projectId);
+                ProjectsService.postNewTask(this.projectId, this.task);
             };
         }
     });

@@ -2,7 +2,7 @@ angular.module('betaApp')
     .component('projects', {
         bindings: {
             user: '<',
-            project: '<'
+            // project: '<'
         },
 
         template: `
@@ -41,29 +41,33 @@ angular.module('betaApp')
                             <flash-message name="flash-newproject"></flash-message>
                         </div>
 
-                        <form name="newProjectForm" ng-submit="$ctrl.newProject()">
+                        <form name="newProjectForm" ng-submit="">
                             <div class="modal-body">
 
                                 <label for="inputProjectName" class="y">Project Name</label>
                                 <input type="text" id="inputProjectName" class="form-control" 
                                     placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
                                 
-                                    <label for="inputProjectDescription" class="">Project Description</label>
+                                <label for="inputProjectDescription" class="">Project Description</label>
                                 <input type="text" id="inputProjectDescription" class="form-control" 
                                     placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
 
 
-                                <label for="inputProjectUsers" class="">Project Users</label> 
-                                <input type="email" id="inputProjectUsers" class="form-control" required 
-                                placeholder="sophie@example.com,separatebyacomma@multiple.com" autofocus 
-                                    ng-model="$ctrl.project.users" multiple />
+                                    <span ng-repeat="user in $ctrl.project.users">
+                                    <label for="inputProjectUser" class="sr-only">Project Users</label> 
+                                    <input type="email" id="inputProjectUser" class="form-control" required 
+                                        placeholder="Enter email address of user to add" autofocus 
+                                        ng-model="$ctrl.project.users[$index].email" value='' />
+                                    <button class="btn btn-danger" ng-show="$last" ng-click="$ctrl.removeUserFromProject()">-</button>
+                                </span>
+                                <button type="button" class="btn btn-primary" ng-click="$ctrl.addUserToProject()">Add a user</button>
                                 
-                            
                             </div>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <input type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid" value="Create New Project" />
+                                <input type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid" 
+                                    value="Create New Project" ng-click="$ctrl.newProject()" />
                             </div>
                         </form>
                     </div>
@@ -74,13 +78,26 @@ angular.module('betaApp')
         controller: function ($log, ProjectsService) {
             // TODO
 
+            this.project = {};
+            this.project.users = [];
+
+            this.addUserToProject = function () {
+                // push an empty object to create blank field
+                $log.log(this.project.users);
+                this.project.users.push({});
+            };
+
+            this.removeUserFromProject = function () {
+                // remove the last entry
+                this.project.users.splice(this.project.users.length - 1);
+            };
+
+
             this.newProject = function () {
                 // TODO
 
-                $log.log("I'm running");
-
                 $log.log(this.project);
-                ProjectsService.postNewProject();
+                ProjectsService.postNewProject(this.project);
 
             };
 

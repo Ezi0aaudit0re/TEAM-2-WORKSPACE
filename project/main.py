@@ -115,6 +115,8 @@ def create_project():
 
     if request.method == "POST":
 
+        print("hi")
+
         data = request.get_json()['project']
 
         json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"], "users": data["users"] }
