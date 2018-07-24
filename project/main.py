@@ -7,6 +7,7 @@ __author__ = "TEAM BETA"
 
 import sys, os
 import time
+from constants import DEFAULT_TASK_STATUS, DEFAULT_TASK_PRIORITY
 
 sys.path.append(os.getcwd())
 
@@ -116,15 +117,40 @@ def create_project():
 
         data = request.get_json()['project']
 
-        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"] }
+        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"], "users": data["users"] }
+
+        #json_data = {"name": "Test Project with multiple users", "description": "Test description", "users": ["test@test.com, xyz"], "admin_id": 19}
+
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
         return result
 
 
+# route to add members to the project
+@app.route(url_pre + '/addMember', methods=["POST"])
+@login_required
+def add_member():
 
-# DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
+    #data = request.get_json()
+    json_data = {'email': "test3@test.com", 'project_id': 33}
+    result = database_wrapper.ProjectDB().add_members(json_data)
+
+    return result
+
+
+#route to get info about a single project
+@app.route(url_pre + '/project', methods=["POST"])
+#@login_required
+def get_project():
+
+    project_id = 1
+    user_id = 19
+
+    return database_wrapper.ProjectDB().get_project(project_id, user_id)
+
+
+################### GET BASIC INFO OF THE USER ################
 # or projects/1 or /2 via URLto bypass
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
@@ -139,6 +165,7 @@ def basic_info():
     
     return result
 
+###############################################################
 
 
 ################### Message api calls ################
@@ -179,29 +206,21 @@ def retrieve_messages():
 
     
 
-@app.route(url_pre + '/addMember', methods=["POST"])
-@login_required
-def add_member():
-
-    #data = request.get_json()
-    json_data = {'email': "test3@test.com", 'project_id': 33}
-    result = database_wrapper.ProjectDB().add_members(json_data)
-
-    return result
 
 
 
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])
-#@login_required
+@login_required
 def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    #data = reequest.get_json()
-    json_data = {'name': 'Task Name', 'description': 'Description', 'priority': 1, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': 21, 'status': 1, 'project_id': 17 }
+    data = request.get_json()
+    print(data)
+    json_data = {'name': data['name'], 'description': data['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
+                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': 17 }
 
     return database_wrapper.TaskDB().create_task(json_data)
 

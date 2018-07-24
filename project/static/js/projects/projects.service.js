@@ -106,7 +106,7 @@ angular.module('betaApp')
                 });
             },
 
-            postNewProject: function (proj) {
+            postNewProject: function (project) {
                 return $http.post('/api/project/new', {
                         "project": this.project
                     })
@@ -125,7 +125,9 @@ angular.module('betaApp')
                     });
             },
 
+            // task doesnot send project id
             postNewTask: function (task) {
+                console.log(task)
                 return $http.post('/api/newTask', {
                         "task": this.task
                     })

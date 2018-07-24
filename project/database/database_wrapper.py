@@ -127,9 +127,8 @@ class ProjectDB:
                 return jsonify({"code": 403, "message": "Project name already exists by user"})
 
 
-
-            user = database_helper.get_data(User, {User.id: session['user_id']} )
-
+            # start a transaction
+            db.session.begin_nested()
             project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
 
             
@@ -140,8 +139,22 @@ class ProjectDB:
 
             # this will update the many to many table 
             # this happens through the backref 'user' in Project model 
+            for email in kwargs['users']:
+                user = database_helper.get_data(User, {User.email_id: email} )
+                if user:
+                    project.users.append(user)
+                else:
+                    db.session.rollback() # cancel the transaction
+                    return jsonify({"code": 404, "message": "User with emailID {} doesnot exist. The project was not created created".format(email)})
+            
+
+            # add the admin user also to the users_has_project_table
+            user = database_helper.get_data(User, {User.id: kwargs['admin_id']} )
+
             project.users.append(user)
 
+
+            # commit and add to the database
             db.session.commit()
 
             return jsonify({"code": 200, "message": "Successfully created user"})
@@ -195,6 +208,25 @@ class ProjectDB:
             return jsonify({"code": 404, "message": "User is not the admin of any project"})
         else:
             return jsonify({"code": 200, "message": "success", "data": data})
+
+
+    """
+        Get a SINGLE project
+        :param: project_id -> THe id of the project to get
+        :param: user_id -> The id of the user requesting the project
+    """
+    def get_project(self, project_id, user_id):
+        try:
+
+            if database_helper.check_user_in_project(self.table, user_id, project_id):
+                project = database_helper.get_data(self.table, {self.table.id: project_id}) 
+                return database_helper.check_exists_and_return_json(project, "Project with the given ID doesnot exist")
+            else:
+                return jsonify({'code': 403, 'message': 'User is not the part of the project'})
+        
+        except Exception as e:
+            database_helper.exception("Error in getting single project", e)
+
 
 ######################## Message class ######################
 """
