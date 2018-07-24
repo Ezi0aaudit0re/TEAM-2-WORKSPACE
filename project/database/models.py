@@ -41,7 +41,9 @@ class Project(Base):
     def json(self):
         return {'id': self.id,\
                 'name': self.name,\
-                'description': self.description\
+                'description': self.description,\
+                'admin': self.admin_id,\
+                'users': [{"name": user.first_name + " " + user.last_name, "id": user.id } for user in self.users]
                }
 
 class User(UserMixin, Base):
@@ -129,10 +131,20 @@ class Message(Base):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
         self.msg = data['msg']
-        self.user_id = data['user_id']
+        self.users_id = data['user_id']
         self.projects_id = data['project_id']
         self.created_at = data['created_at']
         self.stored_at = current_time
+
+
+    def json(self):
+        return {"msg": self.msg,\
+                "user_id": self.users_id,\
+                "created_at": self.created_at
+               }
+        
+        
+                
 
 
 class Task(Base):

@@ -138,6 +138,7 @@ angular.module('betaApp')
 
             postNewTask: function (projectId) {
                 return $http.post('/api/newTask', {
+                        "project": projectId,
                         "task": this.task
                     })
                     .then(function (results) {

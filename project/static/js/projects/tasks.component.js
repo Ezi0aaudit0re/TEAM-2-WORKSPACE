@@ -2,7 +2,7 @@ angular.module('betaApp')
     .component('tasks', {
         bindings: {
             tasks: '<',
-            task: '<'
+            projectId: '<'
         },
 
         template: `
@@ -86,7 +86,9 @@ angular.module('betaApp')
             this.createNewTask = function () {
                 $log.log(this.task);
 
-                ProjectsService.postNewTask();
+                $log.log($ctrl.projectId);
+
+                ProjectsService.postNewTask($ctrl.projectId);
             };
         }
     });

@@ -2,6 +2,7 @@ angular.module('betaApp')
     .component('projects', {
         bindings: {
             user: '<',
+            project: '<'
         },
 
         template: `
@@ -40,8 +41,9 @@ angular.module('betaApp')
                             <flash-message name="flash-newproject"></flash-message>
                         </div>
 
-                        <div class="modal-body">
-                            <form name="newProjectForm" ng-submit="$ctrl.newProject()">
+                        <form name="newProjectForm" ng-submit="$ctrl.newProject()">
+                            <div class="modal-body">
+
                                 <label for="inputProjectName" class="y">Project Name</label>
                                 <input type="text" id="inputProjectName" class="form-control" 
                                     placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
@@ -55,14 +57,15 @@ angular.module('betaApp')
                                 <input type="email" id="inputProjectUsers" class="form-control" required 
                                 placeholder="sophie@example.com,separatebyacomma@multiple.com" autofocus 
                                     ng-model="$ctrl.project.users" multiple />
+                                
+                            
+                            </div>
 
-                            </form>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid">Create New Project</button>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid" value="Create New Project" />
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -73,6 +76,8 @@ angular.module('betaApp')
 
             this.newProject = function () {
                 // TODO
+
+                $log.log("I'm running");
 
                 $log.log(this.project);
                 ProjectsService.postNewProject();

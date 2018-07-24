@@ -127,9 +127,8 @@ class ProjectDB:
                 return jsonify({"code": 403, "message": "Project name already exists by user"})
 
 
-
-            user = database_helper.get_data(User, {User.id: session['user_id']} )
-
+            # start a transaction
+            db.session.begin_nested()
             project = self.table(name=kwargs["name"], description=kwargs["description"], admin_id=kwargs["admin_id"])
 
             
@@ -140,8 +139,22 @@ class ProjectDB:
 
             # this will update the many to many table 
             # this happens through the backref 'user' in Project model 
+            for email in kwargs['users']:
+                user = database_helper.get_data(User, {User.email_id: email} )
+                if user:
+                    project.users.append(user)
+                else:
+                    db.session.rollback() # cancel the transaction
+                    return jsonify({"code": 404, "message": "User with emailID {} doesnot exist. The project was not created created".format(email)})
+            
+
+            # add the admin user also to the users_has_project_table
+            user = database_helper.get_data(User, {User.id: kwargs['admin_id']} )
+
             project.users.append(user)
 
+
+            # commit and add to the database
             db.session.commit()
 
             return jsonify({"code": 200, "message": "Successfully created user"})
@@ -196,6 +209,25 @@ class ProjectDB:
         else:
             return jsonify({"code": 200, "message": "success", "data": data})
 
+
+    """
+        Get a SINGLE project
+        :param: project_id -> THe id of the project to get
+        :param: user_id -> The id of the user requesting the project
+    """
+    def get_project(self, project_id, user_id):
+        try:
+
+            if database_helper.check_user_in_project(self.table, user_id, project_id):
+                project = database_helper.get_data(self.table, {self.table.id: project_id}) 
+                return database_helper.check_exists_and_return_json(project, "Project with the given ID doesnot exist")
+            else:
+                return jsonify({'code': 403, 'message': 'User is not the part of the project'})
+        
+        except Exception as e:
+            database_helper.exception("Error in getting single project", e)
+
+
 ######################## Message class ######################
 """
     THis class consists of all the methods required for creating message
@@ -217,7 +249,9 @@ class MessageDB:
             for message in data:
                 msg = self.table(msg = message['msg'],\
                                  user_id = message["user_id"],\
-                                 project_id = message["project_id"])
+                                 project_id = message["project_id"],\
+                                 created_at = message["created_at"]
+                                )
                 db.session.add(msg)
 
             db.session.commit()
@@ -229,6 +263,38 @@ class MessageDB:
             print("error occured when storing message in database")
             print(str(e))
             return jsonify({"code": 500, "message": "Error storing message in database"})
+
+    """
+        This method retrieves the messages based on the product_id
+    """
+    def retrieve_messages(self, project_id):
+
+        user_id = session['user_id']
+
+        json_messages = list()
+
+        # make sure current user is part of the project
+        if database_helper.check_user_in_project(Project, user_id , project_id):
+
+            messages = database_helper.get_data(self.table, {self.table.projects_id: project_id}, False)
+
+            
+
+            if messages is None:
+                return jsonify({'code': 404, "message": "There arer no messages in this project"})
+            else:
+                for message in messages:
+                    json_messages.append(message.json())
+
+
+            return jsonify({'code': 200, 'message': "Success", \
+                                    'data': json_messages
+                                   })
+        else:
+            return jsonify({'code': 403, 'message': 'User is not part of the project'})
+
+
+
 
 
 
@@ -251,9 +317,10 @@ class TaskDB:
     """
     def create_task(self, kwargs):
         try:
-            # check if user is a part of the project
+            # get the project info based on the project id
             project = database_helper.get_data(Project, {Project.id: kwargs['project_id']})
 
+            # check if user is a part of the project
             if project:
                 ids = [ user.id for user in project.users] 
                 if kwargs['assigned_by_user_id'] not in ids:
