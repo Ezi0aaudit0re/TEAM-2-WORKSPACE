@@ -20,7 +20,7 @@ def test_create_new_issue(test_client, init_database, test_project, test_users):
 
     #user_1 creates an issue on project
     user_1 = test_users["user_1"]
-    issue = {"subject":"Test issue 1", "description":"This is a test issue for unit tests",\
+    issue = {"subject":"Same user", "description":"This is a test issue for unit tests",\
     "projects_id":test_project.id, "created_by_user_id":user_1.id, "assigned_to_user_id":user_1.id}
 
     with test_client as client:
@@ -34,7 +34,7 @@ def test_create_new_issue(test_client, init_database, test_project, test_users):
 def test_create_new_issue_assign_member(test_client, init_database, test_project, test_users):
     user_1 = test_users["user_1"]
     user_2 = test_users["user_2"]
-    issue = {"subject":"Test issue 1", "description":"This is a test issue for unit tests",\
+    issue = {"subject":"Assign member", "description":"This is a test issue for unit tests",\
     "projects_id":test_project.id, "created_by_user_id":user_1.id, "assigned_to_user_id":user_2.id}
 
     with test_client as client:
@@ -47,13 +47,29 @@ def test_create_new_issue_assign_member(test_client, init_database, test_project
 def test_create_new_issue_assign_non_member(test_client, init_database, test_project, test_users):
     user_1 = test_users["user_1"]
     user_3 = test_users["user_3"]
-    issue = {"subject":"Test issue 1", "description":"This is a test issue for unit tests",\
+    issue = {"subject":"Assign non member", "description":"This is a test issue for unit tests",\
     "projects_id":test_project.id, "created_by_user_id":user_1.id, "assigned_to_user_id":user_3.id}
 
     with test_client as client:
         result = client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
     
-    assert json.loads(result.data)["code"] == 404
+    assert json.loads(result.data)["code"] == 404, "Assigning to non member failed"
     #assert "Assigned to user is not assigned to the project" in json.loads(result.data)["message"]
 
+"""
+    This unit test tests retrieving user issues
+"""
+def test_retrieve_user_issues(test_client, init_database, test_project, test_users):
+    user_1 = test_users["user_1"]
+    user_2 = test_users["user_2"]
 
+    issue = {"subject":"Issue for retrieval", "description":"This is a test issue for unit tests",\
+    "projects_id":test_project.id, "created_by_user_id":user_1.id, "assigned_to_user_id":user_2.id}
+
+    with test_client as client:
+        result = client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
+
+    assert json.loads(result.data)["code"] == 200, "Assigning issue to project member failed"
+
+    with test_client as client:
+        pass #how to get user session in tests?

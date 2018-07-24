@@ -17,7 +17,7 @@ def test_client():
 
 @pytest.fixture(scope="module")
 def init_database():
-    from database.models import Project, User
+    from database.models import Project, User, Issue
     from main import app, db
     '''Initializes db for testing'''
     # Create the database
@@ -25,9 +25,7 @@ def init_database():
     user_1 = User(first_name="test", last_name="user1", user_name="testuser1", password="password", email_id="testuser1@yahoo.com")
     user_2 = User(first_name="test", last_name="user2", user_name="testuser2", password="password", email_id="testuser2@yahoo.com")
     user_3 = User(first_name="test", last_name="user3", user_name="testuser3", password="password", email_id="testuser3@yahoo.com")
-    db.session.add(user_1)
-    db.session.add(user_2)
-    db.session.add(user_3)
+    db.session.add_all([user_1,user_2,user_3])
     db.session.commit()
     user_1_id = db.session.query(User).filter(User.email_id=="testuser1@yahoo.com").first().id
     project_1 = Project(name="testissuesproject", description="this is a test project", admin_id = user_1_id)
@@ -39,11 +37,16 @@ def init_database():
     yield db
 
     #Clean up db
+    db.session.query(Issue).filter(Issue.subject=="Assign member").delete()
+    db.session.query(Issue).filter(Issue.subject=="Assign non member").delete()
+    db.session.query(Issue).filter(Issue.subject=="Same user").delete()
+    db.session.query(Project).filter(Project.name=="testissuesproject").first().users = []
+    db.session.commit()
     db.session.query(Project).filter(Project.name=="testissuesproject").delete()
     db.session.query(User).filter(User.user_name=="testuser1").delete()
     db.session.query(User).filter(User.user_name=="testuser2").delete()
     db.session.query(User).filter(User.user_name=="testuser3").delete()
-    db.session.query(Project).filter(Project.name=="testissuesproject").delete()
+    db.session.commit()
 
 @pytest.fixture(scope="module")
 def test_project(init_database):
