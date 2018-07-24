@@ -11,6 +11,7 @@ from database.schemas import *
 import helper
 import database.database_helper as database_helper
 from flask import jsonify, session
+import time
 
 
 
@@ -471,3 +472,35 @@ class IssueDB:
             db.session.rollback()
             print(str(e))
             return jsonify({"code":500, "message": "Error getting project issues"})
+    
+    """
+        This method updates an issue priority, status, tested
+        :param: issue_id, field, value to update
+        :return: success on update or appropriate error
+    """
+    
+    def update_issue(self, issue_id, kwargs):
+
+        try:
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+            valid_keys = ("priorty","status","tested")
+            keys = list(kwargs.keys())
+
+            for key in keys:
+                if key not in valid_keys:
+                    return jsonify({"code":404, "message":"Invalid field"})
+            
+            issue = database_helper.get_data(self.table, {self.table.id:issue_id})
+
+            if issue == None:
+                return jsonify({"code":404, "message":"No issue exists with given id"})
+            #TODO: check validy of values (priority=>(0,1,2), status=>(0,1,2), test=>(0,1,2))
+            issue.update(kwargs)
+            issue.updated_at = current_time
+            db.session.commit()
+            
+        except Exception as e:
+            print("error updating issue")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message": "Error updating issue"})
