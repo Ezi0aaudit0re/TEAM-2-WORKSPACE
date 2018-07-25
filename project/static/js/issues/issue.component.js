@@ -40,7 +40,7 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Assigned To User:
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.assigned_to_user_id" />
+                    <input type="email" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.assigned_to_user_id" />
                 </div>
                 <div>
                     Created By User:

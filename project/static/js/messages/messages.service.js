@@ -2,7 +2,6 @@ angular.module('betaApp')
     .service('MessagesService', function ($http, $log, Flash) {
         var service = {
             getMessages: function (id) {
-                $log.log("getAllMessages");
                 // called on page load to get all user projects
                 return $http.post("/api/messages", {
                         "project_id": id
@@ -17,11 +16,15 @@ angular.module('betaApp')
                         if (code === 404) {
                             Flash.create('info', msg, 3000);
                             return [{
-                                "msg": "This is the general chat for this project!",
+                                "msg": msg,
                                 "username": "System",
                                 "timestamp": new Date().toISOString().slice(0, 19).replace('T', ' ')
                             }];
                         }
+                        if (code === 503) {
+                            Flash.create('danger', msg, 3000);
+                        }
+
                         return response.data.data;
                     })
                     .catch(function (error) {

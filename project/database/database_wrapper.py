@@ -121,7 +121,7 @@ class ProjectDB:
     """
     def create_project(self, kwargs):
         try:
-            # check if the prorject by the same id created
+            # check if the project by the same id created
             instance = database_helper.get_data(self.table, {self.table.name: kwargs["name"], self.table.admin_id: kwargs["admin_id"]})
 
             if instance:
@@ -198,7 +198,7 @@ class ProjectDB:
 
     """
         This method gets all the projects associated with a user
-        :param: user_id -> THe id of the user
+        :param: user_id -> The id of the user
         :return: all the information about the projects
     """
     def get_projects(self, user_id):
@@ -213,7 +213,7 @@ class ProjectDB:
 
     """
         Get a SINGLE project
-        :param: project_id -> THe id of the project to get
+        :param: project_id -> The id of the project to get
         :param: user_id -> The id of the user requesting the project
     """
     def get_project(self, project_id, user_id):
@@ -257,7 +257,7 @@ class MessageDB:
 
             db.session.commit()
 
-            return jsonify({'code': 200, 'message': "Succeess"})
+            return jsonify({'code': 200, 'message': "Success"})
 
         except Exception as e:
 
@@ -282,10 +282,14 @@ class MessageDB:
             
 
             if messages is None:
-                return jsonify({'code': 404, "message": "There arer no messages in this project"})
+                return jsonify({'code': 404, "message": "There are no messages in this project"})
             else:
                 for message in messages:
-                    json_messages.append(message.json())
+                    outputMessage = {'timestamp': message.json()['created_at'], \
+                        'username': message.json()['user_id'], \
+                        'msg': message.json()['msg']}
+
+                    json_messages.append(outputMessage)
 
 
             return jsonify({'code': 200, 'message': "Success", \
@@ -345,12 +349,12 @@ class TaskDB:
 
 
             else:
-                return jsonify({'code': 404, 'message': 'Project with the specified ID doesenot exist'})
+                return jsonify({'code': 404, 'message': 'Project with the specified ID does not exist'})
 
         except Exception as e:
-            print("Error occured when creating a task in databae_wrapper")
+            print("Error occured when creating a task in database_wrapper")
             print(str(e))
-            return jsonify({'code': 500, 'message': 'Internal Server eror'})
+            return jsonify({'code': 500, 'message': 'Internal Server error'})
 
 
     """
@@ -366,7 +370,7 @@ class TaskDB:
             else:
                 return jsonify({'code': 404, 'message': 'Task with the particular ID does not exist'})
         except Exception as e:
-            print("Error occured when retrieving a task in databae_wrapper")
+            print("Error occured when retrieving a task in database_wrapper")
             print(str(e))
             return jsonify({'code': 500, 'message': 'Internal Server eror'})
 
@@ -525,7 +529,7 @@ class IssueDB:
         try:
 
             #check if project exists
-            project = database_helper.get_data(Project, {Project.id:projects_d})
+            project = database_helper.get_data(Project, {Project.id:projects_id})
 
             if project == None:
                 return jsonify({"code":404, "message":"No project with given id"})

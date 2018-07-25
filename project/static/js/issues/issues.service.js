@@ -5,7 +5,9 @@ angular.module('betaApp')
         var service = {
             getIssues: function (projectId) {
                 // called on page load to get all project issues
-                return $http.post("/api/projects/" + projectId + "/issues", {
+                return $http.post("/api/getProjectIssues", {
+                        "project_id": projectId
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -25,9 +27,11 @@ angular.module('betaApp')
                     });
             },
 
-            getIssue: function (projectId, issueId) {
+            getIssue: function (issueId) {
                 // called on click of issue to get details
-                return $http.post("/api/projects/" + projectId + "/issues/" + issueId, {
+                return $http.post("/api/getIssue", {
+                        "issue_id": issueId
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -48,13 +52,15 @@ angular.module('betaApp')
                     });
             },
 
-            postNewIssue: function (issue) {
+            postNewIssue: function (projectId, issue) {
                 return $http.post('/api/issue/new', {
-                        "issue": this.issue
+                        "issue": issue,
+                        "project_id": projectId
                     })
                     .then(function (results) {
                         var code = results.data.code;
                         var msg = results.data.message;
+
                         Flash.create('success', msg, 0);
                         $log.log("Successfully created issue: " + JSON.stringify(results));
                         $('#newIssueModal').modal('hide');
