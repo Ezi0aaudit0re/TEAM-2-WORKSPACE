@@ -34,13 +34,26 @@ angular.module('betaApp')
 
             var userName = $scope.$parent.$resolve.user.user_name;
 
+            $scope.newMessages = [];
+
             // socket.forward('someEvent');
             // this.$on('socket:someEvent', function (ev, data) {
             //     this.theData = data;
             // });
 
             this.createMessage = function () {
-                socket.send($('#message').val());
+                var msg = $('#message').val();
+
+                // send immediately
+                socket.send(msg);
+                // save locally to send via interval
+                $scope.newMessages.push({
+                    "user_id": $scope.$parent.$resolve.user.id,
+                    "msg": msg,
+                    "created_at": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    "project_id": $scope.$parent.$resolve.project.id
+                });
+                // clear form input
                 $('#message').val('');
             };
 
@@ -56,11 +69,7 @@ angular.module('betaApp')
                 // notification
                 notifyMe(msg, userName);
 
-                // $log.log($scope.$ctrl.messages);
-                // $log.log(this.messages);
-
-                MessagesService.postMessage(msg);
-
+                // update view immediately
                 $scope.$ctrl.messages.push({
                     "username": userName,
                     "msg": msg,
@@ -70,13 +79,19 @@ angular.module('betaApp')
             });
 
             // TODO need to get from database as otherwise multiple clients will send same updates
-            var lastUpdate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            // var lastUpdate = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-            newMessages = function (element) {
-                return element > lastUpdate;
+            postNewMessages = function () {
+                console.log("postingnewMessages");
+                console.log($scope.newMessages);
+                var success = MessagesService.postMessages($scope.newMessages);
+                if (success) {
+                    $scope.newMessages = [];
+                }
+
             };
 
-            // $interval(console.log($scope.$ctrl.messages.filter(newMessages), 3000));
-            // $interval(MessagesService.postMessage($scope.$ctrl.messages.filter(newMessages)), 3000);
+            // update backend periodically
+            $interval(postNewMessages, 3000);
         }
     });

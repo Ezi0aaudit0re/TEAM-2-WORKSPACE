@@ -17,7 +17,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testProjDataLocation, {
+                        return $http.get(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -38,7 +38,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testProjDataLocation, {
+                        return $http.get(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -50,7 +50,9 @@ angular.module('betaApp')
 
             getProject: function (id) {
                 // called on click of project to get details
-                return $http.post("api/projects/" + id, {
+                return $http.post("api/getProject", {
+                        "project_id": id
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -61,7 +63,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting project: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testProjDataLocation, {
+                        return $http.get(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -74,7 +76,9 @@ angular.module('betaApp')
 
             getTasks: function (projectId) {
                 // called on click of tasks for a project
-                return $http.post("/api/projects/" + projectId + "/tasks", {
+                return $http.post("/api/getTasks", {
+                        "project_id": projectId
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -84,7 +88,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testProjDataLocation, {
+                        return $http.get(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -97,7 +101,9 @@ angular.module('betaApp')
 
             getTask: function (projectId, taskId) {
                 // called on click of task to get details
-                return $http.post("/api/projects/" + projectId + "/tasks/" + taskId, {
+                return $http.post("/api/Task/Project", {
+                        "task_id": taskId
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -107,7 +113,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting task: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testProjDataLocation, {
+                        return $http.get(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -140,7 +146,7 @@ angular.module('betaApp')
 
             postNewTask: function (projectId, task) {
                 return $http.post('/api/newTask', {
-                        "project": projectId,
+                        "project_id": projectId,
                         "task": task
                     })
                     .then(function (results) {
@@ -160,14 +166,14 @@ angular.module('betaApp')
                     });
             },
 
-            updateProject: function () {
+            updateProject: function (project) {
                 // TODO
-                return $http.post('/api/project/' + this.project.id + '/update', {
+                return $http.post('/api/project/update', {
                         "project": {
-                            "id": this.project.id,
-                            "status": this.project.status,
+                            "id": project.id,
+                            "status": project.status,
                             "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-                            "users_id": this.project.users_id
+                            "users_id": project.users_id
                         }
                     })
                     .then(function (results) {
@@ -182,17 +188,17 @@ angular.module('betaApp')
                     });
             },
 
-            updateTask: function () {
+            updateTask: function (task) {
                 // TODO
 
-                return $http.post('/api/project/' + this.project.id + '/tasks/' + this.task.id + '/update', {
+                return $http.post('/api/task/update', {
                         "task": {
-                            "id": this.task.id,
-                            "name": this.project.tasks[taskId].name,
-                            "status": this.project.tasks[taskId].status,
-                            "priority": this.project.tasks[taskId].priority,
+                            "id": task.id,
+                            "name": task.name,
+                            "status": task.status,
+                            "priority": task.priority,
                             "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-                            "assigned_to_user": this.project.tasks[taskId].assigned_to_user
+                            "assigned_to_user": task.assigned_to_user
                         }
                     })
                     .then(function (results) {

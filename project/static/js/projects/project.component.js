@@ -61,7 +61,7 @@ angular.module('betaApp')
             };
 
             this.updateProject = function () {
-                ProjectsService.updateProject();
+                ProjectsService.updateProject(this.project);
             };
         }
     });

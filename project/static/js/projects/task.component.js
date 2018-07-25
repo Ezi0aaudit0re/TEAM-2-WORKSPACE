@@ -69,7 +69,7 @@ angular.module('betaApp')
             };
 
             this.updateTask = function () {
-                ProjectsService.updateTask();
+                ProjectsService.updateTask(this.task);
             };
         }
     });

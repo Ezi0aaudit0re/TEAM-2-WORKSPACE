@@ -4,7 +4,9 @@ angular.module('betaApp')
             getMessages: function (id) {
                 $log.log("getAllMessages");
                 // called on page load to get all user projects
-                return $http.post("/api/projects/" + id + "/messages", {
+                return $http.post("/api/messages", {
+                        "project_id": id
+                    }, {
                         cache: true,
                         timeout: 3000
                     })
@@ -25,7 +27,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting messages: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post("../static/js/messages/messages.json", {
+                        return $http.get("../static/js/messages/messages.json", {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -36,9 +38,9 @@ angular.module('betaApp')
                     });
             },
 
-            postMessage: function (newMessages) {
+            postMessages: function (newMessages) {
                 return $http.post('/api/storeMessage', {
-                        "message": newMessages
+                        "messages": newMessages
                     })
                     .then(function (response) {
                         console.log(response);
