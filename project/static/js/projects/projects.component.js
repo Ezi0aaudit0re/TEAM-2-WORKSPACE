@@ -2,6 +2,7 @@ angular.module('betaApp')
     .component('projects', {
         bindings: {
             user: '<',
+            // project: '<'
         },
 
         template: `
@@ -39,16 +40,20 @@ angular.module('betaApp')
                             </button>
                             <flash-message name="flash-newproject"></flash-message>
                         </div>
-                        <div class="modal-body">
-                            <form>
-                                <label for="inputProjectName" class="sr-only">Project Name</label>
+
+                        <form name="newProjectForm" ng-submit="">
+                            <div class="modal-body">
+
+                                <label for="inputProjectName" class="y">Project Name</label>
                                 <input type="text" id="inputProjectName" class="form-control" 
                                     placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
-                                <label for="inputProjectDescription" class="sr-only">Project Description</label>
+                                
+                                <label for="inputProjectDescription" class="">Project Description</label>
                                 <input type="text" id="inputProjectDescription" class="form-control" 
                                     placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
 
-                                <span ng-repeat="user in $ctrl.project.users">
+
+                                    <span ng-repeat="user in $ctrl.project.users">
                                     <label for="inputProjectUser" class="sr-only">Project Users</label> 
                                     <input type="email" id="inputProjectUser" class="form-control" required 
                                         placeholder="Enter email address of user to add" autofocus 
@@ -56,19 +61,21 @@ angular.module('betaApp')
                                     <button class="btn btn-danger" ng-show="$last" ng-click="$ctrl.removeUserFromProject()">-</button>
                                 </span>
                                 <button type="button" class="btn btn-primary" ng-click="$ctrl.addUserToProject()">Add a user</button>
-                            
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newProject()">Create New Project</button>
-                        </div>
+                                
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid" 
+                                    value="Create New Project" ng-click="$ctrl.newProject()" />
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
             `,
 
-        controller: function ($scope, $http, $log, ProjectsService) {
+        controller: function ($log, ProjectsService) {
             // TODO
 
             this.project = {};
@@ -84,6 +91,7 @@ angular.module('betaApp')
                 // remove the last entry
                 this.project.users.splice(this.project.users.length - 1);
             };
+
 
             this.newProject = function () {
                 // TODO

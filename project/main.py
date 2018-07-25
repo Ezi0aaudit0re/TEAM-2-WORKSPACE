@@ -146,12 +146,11 @@ def get_project():
 
     project_id = request.get_json()['projectID']
     user_id = session['user_id']
-
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
 
 ################### GET BASIC INFO OF THE USER ################
-# or projects/1 or /2 via URLto bypass
+
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
 def basic_info():
@@ -174,24 +173,28 @@ def basic_info():
 #@login_required
 def store_message():
 
-    #data = request.get_json()
+    
+    data = request.get_json()['messages']
+    print(data)
+
     json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
                  {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
 
-    result = database_wrapper.MessageDB().create_messages(json_data)
+    result = database_wrapper.MessageDB().create_messages(data)
 
 
     return result
 
 
 
-@app.route(url_pre + '/retrieveMessage', methods=["POST"])
+@app.route(url_pre + '/messages', methods=["POST"])
 @login_required
 def retrieve_messages():
-    project_id = 1
 
-    result = database_wrapper.MessageDB().retrieve_messages(project_id)
+    data = request.get_json()
+
+    result = database_wrapper.MessageDB().retrieve_messages(data['project_id'])
 
     return result
 
@@ -218,19 +221,21 @@ def add_task():
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
     data = request.get_json()
+    task = data['task']
     print(data)
-    json_data = {'name': data['name'], 'description': data['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': 17 }
+    json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
+                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': data['project_id'] }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
 
-@app.route(url_pre + '/getTask', methods=['POST'])
+@app.route(url_pre + '/Task/Project', methods=['POST'])
 @login_required
 def get_task():
-    id = 1
 
-    return database_wrapper.TaskDB().get_task(id)
+    data = request.get_json()
+
+    return database_wrapper.TaskDB().get_task(data['task_id'])
 
 
 @app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])
@@ -242,13 +247,14 @@ def get_assigned_task():
     return database_wrapper.TaskDB().get_assigned_task(user_id)
 
 
-@app.route(url_pre + '/Task/Project', methods=['POST'])
+@app.route(url_pre + '/getTasks', methods=['POST'])
 @login_required
 def get_assigned_task_by_project():
     # this method gets all the task assigned to a user
-    project_id = 17
 
-    return database_wrapper.TaskDB().get_task_by_project(project_id)
+    data = request.get_json()
+
+    return database_wrapper.TaskDB().get_task_by_project(data['project_id'])
 
 
 @app.route(url_pre + '/Task/UserAssigned', methods=['POST'])
@@ -272,11 +278,3 @@ def handle_message(msg):
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
-
-
-
-
-
-
-
-

@@ -10,11 +10,13 @@ angular.module('betaApp')
                 Messages
             </h3>
             <div class="container-fluid scroll" id="chatwindow" >
-                <div ng-repeat="msg in $ctrl.messages">
-                    <div class="row">
-                        <div class="col-sm-3">{{msg.username}}:</div>
-                        <div class="col-sm-5">{{msg.msg}}</div>
-                    </div>
+                <div ng-repeat="msg in $ctrl.messages" class="row">
+
+                        <span class="pull-right">{{msg.timestamp}}</span>
+                        <span class="col-sm-3">{{msg.username}}:</span>
+                        
+
+                    <p class="col-sm-5">{{msg.msg}}</p>
                 </div>
             </div>
         
@@ -28,11 +30,11 @@ angular.module('betaApp')
 
         controller: function ($log, $scope, loc, MessagesService, $state, $interval) {
 
-            $log.log("message controller");
-            $log.log(typeof $scope.$ctrl.messages);
+
 
             var userName = $scope.$parent.$resolve.user.user_name;
-            $log.log(userName);
+
+            $scope.newMessages = [];
 
             // socket.forward('someEvent');
             // this.$on('socket:someEvent', function (ev, data) {
@@ -40,7 +42,18 @@ angular.module('betaApp')
             // });
 
             this.createMessage = function () {
-                socket.send($('#message').val());
+                var msg = $('#message').val();
+
+                // send immediately
+                socket.send(msg);
+                // save locally to send via interval
+                $scope.newMessages.push({
+                    "user_id": $scope.$parent.$resolve.user.id,
+                    "msg": msg,
+                    "created_at": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    "project_id": $scope.$parent.$resolve.project.id
+                });
+                // clear form input
                 $('#message').val('');
             };
 
@@ -56,11 +69,7 @@ angular.module('betaApp')
                 // notification
                 notifyMe(msg, userName);
 
-                $log.log($scope.$ctrl.messages);
-                $log.log(this.messages);
-
-                MessagesService.postMessage(msg, timestamp);
-
+                // update view immediately
                 $scope.$ctrl.messages.push({
                     "username": userName,
                     "msg": msg,
@@ -68,6 +77,21 @@ angular.module('betaApp')
                 });
 
             });
-            // $interval($state.reload(), 3000);
+
+            // TODO need to get from database as otherwise multiple clients will send same updates
+            // var lastUpdate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            postNewMessages = function () {
+                console.log("postingnewMessages");
+                console.log($scope.newMessages);
+                var success = MessagesService.postMessages($scope.newMessages);
+                if (success) {
+                    $scope.newMessages = [];
+                }
+
+            };
+
+            // update backend periodically
+            $interval(postNewMessages, 3000);
         }
     });

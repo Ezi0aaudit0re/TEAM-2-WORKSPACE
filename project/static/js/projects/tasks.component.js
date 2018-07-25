@@ -2,7 +2,7 @@ angular.module('betaApp')
     .component('tasks', {
         bindings: {
             tasks: '<',
-            task: '<'
+            projectId: '<'
         },
 
         template: `
@@ -40,10 +40,31 @@ angular.module('betaApp')
                         </div>
                         <div class="modal-body">
                             <form>
-                                <label for="inputTaskName" class="sr-only">Task Name</label>
-                                <input type="text" id="inputTaskName" class="form-control" placeholder="Task Name" required autofocus ng-model="$ctrl.task.name">
-                                <label for="inputTaskDescription" class="sr-only">Task Description</label>
-                                <input type="text" id="inputTaskDescription" class="form-control" placeholder="Task Description" required autofocus ng-model="$ctrl.task.description">
+                                <label for="inputTaskName" class="">Task Name</label>
+                                <input type="text" id="inputTaskName" class="form-control" 
+                                    placeholder="Task Name" required autofocus 
+                                    ng-model="$ctrl.task.name">
+
+                                <label for="inputTaskDescription" class="">Task Description</label>
+                                <input type="text" id="inputTaskDescription" class="form-control" 
+                                    placeholder="Task Description" required autofocus 
+                                    ng-model="$ctrl.task.description">
+
+                                <label for="inputTaskPriority" class="">Task Priority</label>
+                                <input type="text" id="inputTaskPriority" class="form-control" 
+                                    placeholder="Task Priority" required autofocus 
+                                    ng-model="$ctrl.task.priority">
+
+                                <label for="inputTaskDueDate" class="">Task Due Date</label>
+                                <input type="date" id="inputTaskDueDate" class="form-control" 
+                                    placeholder="" required autofocus 
+                                    ng-model="$ctrl.task.due_date">
+
+                                <label for="inputTaskUser" class="">Task User</label> 
+                                <input type="email" id="inputTaskUser" class="form-control" required 
+                                    placeholder="Enter email address of assigned user" autofocus 
+                                    ng-model="$ctrl.task.user.email" value='' />
+
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -65,7 +86,9 @@ angular.module('betaApp')
             this.createNewTask = function () {
                 $log.log(this.task);
 
-                ProjectsService.postNewTask(this.task);
+                $log.log(this.projectId);
+
+                ProjectsService.postNewTask(this.projectId, this.task);
             };
         }
     });
