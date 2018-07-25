@@ -4,41 +4,56 @@ angular.module('betaApp')
             getMessages: function (id) {
                 $log.log("getAllMessages");
                 // called on page load to get all user projects
-                return $http.get("/api/projects/" + id + "/messages", {
+                return $http.post("/api/projects/" + id + "/messages", {
                         cache: true,
                         timeout: 3000
                     })
                     .then(function (response) {
+                        console.log(response);
+                        var code = response.data.code;
+                        var msg = response.data.message;
+                        if (code === 404) {
+                            Flash.create('info', msg, 3000);
+                            return [{
+                                "msg": "This is the general chat for this project!",
+                                "username": "System",
+                                "timestamp": new Date().toISOString().slice(0, 19).replace('T', ' ')
+                            }];
+                        }
                         return response.data.data;
                     })
                     .catch(function (error) {
                         $log.log("error getting messages: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get("../static/js/messages/messages.json", {
+                        return $http.post("../static/js/messages/messages.json", {
                                 cache: true,
                                 timeout: 3000
                             })
                             .then(function (response) {
+                                console.log(response.data.data);
                                 return response.data.data;
                             });
                     });
             },
 
-            postMessage: function (newMessage) {
+            postMessage: function (newMessages) {
                 return $http.post('/api/storeMessage', {
-                        "message": newMessage
+                        "message": newMessages
                     })
-                    .then(function (results) {
-                        var code = results.data.code;
-                        var msg = results.data.message;
+                    .then(function (response) {
+                        console.log(response);
+                        var code = response.data.code;
+                        var msg = response.data.message;
 
                         if (code === 500) {
                             Flash.create('danger', msg, 3000);
+                            return false;
                         } else {
                             Flash.create('success', msg, 3000);
-                            $log.log("Successfully posted message: " + JSON.stringify(results));
+                            $log.log("Successfully posted message: " + JSON.stringify(response));
+                            return true;
                         }
-                        return true;
+
                     })
                     .catch(function (error) {
                         Flash.create('danger', 'The message did not post - please try again', 1);

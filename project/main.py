@@ -115,8 +115,6 @@ def create_project():
 
     if request.method == "POST":
 
-        print("hi")
-
         data = request.get_json()['project']
 
         json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"], "users": data["users"] }
@@ -142,12 +140,11 @@ def add_member():
 
 
 #route to get info about a single project
-@app.route(url_pre + '/project', methods=["POST"])
+@app.route(url_pre + '/projects/<int:project_id>', methods=["POST"])
 #@login_required
-def get_project():
+def get_project(project_id):
 
-    project_id = 1
-    user_id = 19
+    user_id = session['user_id']
 
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
@@ -176,7 +173,10 @@ def basic_info():
 #@login_required
 def store_message():
 
-    #data = request.get_json()
+    
+
+    data = request.get_json()
+    print(data)
     json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
                  {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
@@ -188,10 +188,9 @@ def store_message():
 
 
 
-@app.route(url_pre + '/retrieveMessage', methods=["POST"])
+@app.route(url_pre + '/projects/<int:project_id>/messages', methods=["POST"])
 @login_required
-def retrieve_messages():
-    project_id = 1
+def retrieve_messages(project_id):
 
     result = database_wrapper.MessageDB().retrieve_messages(project_id)
 
@@ -213,26 +212,25 @@ def retrieve_messages():
 
 ####################### Task Routes ########################
 
-@app.route(url_pre + '/newTask', methods=["POST"])
+@app.route(url_pre + '/projects/<int:project_id>/newTask', methods=["POST"])
 @login_required
-def add_task():
+def add_task(project_id):
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
     data = request.get_json()
     print(data)
     json_data = {'name': data['name'], 'description': data['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': 17 }
+                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
 
-@app.route(url_pre + '/getTask', methods=['POST'])
+@app.route(url_pre + '/projects/<int:project_id>/tasks/<int:task_id>', methods=['POST'])
 @login_required
-def get_task():
-    id = 1
+def get_task(task_id):
 
-    return database_wrapper.TaskDB().get_task(id)
+    return database_wrapper.TaskDB().get_task(task_id)
 
 
 @app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])

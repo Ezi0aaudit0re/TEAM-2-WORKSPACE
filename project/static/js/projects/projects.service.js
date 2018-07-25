@@ -6,7 +6,7 @@ angular.module('betaApp')
             getBasicInfo: function () {
                 // called on page load to get all user projects 
                 // DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
-                return $http.get("/api/getBasicInfo", {
+                return $http.post("/api/getBasicInfo", {
                         cache: true,
                         timeout: 3000
                     })
@@ -17,7 +17,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
+                        return $http.post(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -28,7 +28,7 @@ angular.module('betaApp')
             },
             getProjects: function () {
                 // called on page load to get all user projects "/api/getProjects"
-                return $http.get("api/getProjects", {
+                return $http.post("api/getBasicInfo", {
                         cache: true,
                         timeout: 3000
                     })
@@ -38,7 +38,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
+                        return $http.post(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -50,17 +50,18 @@ angular.module('betaApp')
 
             getProject: function (id) {
                 // called on click of project to get details
-                return $http.get("api/projects/" + id, {
+                return $http.post("api/projects/" + id, {
                         cache: true,
                         timeout: 3000
                     })
                     .then(function (response) {
-                        return response.data.data.project;
+                        $log.log(response);
+                        return response.data.data;
                     })
                     .catch(function (error) {
                         $log.log("error getting project: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
+                        return $http.post(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -73,7 +74,7 @@ angular.module('betaApp')
 
             getTasks: function (projectId) {
                 // called on click of tasks for a project
-                return $http.get("/api/projects/" + projectId + "/tasks", {
+                return $http.post("/api/projects/" + projectId + "/tasks", {
                         cache: true,
                         timeout: 3000
                     })
@@ -83,7 +84,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
+                        return $http.post(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -96,7 +97,7 @@ angular.module('betaApp')
 
             getTask: function (projectId, taskId) {
                 // called on click of task to get details
-                return $http.get("/api/projects/" + projectId + "/tasks/" + taskId, {
+                return $http.post("/api/projects/" + projectId + "/tasks/" + taskId, {
                         cache: true,
                         timeout: 3000
                     })
@@ -106,7 +107,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting task: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
+                        return $http.post(testProjDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })

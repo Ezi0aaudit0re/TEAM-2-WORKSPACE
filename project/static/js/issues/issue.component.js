@@ -20,7 +20,7 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Description
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.description" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.issue.description" />
                 </div>
                 <div>
                     Severity

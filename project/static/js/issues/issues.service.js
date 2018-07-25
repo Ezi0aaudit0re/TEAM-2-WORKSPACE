@@ -5,7 +5,7 @@ angular.module('betaApp')
         var service = {
             getIssues: function (projectId) {
                 // called on page load to get all project issues
-                return $http.get("/api/projects/" + projectId + "/issues", {
+                return $http.post("/api/projects/" + projectId + "/issues", {
                         cache: true,
                         timeout: 3000
                     })
@@ -15,7 +15,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting issues: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testIssueDataLocation, {
+                        return $http.post(testIssueDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })
@@ -27,7 +27,7 @@ angular.module('betaApp')
 
             getIssue: function (projectId, issueId) {
                 // called on click of issue to get details
-                return $http.get("/api/projects/" + projectId + "/issues/" + issueId, {
+                return $http.post("/api/projects/" + projectId + "/issues/" + issueId, {
                         cache: true,
                         timeout: 3000
                     })
@@ -37,7 +37,7 @@ angular.module('betaApp')
                     .catch(function (error) {
                         $log.log("error getting issue: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testIssueDataLocation, {
+                        return $http.post(testIssueDataLocation, {
                                 cache: true,
                                 timeout: 3000
                             })

@@ -16,11 +16,11 @@ angular.module('betaApp')
 
                 <span>
                     Name: {{$ctrl.projects.project.tasks.task.name}}
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.name" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.name" />
                 </span>
                 <div>
                     Description:
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.description" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.description" />
                 </div>
                 <div>
                     Priority:
