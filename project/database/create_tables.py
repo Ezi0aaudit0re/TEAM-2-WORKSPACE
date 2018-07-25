@@ -1,6 +1,7 @@
 """
 This file is for dropping and creating tables from the models file.
-navigate to the database folder and run the file. 
+navigate to the database folder and run the file
+Notes:run this file using python, if errors you can't fix, use the python shell to run each command. 
 """
 from ..constants import *
 from sqlalchemy import create_engine
