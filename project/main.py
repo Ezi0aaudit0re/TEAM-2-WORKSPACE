@@ -141,11 +141,11 @@ def add_member():
 
 #route to get info about a single project
 @app.route(url_pre + '/project', methods=["POST"])
-#@login_required
+@login_required
 def get_project():
 
-    project_id = 1
-    user_id = 19
+    project_id = request.get_json()['projectID']
+    user_id = session['user_id']
 
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
