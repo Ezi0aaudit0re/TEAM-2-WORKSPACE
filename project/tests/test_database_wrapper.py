@@ -160,11 +160,18 @@ class ProjectDBTest(BaseClass):
         response = super().make_request('/api/project/new', json.dumps({"project": self.new_project}))
         self.assertEqual(response["code"], 403, "Problem when creating an existing project")
 
+    def get_project_id(self):
+        from database.models import Project
+        return db.session.query(Project.id).filter((Project.name == self.new_project["name"])).first()[0]
+
 
 
     def test_get_project(self):
         # create a project and then gets it id 
-        pass
+        self.test_create_new_project()
+        params = json.dumps({'project_id': self.get_project_id()})
+        response = super().make_request('/api/project', params) 
+        self.assertEqual(response['data']['name'], self.new_project['name'], "Problem retrieving new project")
 
 
 
