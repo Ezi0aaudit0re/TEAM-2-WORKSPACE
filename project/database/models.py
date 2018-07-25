@@ -24,10 +24,10 @@ class Project(Base):
     description = Column(String(255))
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-    admin_id = Column(String(45), nullable=False)
+    admin_id = Column(String(45), nullable=False)#this should be an integer
     status = Column(INTEGER(), nullable=False, server_default=text("'0'"))
 
-    users = relationship('User', secondary=t_users_has_projects, backref=db.backref('users'))
+    users = relationship('User', secondary=t_users_has_projects, backref=db.backref('users', cascade="all, delete"))
 
     def __init__(self, **kwargs):
         current_time = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -97,7 +97,7 @@ class User(UserMixin, Base):
 class Issue(Base):
     __tablename__ = 'issues'
 
-    id = Column(INTEGER(), primary_key=True)
+    id = Column(INTEGER(), primary_key=True, unique=True)
     subject = Column(String(45), nullable=False)
     description = Column(String(255))
     priority = Column(INTEGER(), nullable=False, server_default=text("'0'"))
@@ -112,6 +112,28 @@ class Issue(Base):
     assigned_to_user = relationship('User', primaryjoin='Issue.assigned_to_user_id == User.id')
     created_by_user = relationship('User', primaryjoin='Issue.created_by_user_id == User.id')
     projects = relationship('Project')
+
+    def __init__(self, **kwargs):
+        current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        self.subject = kwargs["subject"]
+        self.description = kwargs["description"]
+        self.projects_id = kwargs["projects_id"]
+        self.created_by_user_id = kwargs["created_by_user_id"]
+        self.assigned_to_user_id = kwargs["assigned_to_user_id"]
+        self.created_at = current_time
+        self.updated_at = current_time
+
+    def json(self):
+        return {'id': self.id, \
+                 'subject': self.subject,\
+                 'description': self.description,\
+                 'priority': self.priority,\
+                 'projects_id': self.projects_id,\
+                 'created_by_user_id': self.created_by_user_id,\
+                 'assigned_to_user_id': self.assigned_to_user_id,\
+                 'created_at': self.created_at, \
+                 'updated_at': self.updated_at }
 
 
 class Message(Base):
