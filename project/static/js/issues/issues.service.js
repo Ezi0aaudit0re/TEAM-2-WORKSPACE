@@ -77,6 +77,26 @@ angular.module('betaApp')
 
             updateIssue: function () {
                 // TODO
+                return $http.post('/api/issue/update', {
+                        "issue": {
+                            "id": issue.id,
+                            "name": issue.name,
+                            "status": issue.status,
+                            "priority": issue.priority,
+                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            "assigned_to_user": issue.assigned_to_user
+                        }
+                    })
+                    .then(function (results) {
+                        Flash.create('success', 'Issue Updated!', 0);
+                        $log.log("Successfully updated issue: " + JSON.stringify(results));
+                        return true;
+                    })
+                    .catch(function (error) {
+                        Flash.create('danger', 'There was an issue updating the issue', 0);
+                        $log.log("error creating issue: " + error);
+                        return false;
+                    });
             }
         };
         return service;
