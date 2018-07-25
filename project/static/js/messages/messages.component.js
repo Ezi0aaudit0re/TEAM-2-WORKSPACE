@@ -18,7 +18,7 @@ angular.module('betaApp')
 
             <input type="text" ng-model="search">
             <div class="container-fluid scroll" id="chatwindow" >
-                <div ng-repeat="msg in $ctrl.messages | filter:{msg: search}" class="row">
+                <div ng-repeat="msg in $ctrl.messages | filter:search" class="row">
 
                         <span class="pull-right">{{msg.timestamp}}</span>
                         <span class="col-sm-3">{{msg.username}}:</span>
