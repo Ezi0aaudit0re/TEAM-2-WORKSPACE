@@ -13,6 +13,7 @@ angular.module('betaApp')
                         console.log(response);
                         var code = response.data.code;
                         var msg = response.data.message;
+
                         if (code === 404) {
                             Flash.create('info', msg, 3000);
                             return [{
@@ -54,7 +55,7 @@ angular.module('betaApp')
                             Flash.create('danger', msg, 3000);
                             return false;
                         } else {
-                            Flash.create('success', msg, 3000);
+                            // Flash.create('success', msg, 3000);
                             $log.log("Successfully posted message: " + JSON.stringify(response));
                             return true;
                         }
