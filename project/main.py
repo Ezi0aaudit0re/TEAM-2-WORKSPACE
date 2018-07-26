@@ -130,11 +130,10 @@ def create_project():
 
 # get user info
 @app.route(url_pre + '/getUserInfo', methods=["POST"])
-#@login_required
+@login_required
 def get_user_info():
 
-    #user_id = request.get_json()['userId']
-    user_id = 19
+    user_id = request.get_json()['userId']
 
     return database_wrapper.UserDB().get_user_info(user_id)
     
@@ -143,6 +142,7 @@ def get_user_info():
 @app.route(url_pre + '/addMember', methods=["POST"])
 @login_required
 def add_member():
+     #TODO
 
     #data = request.get_json()
     json_data = {'email': "test3@test.com", 'project_id': 33}
@@ -167,9 +167,6 @@ def get_project():
 @login_required
 def basic_info():
 
-    #if session.get("user") is None:
-        #return jsonify({"code": 500, "meessage": "Internal server error"})
-
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
     result = database_wrapper.UserDB().get_user_data(session['user_id'])
@@ -187,7 +184,6 @@ def store_message():
 
     
     data = request.get_json()['messages']
-    print(data)
 
     # json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
@@ -205,10 +201,9 @@ def store_message():
 def retrieve_messages():
 
     data = request.get_json()
-    print("Retrieving message")
-    print(data)
 
     result = database_wrapper.MessageDB().retrieve_messages(data['project_id'])
+
 
     return result
 

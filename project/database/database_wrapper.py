@@ -300,10 +300,12 @@ class MessageDB:
             else:
                 for message in messages:
                     outputMessage = {'timestamp': message.json()['created_at'], \
-                        'username': message.json()['user_id'], \
+                        'username': db.session.query(User.first_name, User.last_name, User.id).filter((User.id == message.users_id)).first(), \
                         'msg': message.json()['msg']}
 
                     json_messages.append(outputMessage)
+
+            print(json_messages)
 
 
             return jsonify({'code': 200, 'message': "Success", \

@@ -21,7 +21,7 @@ angular.module('betaApp')
                 <div ng-repeat="msg in $ctrl.messages | filter:search" class="row">
 
                         <span class="pull-right">{{msg.timestamp}}</span>
-                        <span class="col-sm-3">{{msg.username}}:</span>
+                        <span class="col-sm-3">{{msg.username[0] + " " + msg.username[1]}}:</span>
                         
 
                     <p class="col-sm-5">{{msg.msg}}</p>
