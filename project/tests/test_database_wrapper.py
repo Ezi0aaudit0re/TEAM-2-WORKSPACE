@@ -36,6 +36,18 @@ class BaseClass(unittest.TestCase):
             response = self.client.post('/api/getBasicInfo')
             response = json.loads(response.data)
             return response
+
+    """
+        This method gets the id based on the table its provided 
+        Eg if Project table is provided it gets the Project id 
+           if User table is specified it gets the User ID
+        :param: table -> The table to target
+        :param: kwargs -> The key value argument to target as filter
+    """
+    def get_id(self, table, kwargs):
+        key = list(kwargs.keys())[0]
+        value = list(kwargs.values())[0]
+        return db.session.query(table.id).filter((key == value)).first()[0]
     
 
 
@@ -73,9 +85,20 @@ class UserDBTest(BaseClass):
         super().setUp()
 
 
+
     def test_create_user(self):
         response = super().create_user()
         self.assertEqual(response['code'], 200, msg="{}".format(response))
+
+    def test_get_user_info(self):
+        from database.models import User
+        super().create_user()
+        super().authenticate_user()
+        # make the request
+        params = {'userId': super().get_id(User, {User.email_id: self.new_user['email_id']})}
+        response = super().make_request('/api/getUserInfo')
+        
+        self.assertIsNotNone(response['data']['id'], "Problem in get User Info method")
 
     def test_create_existing_user(self):
         super().create_user()
