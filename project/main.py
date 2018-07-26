@@ -128,6 +128,17 @@ def create_project():
         return result
 
 
+# get user info
+@app.route(url_pre + '/getUserInfo', methods=["POST"])
+#@login_required
+def get_user_info():
+
+    #user_id = request.get_json()['userId']
+    user_id = 19
+
+    return database_wrapper.UserDB().get_user_info(user_id)
+    
+
 # route to add members to the project
 @app.route(url_pre + '/addMember', methods=["POST"])
 @login_required

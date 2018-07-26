@@ -83,6 +83,20 @@ class UserDB:
             return False
 
 
+    """
+        This method gets the user info
+        :param: user_id -> The id of the user to get details from
+    """
+    def get_user_info(self, user_id):
+        try:
+            result = database_helper.get_data(self.table, {self.table.id: user_id})
+            return jsonify({"code": 200, "message": "success", "data": result.json()})
+        except Exception as e:
+            print("Problem in get_user_info method")
+            print(str(e))
+            return jsonify({'code': 404, 'message': "User doesnot Exist"})
+
+
 
     """
         This method gets the basic user data
