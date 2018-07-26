@@ -140,7 +140,7 @@ class ProjectDBTest(BaseClass):
         self.new_project = {'name': 'Automated Test',\
                             'description': 'Automated Description',\
                             'admin_id': user['data']['id'], \
-                            'users':['anagpal4@bu.edu']
+                            'users':[{'email': 'anagpal4@bu.edu'}]
                            }
 
 
@@ -151,7 +151,7 @@ class ProjectDBTest(BaseClass):
         self.assertEqual(response["code"], 200, "Problem creating a project")
 
     def test_create_new_project_with_unknown_email(self):
-        self.new_project["users"] = ["unknown@fail.com"]
+        self.new_project["users"] = [{'email': "unknown@fail.com"}]
         response = super().make_request('/api/project/new', json.dumps({"project": self.new_project}))
         self.assertEqual(response["code"], 404, "Problem testing adding user that doesnot exist")
 
@@ -169,7 +169,7 @@ class ProjectDBTest(BaseClass):
     def test_get_project(self):
         # create a project and then gets it id 
         self.test_create_new_project()
-        params = json.dumps({'project_id': self.get_project_id()})
+        params = json.dumps({'projectID': self.get_project_id()})
         response = super().make_request('/api/project', params) 
         self.assertEqual(response['data']['name'], self.new_project['name'], "Problem retrieving new project")
 
@@ -208,7 +208,7 @@ class ProjectDBTest(BaseClass):
         # get project id 
 
 
-        params = {'email': self.new_user["email_id"], 'project_id': 13 } 
+        params = {'email': self.new_user["email_id"], 'projectID': 13 } 
 
         super().make_request('/api/addMember', params)
         

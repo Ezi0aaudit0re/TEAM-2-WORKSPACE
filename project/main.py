@@ -170,7 +170,7 @@ def basic_info():
 ################### Message api calls ################
 
 @app.route(url_pre + '/storeMessage', methods=["POST"])
-#@login_required
+@login_required
 def store_message():
 
     
@@ -193,6 +193,8 @@ def store_message():
 def retrieve_messages():
 
     data = request.get_json()
+    print("Retrieving message")
+    print(data)
 
     result = database_wrapper.MessageDB().retrieve_messages(data['project_id'])
 
@@ -220,11 +222,11 @@ def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    data = request.get_json()
-    task = data['task']
-    print(data)
+    task = request.get_json()['task']
+    project_id = request.get_json()['project_id']
+
     json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': data['project_id'] }
+                 'due_date': task['due_date'], 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
@@ -253,6 +255,7 @@ def get_assigned_task_by_project():
     # this method gets all the task assigned to a user
 
     data = request.get_json()
+    print(data)
 
     return database_wrapper.TaskDB().get_task_by_project(data['project_id'])
 

@@ -198,7 +198,7 @@ angular.module('betaApp')
                             "status": task.status,
                             "priority": task.priority,
                             "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-                            "assigned_to_user": task.assigned_to_user
+                            "assigned_to_user": task.assigned_to_user,
                         }
                     })
                     .then(function (results) {
