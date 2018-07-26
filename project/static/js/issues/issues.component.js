@@ -1,7 +1,8 @@
 angular.module('betaApp')
     .component('issues', {
         bindings: {
-            issues: '<'
+            issues: '<',
+            projectId: '<'
         },
 
         template: `
@@ -39,10 +40,15 @@ angular.module('betaApp')
                         </div>
                         <div class="modal-body">
                             <form>
-                                <label for="inputIssueSubject" class="sr-only">Issue Subject</label>
+                                <label for="inputIssueSubject" class="">Issue Subject</label>
                                 <input type="text" id="inputIssueSubject" class="form-control" placeholder="Issue Subject" required autofocus ng-model="$ctrl.issue.subject">
-                                <label for="inputIssueDescription" class="sr-only">Issue Description</label>
+                                <label for="inputIssueDescription" class="">Issue Description</label>
                                 <input type="text" id="inputIssueDescription" class="form-control" placeholder="Issue Description" required autofocus ng-model="$ctrl.issue.description">
+                            
+                                <label for="inputIssueUser" class="">Issue User</label> 
+                                <input type="email" id="inputIssueUser" class="form-control" required 
+                                    placeholder="Enter email address of assigned user" autofocus 
+                                    ng-model="$ctrl.issue.user.email" value='' />
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -55,7 +61,7 @@ angular.module('betaApp')
             
         `,
 
-        controller: function ($log, IssuesService) {
+        controller: function (IssuesService) {
             // TODO
 
             this.getIssuesForUser = function () {
@@ -64,7 +70,7 @@ angular.module('betaApp')
 
             this.createNewIssue = function () {
                 // TODO
-                IssuesService.postNewIssue();
+                IssuesService.postNewIssue(this.projectId, this.issue);
             };
         }
     });

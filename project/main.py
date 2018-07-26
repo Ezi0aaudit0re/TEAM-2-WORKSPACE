@@ -19,6 +19,7 @@ from database.models import *
 from database.schemas import *
  # login authentication extension
 from flask_login import login_user, login_required, logout_user
+from flask import json
 
 
 @app.route('/') # home page
@@ -177,9 +178,9 @@ def store_message():
     data = request.get_json()['messages']
     print(data)
 
-    json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
+    # json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
-                 {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
+    #              {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
 
     result = database_wrapper.MessageDB().create_messages(data)
 
@@ -201,19 +202,50 @@ def retrieve_messages():
     return result
 
 
+####################### Issue Routes ########################  
 
+@app.route(url_pre + '/issue/new', methods=["POST"])
+@login_required
+def create_issue():
 
+    data = request.get_json()["issue"]
+    project_id = request.get_json()["project_id"]
 
+    print(data)
 
+    json_data = {"subject":data["subject"], \
+                "description":data["description"], \
+                "projects_id":project_id, \
+                "created_by_user_id":session["user_id"], \
+                "assigned_to_user_id":data["assigned_to_user_id"]}
 
-########################################################
+    result = database_wrapper.IssueDB().create_issue(json_data)
 
+    return result
 
+@app.route(url_pre + '/getUserIssues', methods=["POST"])
+@login_required
+def get_user_issues():
+    user_id = session["user_id"]
+    result = database_wrapper.IssueDB().get_user_issues(user_id)
     
+    return result
 
+@app.route(url_pre + '/getProjectIssues', methods=["POST"])
+def get_project_issues():
+    project_id = request.get_json()["project_id"]
+    result = database_wrapper.IssueDB().get_project_issues(project_id)
+    return result
 
+@app.route(url_pre + '/getIssue', methods=["POST"])
+@login_required
+def get_issue_details():
+    data = request.get_json()
 
+    result = database_wrapper.IssueDB().get_issue_details(data['issue_id'])
 
+    return result
+    
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])

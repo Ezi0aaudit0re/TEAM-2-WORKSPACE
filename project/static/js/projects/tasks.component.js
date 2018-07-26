@@ -38,8 +38,9 @@ angular.module('betaApp')
                             </button>
                             <flash-message name="flash-newtask"></flash-message>
                         </div>
-                        <div class="modal-body">
-                            <form>
+                        <form>
+                            <div class="modal-body">
+                            
                                 <label for="inputTaskName" class="">Task Name</label>
                                 <input type="text" id="inputTaskName" class="form-control" 
                                     placeholder="Task Name" required autofocus 
@@ -65,11 +66,12 @@ angular.module('betaApp')
                                     placeholder="Enter email address of assigned user" autofocus 
                                     ng-model="$ctrl.task.user.email" value='' />
 
+                            
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" ng-click="$ctrl.createNewTask()">Create New Task</button>
                             </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" ng-click="$ctrl.createNewTask()">Create New Task</button>
                         </div>
                     </div>
                 </div>

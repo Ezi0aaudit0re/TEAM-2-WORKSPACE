@@ -9,8 +9,16 @@ angular.module('betaApp')
             <h3>
                 Messages
             </h3>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success btn-filter" data-target="green">Green</button>
+                <button type="button" class="btn btn-warning btn-filter" data-target="yellow">Yellow</button>
+                <button type="button" class="btn btn-danger btn-filter" data-target="red">Red</button>
+                <button type="button" class="btn btn-default btn-filter" data-target="all">All</button>
+            </div>
+
+            <input type="text" ng-model="search">
             <div class="container-fluid scroll" id="chatwindow" >
-                <div ng-repeat="msg in $ctrl.messages" class="row">
+                <div ng-repeat="msg in $ctrl.messages | filter:search" class="row">
 
                         <span class="pull-right">{{msg.timestamp}}</span>
                         <span class="col-sm-3">{{msg.username}}:</span>
@@ -21,7 +29,8 @@ angular.module('betaApp')
             </div>
         
             <form ng-submit="$ctrl.createMessage()">
-                <input type="text" id="message" ng-model="$ctrl.message" placeholder="...">
+                <input type="text" id="message" ng-model="$ctrl.message" placeholder="Type your message here">
+                
                 <input class="btn btn-primary" type="submit" value="Submit">
             </form>
             <button ui-sref="projects.project">Close Messages</button>
@@ -29,8 +38,6 @@ angular.module('betaApp')
     `,
 
         controller: function ($log, $scope, loc, MessagesService, $state, $interval) {
-
-
 
             var userName = $scope.$parent.$resolve.user.user_name;
 
@@ -64,10 +71,10 @@ angular.module('betaApp')
                 $('#chatwindow').scrollTop($('#chatwindow')[0].scrollHeight);
             });
 
-            socket.on('message', function (msg, timestamp) {
+            socket.on('message', function (msg, timestamp, user) {
                 $log.log(msg);
                 // notification
-                notifyMe(msg, userName);
+                notifyMe(msg, user);
 
                 // update view immediately
                 $scope.$ctrl.messages.push({

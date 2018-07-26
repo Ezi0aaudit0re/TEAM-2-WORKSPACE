@@ -44,7 +44,7 @@ angular.module('betaApp')
                         <form name="newProjectForm" ng-submit="">
                             <div class="modal-body">
 
-                                <label for="inputProjectName" class="y">Project Name</label>
+                                <label for="inputProjectName" class="">Project Name</label>
                                 <input type="text" id="inputProjectName" class="form-control" 
                                     placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
                                 
@@ -52,9 +52,8 @@ angular.module('betaApp')
                                 <input type="text" id="inputProjectDescription" class="form-control" 
                                     placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
 
-
-                                    <span ng-repeat="user in $ctrl.project.users">
-                                    <label for="inputProjectUser" class="sr-only">Project Users</label> 
+                                <label for="inputProjectUser" class="">Project Users</label>
+                                <span ng-repeat="user in $ctrl.project.users">
                                     <input type="email" id="inputProjectUser" class="form-control" required 
                                         placeholder="Enter email address of user to add" autofocus 
                                         ng-model="$ctrl.project.users[$index].email" value='' />

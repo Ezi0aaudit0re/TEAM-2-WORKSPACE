@@ -11,6 +11,7 @@ from database.schemas import *
 import helper
 import database.database_helper as database_helper
 from flask import jsonify, session
+import time
 
 
 
@@ -45,7 +46,7 @@ class UserDB:
             db.session.add(user) # add in the queue
             db.session.commit() # commit to the database
             return {"code": 200, "message": "User successfully created. Please login to view your dashboard"}
-            
+
 
         except Exception as e:
             print("error occured when creating a user")
@@ -53,7 +54,7 @@ class UserDB:
             return False
 
     """
-       This method is used to get the instace of the user 
+       This method is used to get the instace of the user
        :param: data -> THe json data used to match username and password
        :return: id -> The id of the user
     """
@@ -95,7 +96,7 @@ class UserDB:
             session['user'] = data.json()
             return jsonify({"code": 200, "message": "Success", "data": data.json()})
 
-    
+
 
 
 
@@ -120,7 +121,7 @@ class ProjectDB:
     """
     def create_project(self, kwargs):
         try:
-            # check if the prorject by the same id created
+            # check if the project by the same id created
             instance = database_helper.get_data(self.table, {self.table.name: kwargs["name"], self.table.admin_id: kwargs["admin_id"]})
 
             if instance:
@@ -197,8 +198,8 @@ class ProjectDB:
 
     """
         This method gets all the projects associated with a user
-        :param: user_id -> THe id of the user
-        :return: all the information about the projects 
+        :param: user_id -> The id of the user
+        :return: all the information about the projects
     """
     def get_projects(self, user_id):
 
@@ -212,7 +213,7 @@ class ProjectDB:
 
     """
         Get a SINGLE project
-        :param: project_id -> THe id of the project to get
+        :param: project_id -> The id of the project to get
         :param: user_id -> The id of the user requesting the project
     """
     def get_project(self, project_id, user_id):
@@ -239,7 +240,7 @@ class MessageDB:
         self.table = Message
 
     """
-        This method gets various messages 
+        This method gets various messages
         loops through them and inserts each one into the database
     """
     def create_messages(self, data):
@@ -256,7 +257,7 @@ class MessageDB:
 
             db.session.commit()
 
-            return jsonify({'code': 200, 'message': "Succeess"})
+            return jsonify({'code': 200, 'message': "Success"})
 
         except Exception as e:
 
@@ -281,10 +282,14 @@ class MessageDB:
             
 
             if messages is None:
-                return jsonify({'code': 404, "message": "There arer no messages in this project"})
+                return jsonify({'code': 404, "message": "There are no messages in this project"})
             else:
                 for message in messages:
-                    json_messages.append(message.json())
+                    outputMessage = {'timestamp': message.json()['created_at'], \
+                        'username': message.json()['user_id'], \
+                        'msg': message.json()['msg']}
+
+                    json_messages.append(outputMessage)
 
 
             return jsonify({'code': 200, 'message': "Success", \
@@ -353,12 +358,12 @@ class TaskDB:
 
 
             else:
-                return jsonify({'code': 404, 'message': 'Project with the specified ID doesenot exist'})
+                return jsonify({'code': 404, 'message': 'Project with the specified ID does not exist'})
 
         except Exception as e:
-            print("Error occured when creating a task in databae_wrapper")
+            print("Error occured when creating a task in database_wrapper")
             print(str(e))
-            return jsonify({'code': 500, 'message': 'Internal Server eror'})
+            return jsonify({'code': 500, 'message': 'Internal Server error'})
 
 
     """
@@ -374,7 +379,7 @@ class TaskDB:
             else:
                 return jsonify({'code': 404, 'message': 'Task with the particular ID does not exist'})
         except Exception as e:
-            print("Error occured when retrieving a task in databae_wrapper")
+            print("Error occured when retrieving a task in database_wrapper")
             print(str(e))
             return jsonify({'code': 500, 'message': 'Internal Server eror'})
 
@@ -432,4 +437,150 @@ class TaskDB:
 
 
 
+"""
+    This class deals with all the database methods related to project
+"""
+class IssueDB:
 
+    def __init__(self):
+        self.table = Issue
+    """
+        This method crreates an issue in the database
+        :param: kwargs -> key value arguments of the colums in the table
+        :return: True/False
+    """
+    def create_issue(self, kwargs):
+        try:
+            #check project exists and user is assigned to that project
+            projects = database_helper.get_data(Project, {Project.id:kwargs["projects_id"]})
+            if projects == None: 
+                return jsonify({"code":404, "message":"Project does not exist"})
+
+            user_ids = [user.id for user in projects.users] 
+            user_ids.append(int(projects.admin_id))
+
+            if kwargs["created_by_user_id"] not in user_ids:
+                return jsonify({"code":404, "message": "Creating user is not assigned to the project"})
+
+            if kwargs["assigned_to_user_id"] not in user_ids:
+                return jsonify({"code":404, "message": "Assigned to user is not assigned to the project"})
+
+            issue = self.table(subject=kwargs["subject"], \
+            description=kwargs["description"], \
+            projects_id=kwargs["projects_id"], \
+            created_by_user_id=kwargs["created_by_user_id"],\
+            assigned_to_user_id=kwargs["assigned_to_user_id"])
+
+            db.session.add(issue) # add in the queue
+            db.session.commit() # commit to the database
+
+            return jsonify({"code": 200, "message": "Successfully created issue"})
+
+        except Exception as e:
+            print("error occured when creating a issue")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error occured creating issue: {}".format(str(e))})
+
+
+
+    """
+        This method gets all the issues associated with a user, filtered by created_by_user_id, or assigned_to_user_id
+        :param: user_id -> THe id of the user
+        :param: user_type -> (assigned_to_user, created_by)
+        :return: all issues assigned to user: subject, priority, project_id, status, created_by_user_id, created_at, updated_at
+    """
+    def get_user_issues(self, user_id, user_type_filter=None):
+        try:
+            if user_type_filter == None:
+                data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id})
+            else:              
+                data = database_helper.get_data(self.table, {user_type_filter:user_id}, False)
+                #data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
+            if data == None:
+                return jsonify({"code": 404, "message": "No issue assigned to user"})
+            else:
+                return jsonify({"code":200, "message": "Successfully retrieved user issues", "data":data})
+            
+        except Exception as e:
+            print("error getting user issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code": 500, "message": "Error getting user Issues"})
+    
+    """
+        This method gets all issue details
+        :param: issue_id -> The id of the issue
+        :return: subject, description, priority, project_id, status, assigned_to_user_id, updated_at
+    """
+    def get_issue_details(self, issue_id):
+        try:
+            data = database_helper.get_data(self.table, {self.table.id:issue_id})
+            if data == None:
+                return jsonify({"code":404, "message":"No issue with given issue id"})
+            else:
+                return jsonify({"code":500, "message":"Successfully retrieved issue details"})
+            return jsonify({"code":200, "message":"success", "data":data})
+        except Exception as e:
+            print("error getting user issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message":"Error getting Issue details"})
+
+    """
+        This method gets all issues in a project. No care for issue status
+        :param: project_id
+        :return: issues
+    """
+
+    def get_project_issues(self, projects_id):
+
+        try:
+
+            #check if project exists
+            project = database_helper.get_data(Project, {Project.id:projects_id})
+
+            if project == None:
+                return jsonify({"code":404, "message":"No project with given id"})
+            
+            data = database_helper.get_data(self.table, {self.table.projects_id:projects_id}, False)
+
+            return jsonify({"code":200, "message":"Successfully retrived issues", "data":data})
+        
+        except Exception as e:
+            print("error getting project issues")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message": "Error getting project issues"})
+    
+    """
+        This method updates an issue priority, status, tested
+        :param: issue_id, field, value to update
+        :return: success on update or appropriate error
+    """
+    
+    def update_issue(self, issue_id, kwargs):
+
+        try:
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+            valid_keys = ("priorty","status","tested")
+            keys = list(kwargs.keys())
+
+            for key in keys:
+                if key not in valid_keys:
+                    return jsonify({"code":404, "message":"Invalid field"})
+            
+            issue = database_helper.get_data(self.table, {self.table.id:issue_id})
+
+            if issue == None:
+                return jsonify({"code":404, "message":"No issue exists with given id"})
+            #TODO: check validy of values (priority=>(0,1,2), status=>(0,1,2), test=>(0,1,2))
+            issue.update(kwargs)
+            issue.updated_at = current_time
+            db.session.commit()
+            
+        except Exception as e:
+            print("error updating issue")
+            db.session.rollback()
+            print(str(e))
+            return jsonify({"code":500, "message": "Error updating issue"})

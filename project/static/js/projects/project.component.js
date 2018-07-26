@@ -34,6 +34,16 @@ angular.module('betaApp')
                         Update Date: 
                         <input type="text" class="form-control" readonly ng-model="$ctrl.project.updated_date" />
                     </div>
+
+                    <label for="inputProjectUser" class="">Project Users</label>
+                    <span ng-repeat="user in $ctrl.project.users">    
+                                    <input type="email" id="inputProjectUser" class="form-control" required ng-readonly="$ctrl.readonly"
+                                        placeholder="Enter email address of user to add" autofocus 
+                                        ng-model="$ctrl.project.users[$index].email" value='' />
+                                    <button class="btn btn-danger" ng-show="$last && !$ctrl.readonly" ng-click="$ctrl.removeUserFromProject()">-</button>
+                    </span>
+                    <button type="button" class="btn btn-primary" ng-show="!$ctrl.readonly" ng-click="$ctrl.addUserToProject()">Add a user</button>
+
                 </form>
                 <div>
                     <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateProject()">
@@ -52,9 +62,19 @@ angular.module('betaApp')
             
             
             `,
-        controller: function ($log) {
+        controller: function (ProjectsService) {
 
             this.readonly = true;
+
+            this.addUserToProject = function () {
+                // push an empty object to create blank field
+                this.project.users.push({});
+            };
+
+            this.removeUserFromProject = function () {
+                // remove the last entry
+                this.project.users.splice(this.project.users.length - 1);
+            };
 
             this.edit = function () {
                 this.readonly = !this.readonly;
