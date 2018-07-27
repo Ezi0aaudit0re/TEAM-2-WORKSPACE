@@ -1,11 +1,13 @@
 function checkIfSuccess(data) {
-
-  if (data.code == 200) {
-    console.log("Success");
-    console.log(data.data);
+  if (data.code === 200) {
+    return true;
   } else {
-    console.log("Error");
+    return false;
   }
+}
+
+function convertISODatetimeToMySQLString(d) {
+  return new Date(d).toISOString().slice(0, 19).replace('T', ' ');
 }
 
 

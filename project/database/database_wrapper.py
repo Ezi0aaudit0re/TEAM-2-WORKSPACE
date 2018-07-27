@@ -431,7 +431,7 @@ class TaskDB:
             return database_helper.check_exists_and_return_json(task_list, 'There are no tasks')
 
         except Exception as e:
-            msg = "Error occured when retrieving users in databae_wrapper"
+            msg = "Error occurred when retrieving tasks in database_wrapper"
             return database_helper.exception(msg, e)
     
 

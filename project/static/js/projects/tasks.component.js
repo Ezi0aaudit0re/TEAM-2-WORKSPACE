@@ -15,9 +15,9 @@ angular.module('betaApp')
                     </button>
                 </h3>
                 <ul>
-                    <li ng-repeat="task in $ctrl.tasks">
-                        <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: task.id })">
-                            {{task.name}}: {{task.status}}
+                    <li ng-repeat="t in $ctrl.tasks">
+                        <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: t.id })">
+                            {{t.name}}: {{t.status}}
                         </a>
                     </li>
                 </ul>
@@ -59,7 +59,7 @@ angular.module('betaApp')
                                 <label for="inputTaskDueDate" class="">Task Due Date</label>
                                 <input type="date" id="inputTaskDueDate" class="form-control" 
                                     placeholder="" required autofocus 
-                                    ng-model="$ctrl.task.due_date">
+                                    ng-model="$ctrl.task.dueDate">
 
                                 <label for="inputTaskUser" class="">Task User</label> 
                                 <input type="email" id="inputTaskUser" class="form-control" required 
@@ -78,7 +78,7 @@ angular.module('betaApp')
             </div>
         `,
 
-        controller: function ($log, ProjectsService) {
+        controller: function (ProjectsService) {
             // TODO
 
             this.getTasksForUser = function () {
@@ -86,11 +86,12 @@ angular.module('betaApp')
             };
 
             this.createNewTask = function () {
-                $log.log(this.task);
+                console.log(this.task);
 
-                $log.log(this.projectId);
+                console.log(this.projectId);
 
                 ProjectsService.postNewTask(this.projectId, this.task);
+                console.log(this.task);
             };
         }
     });

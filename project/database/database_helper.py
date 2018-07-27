@@ -52,6 +52,15 @@ def exception(msg, e):
     It returns json also
 """
 def check_exists_and_return_json(data, msg):
+    # convert lists to JSON arrays
+    jsonData = []
+    if type(data) is list:
+        for item in data:
+            jsonData.append(item.json())
+    else:
+        # single item
+        jsonData = data.json()
+
     if data:
         return jsonify({'code': 200, 'message': 'Success',\
                         'data': data.json() if isinstance(data, list) is False else data })

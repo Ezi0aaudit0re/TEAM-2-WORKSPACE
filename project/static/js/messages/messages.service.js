@@ -1,10 +1,10 @@
 angular.module('betaApp')
     .service('MessagesService', function ($http, $log, Flash) {
         var service = {
-            getMessages: function (id) {
+            getMessages: function (projectId) {
                 // called on page load to get all user projects
                 return $http.post("/api/messages", {
-                        "project_id": id
+                        "projectId": projectId
                     }, {
                         cache: true,
                         timeout: 3000
@@ -13,6 +13,7 @@ angular.module('betaApp')
                         console.log(response);
                         var code = response.data.code;
                         var msg = response.data.message;
+
                         if (code === 404) {
                             Flash.create('info', msg, 3000);
                             return [{
@@ -54,7 +55,7 @@ angular.module('betaApp')
                             Flash.create('danger', msg, 3000);
                             return false;
                         } else {
-                            Flash.create('success', msg, 3000);
+                            // Flash.create('success', msg, 3000);
                             $log.log("Successfully posted message: " + JSON.stringify(response));
                             return true;
                         }

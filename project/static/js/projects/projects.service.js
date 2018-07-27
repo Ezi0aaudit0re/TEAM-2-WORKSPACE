@@ -5,7 +5,6 @@ angular.module('betaApp')
         var service = {
             getBasicInfo: function () {
                 // called on page load to get all user projects 
-                // DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
                 return $http.post("/api/getBasicInfo", {
                         cache: true,
                         timeout: 3000
@@ -48,10 +47,13 @@ angular.module('betaApp')
                     });
             },
 
-            getProject: function (id) {
+            getProject: function (projectId) {
                 // called on click of project to get details
-                return $http.post("api/project", {
-                        "projectId": id
+                return $http.post("api/project", { <<
+                        << << < HEAD "projectId": projectId ===
+                            === =
+                            "projectId": id >>>
+                            >>> > e12a7bee125b6bda423386a28dac85032762e522
                     }, {
                         cache: true,
                         timeout: 3000
@@ -77,7 +79,7 @@ angular.module('betaApp')
             getTasks: function (projectId) {
                 // called on click of tasks for a project
                 return $http.post("/api/getTasks", {
-                        "project_id": projectId
+                        "projectId": projectId
                     }, {
                         cache: true,
                         timeout: 3000
@@ -103,7 +105,7 @@ angular.module('betaApp')
             getTask: function (projectId, taskId) {
                 // called on click of task to get details
                 return $http.post("/api/Task/Project", {
-                        "task_id": taskId
+                        "taskId": taskId
                     }, {
                         cache: true,
                         timeout: 3000
@@ -147,15 +149,21 @@ angular.module('betaApp')
 
             postNewTask: function (projectId, task) {
                 return $http.post('/api/newTask', {
-                        "project_id": projectId,
+                        "projectId": projectId,
                         "task": task
                     })
                     .then(function (results) {
-                        var code = results.data.code;
-                        var msg = results.data.message;
-                        Flash.create('success', msg, 0);
-                        $log.log("Successfully created task: " + JSON.stringify(results));
-                        $('#newTaskModal').modal('hide');
+                        var success = checkIfSuccess(results);
+                        var msg = results.data.msg;
+                        if (success) {
+                            Flash.create('success', msg, 0);
+                            $('#newTaskModal').modal('hide');
+                        } else {
+                            Flash.create('danger', msg, 0, {
+                                container: 'flash-newtask'
+                            });
+                        }
+
                         return true;
                     })
                     .catch(function (error) {
@@ -173,7 +181,7 @@ angular.module('betaApp')
                         "project": {
                             "id": project.id,
                             "status": project.status,
-                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            "updated_date": new Date(),
                             "users_id": project.users_id
                         }
                     })
@@ -198,7 +206,7 @@ angular.module('betaApp')
                             "name": task.name,
                             "status": task.status,
                             "priority": task.priority,
-                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            "updated_date": new Date(),
                             "assigned_to_user": task.assigned_to_user,
                         }
                     })

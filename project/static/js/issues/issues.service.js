@@ -6,7 +6,7 @@ angular.module('betaApp')
             getIssues: function (projectId) {
                 // called on page load to get all project issues
                 return $http.post("/api/getProjectIssues", {
-                        "project_id": projectId
+                        "projectId": projectId
                     }, {
                         cache: true,
                         timeout: 3000
@@ -30,7 +30,7 @@ angular.module('betaApp')
             getIssue: function (issueId) {
                 // called on click of issue to get details
                 return $http.post("/api/getIssue", {
-                        "issue_id": issueId
+                        "issueId": issueId
                     }, {
                         cache: true,
                         timeout: 3000
@@ -55,7 +55,7 @@ angular.module('betaApp')
             postNewIssue: function (projectId, issue) {
                 return $http.post('/api/issue/new', {
                         "issue": issue,
-                        "project_id": projectId
+                        "projectId": projectId
                     })
                     .then(function (results) {
                         var code = results.data.code;

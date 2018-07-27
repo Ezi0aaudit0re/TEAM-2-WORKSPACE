@@ -74,15 +74,14 @@ angular.module('betaApp')
             </div>
             `,
 
-        controller: function ($log, ProjectsService) {
-            // TODO
+        controller: function (ProjectsService) {
+
 
             this.project = {};
             this.project.users = [];
 
             this.addUserToProject = function () {
                 // push an empty object to create blank field
-                $log.log(this.project.users);
                 this.project.users.push({});
             };
 
@@ -93,11 +92,9 @@ angular.module('betaApp')
 
 
             this.newProject = function () {
-                // TODO
-
-                $log.log(this.project);
+                console.log("newProject");
                 ProjectsService.postNewProject(this.project);
-
+                console.log("newProjectDone");
             };
 
         }
