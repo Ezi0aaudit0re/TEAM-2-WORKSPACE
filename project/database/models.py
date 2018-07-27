@@ -46,7 +46,7 @@ class Project(Base):
                 'createdDate': self.created_at,\
                 'updatedDate': self.updated_at,\
                 'admin': self.admin_id,\
-                'users': [{"name": user.first_name + " " + user.last_name, "id": user.id, "email": user.email_id } for user in self.users]
+                'users': [{"name": user.first_name + " " + user.last_name, "id": user.id, 'email': user.email_id } for user in self.users]
                }
 
 class User(UserMixin, Base):
