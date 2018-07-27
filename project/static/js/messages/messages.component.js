@@ -28,10 +28,10 @@ angular.module('betaApp')
                 </div>
             </div>
         
-            <form ng-submit="$ctrl.createMessage()">
+            <form name="messageForm" ng-submit="$ctrl.createMessage()">
                 <input type="text" id="message" ng-model="$ctrl.message" placeholder="Type your message here">
                 
-                <input class="btn btn-primary" type="submit" value="Submit">
+                <input class="btn btn-primary" ng-disabled="!messageForm.$dirty" type="submit" value="Submit">
             </form>
             <button ui-sref="projects.project">Close Messages</button>
         </div>
@@ -39,7 +39,8 @@ angular.module('betaApp')
 
         controller: function ($log, $scope, loc, MessagesService, $state, $interval) {
 
-            var userName = $scope.$parent.$resolve.user.user_name;
+            var user = $scope.$parent.$resolve.user;
+            var userName = user.userName;
 
             $scope.newMessages = [];
 
@@ -49,15 +50,19 @@ angular.module('betaApp')
             // });
 
             this.createMessage = function () {
-                var msg = $('#message').val();
+                var message = {};
+
+                message.msg = $('#message').val();
+                message.datestamp = convertISODatetimeToMySQLString(new Date());
+                message.username = userName;
 
                 // send immediately
-                socket.send(msg);
+                socket.send(message);
                 // save locally to send via interval
                 $scope.newMessages.push({
-                    "user_id": $scope.$parent.$resolve.user.id,
-                    "msg": msg,
-                    "timestamp": new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    "userId": user.id,
+                    "msg": message.msg,
+                    "timestamp": message.datestamp,
                     "projectId": $scope.$parent.$resolve.project.id
                 });
                 // clear form input
@@ -67,20 +72,24 @@ angular.module('betaApp')
             var socket = io.connect(loc);
 
             socket.on('connect', function () {
-                socket.send(userName + ' has connected');
+                message.msg = userName + ' has connected';
+                message.datestamp = convertISODatetimeToMySQLString(new Date());
+                message.username = "SYSTEM";
+
+                socket.send(message);
                 $('#chatwindow').scrollTop($('#chatwindow')[0].scrollHeight);
             });
 
-            socket.on('message', function (msg, timestamp, user) {
+            socket.on('message', function (msg) {
                 $log.log(msg);
                 // notification
-                notifyMe(msg, user);
+                notifyMe(msg.msg, msg.username);
 
                 // update view immediately
                 $scope.$ctrl.messages.push({
-                    "username": userName,
-                    "msg": msg,
-                    "timestamp": new Date()
+                    "username": msg.username,
+                    "msg": msg.msg,
+                    "timestamp": msg.datestamp
                 });
 
             });

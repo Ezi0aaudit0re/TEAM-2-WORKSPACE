@@ -6,7 +6,7 @@ angular.module('betaApp')
         },
 
         template: `
-            Hi {{$ctrl.user.first_name}}!
+            Hi {{$ctrl.user.firstName}}!
             <div class="row" ng-init="">
                 <div class="projects col-sm-2 sidebar ">
                     <h1>

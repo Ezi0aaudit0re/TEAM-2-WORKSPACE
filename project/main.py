@@ -329,7 +329,9 @@ def get_assigned_task_by_user():
 ########################## Sockets for message ########################
 @socketio.on('message')
 def handle_message(msg):
-    print("Message recieved: " + msg)
+    print(msg)
+    # print("From: " + msg.username)
+    # print("At: " + msg.datestamp)
     socketio.emit('message', msg)
 
 

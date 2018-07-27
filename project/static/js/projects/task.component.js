@@ -60,7 +60,7 @@ angular.module('betaApp')
         
         `,
 
-        controller: function () {
+        controller: function (ProjectsService) {
 
             this.readonly = true;
 
