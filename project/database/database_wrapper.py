@@ -83,6 +83,20 @@ class UserDB:
             return False
 
 
+    """
+        This method gets the user info
+        :param: user_id -> The id of the user to get details from
+    """
+    def get_user_info(self, user_id):
+        try:
+            result = database_helper.get_data(self.table, {self.table.id: user_id})
+            return jsonify({"code": 200, "message": "success", "data": result.json()})
+        except Exception as e:
+            print("Problem in get_user_info method")
+            print(str(e))
+            return jsonify({'code': 404, 'message': "User doesnot Exist"})
+
+
 
     """
         This method gets the basic user data
@@ -141,7 +155,7 @@ class ProjectDB:
             # this will update the many to many table 
             # this happens through the backref 'user' in Project model 
             for email in kwargs['users']:
-                user = database_helper.get_data(User, {User.email_id: email} )
+                user = database_helper.get_data(User, {User.email_id: email['email']} )
                 if user:
                     project.users.append(user)
                 else:
@@ -286,10 +300,12 @@ class MessageDB:
             else:
                 for message in messages:
                     outputMessage = {'timestamp': message.json()['created_at'], \
-                        'username': message.json()['user_id'], \
+                        'username': db.session.query(User.first_name, User.last_name, User.id).filter((User.id == message.users_id)).first(), \
                         'msg': message.json()['msg']}
 
                     json_messages.append(outputMessage)
+
+            print(json_messages)
 
 
             return jsonify({'code': 200, 'message': "Success", \
@@ -328,15 +344,24 @@ class TaskDB:
             # check if user is a part of the project
             if project:
                 ids = [ user.id for user in project.users] 
+                
                 if kwargs['assigned_by_user_id'] not in ids:
                     return jsonify({'code': 403, 'message': 'User is not a part of the project'})
+
+                # get the user id of the user to who task is assigned to 
+                kwargs['assigned_to_user_id'] = database_helper.get_data(User, {User.email_id: kwargs['assigned_to_user_id']})
+                print(kwargs['assigned_to_user_id'])
+
+                # check if user exists
+                if kwargs['assigned_to_user_id'] is None:
+                    return jsonify({'code': 403, 'message': 'User With email id doesnot exist'})
 
                 # create the task
                 task = self.table(name=kwargs['name'],\
                                   description=kwargs['description'],\
                                   priority=kwargs['priority'],\
                                   due_date=kwargs['due_date'],\
-                                  assigned_to_user_id=kwargs['assigned_to_user_id'],\
+                                  assigned_to_user_id=kwargs['assigned_to_user_id'].id,\
                                   assigned_by_user_id=kwargs['assigned_by_user_id'],\
                                   projects_id=kwargs['project_id'],\
                                   status=kwargs['status']

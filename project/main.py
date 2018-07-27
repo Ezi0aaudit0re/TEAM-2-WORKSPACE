@@ -128,10 +128,21 @@ def create_project():
         return result
 
 
+# get user info
+@app.route(url_pre + '/getUserInfo', methods=["POST"])
+@login_required
+def get_user_info():
+
+    user_id = request.get_json()['userId']
+
+    return database_wrapper.UserDB().get_user_info(user_id)
+    
+
 # route to add members to the project
 @app.route(url_pre + '/addMember', methods=["POST"])
 @login_required
 def add_member():
+     #TODO
 
     #data = request.get_json()
     json_data = {'email': "test3@test.com", 'project_id': 33}
@@ -141,14 +152,12 @@ def add_member():
 
 
 #route to get info about a single project
-@app.route(url_pre + '/getProject', methods=["POST"])
-#@login_required
+@app.route(url_pre + '/project', methods=["POST"])
+@login_required
 def get_project():
 
+    project_id = request.get_json()['projectID']
     user_id = session['user_id']
-
-    project_id = request.get_json()['project_id']
-
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
 
@@ -157,9 +166,6 @@ def get_project():
 @app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
 @login_required
 def basic_info():
-
-    #if session.get("user") is None:
-        #return jsonify({"code": 500, "meessage": "Internal server error"})
 
     # we have our user id in session["user_id"]
     # now we get the projects that the user is a part of 
@@ -173,12 +179,11 @@ def basic_info():
 ################### Message api calls ################
 
 @app.route(url_pre + '/storeMessage', methods=["POST"])
-#@login_required
+@login_required
 def store_message():
 
     
     data = request.get_json()['messages']
-    print(data)
 
     # json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
                 
@@ -198,6 +203,7 @@ def retrieve_messages():
     data = request.get_json()
 
     result = database_wrapper.MessageDB().retrieve_messages(data['project_id'])
+
 
     return result
 
@@ -254,11 +260,11 @@ def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    data = request.get_json()
-    task = data['task']
-    print(data)
+    task = request.get_json()['task']
+    project_id = request.get_json()['project_id']
+
     json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': data['project_id'] }
+                 'due_date': task['due_date'], 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
@@ -287,6 +293,7 @@ def get_assigned_task_by_project():
     # this method gets all the task assigned to a user
 
     data = request.get_json()
+    print(data)
 
     return database_wrapper.TaskDB().get_task_by_project(data['project_id'])
 
