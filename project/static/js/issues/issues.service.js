@@ -78,13 +78,14 @@ angular.module('betaApp')
             updateIssue: function () {
                 // TODO
                 return $http.post('/api/issue/update', {
+                        "issueId": issue.id,
                         "issue": {
-                            "id": issue.id,
+
                             "name": issue.name,
                             "status": issue.status,
                             "priority": issue.priority,
-                            "updated_date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-                            "assigned_to_user": issue.assigned_to_user
+                            "updatedDate": convertISODatetimeToMySQLString(new Date()),
+                            "assignedToUser": issue.assignedToUser
                         }
                     })
                     .then(function (results) {

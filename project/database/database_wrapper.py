@@ -310,7 +310,7 @@ class MessageDB:
                 return jsonify({'code': 404, "message": "There are no messages in this project"})
             else:
                 for message in messages:
-                    outputMessage = {'timestamp': message.json()['created_at'], \
+                    outputMessage = {'timestamp': message.json()['createdAt'], \
                         'username': db.session.query(User.first_name, User.last_name, User.id).filter((User.id == message.users_id)).first(), \
                         'msg': message.json()['msg']}
 
