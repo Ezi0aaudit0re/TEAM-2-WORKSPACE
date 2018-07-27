@@ -7,6 +7,7 @@ __author__ = "TEAM BETA"
 
 import sys, os
 import time
+from datetime import datetime
 from constants import DEFAULT_TASK_STATUS, DEFAULT_TASK_PRIORITY
 
 sys.path.append(os.getcwd())
@@ -156,7 +157,7 @@ def add_member():
 @login_required
 def get_project():
 
-    project_id = request.get_json()['projectID']
+    project_id = request.get_json()['projectId']
     user_id = session['user_id']
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
@@ -202,7 +203,7 @@ def retrieve_messages():
 
     data = request.get_json()
 
-    result = database_wrapper.MessageDB().retrieve_messages(data['project_id'])
+    result = database_wrapper.MessageDB().retrieve_messages(data['projectId'])
 
 
     return result
@@ -215,7 +216,7 @@ def retrieve_messages():
 def create_issue():
 
     data = request.get_json()["issue"]
-    project_id = request.get_json()["project_id"]
+    project_id = request.get_json()["projectId"]
 
     print(data)
 
@@ -223,7 +224,7 @@ def create_issue():
                 "description":data["description"], \
                 "projects_id":project_id, \
                 "created_by_user_id":session["user_id"], \
-                "assigned_to_user_id":data["assigned_to_user_id"]}
+                "assigned_to_user_id":data["assignedToUserId"]}
 
     result = database_wrapper.IssueDB().create_issue(json_data)
 
@@ -239,7 +240,7 @@ def get_user_issues():
 
 @app.route(url_pre + '/getProjectIssues', methods=["POST"])
 def get_project_issues():
-    project_id = request.get_json()["project_id"]
+    project_id = request.get_json()["projectId"]
     result = database_wrapper.IssueDB().get_project_issues(project_id)
     return result
 
@@ -248,7 +249,7 @@ def get_project_issues():
 def get_issue_details():
     data = request.get_json()
 
-    result = database_wrapper.IssueDB().get_issue_details(data['issue_id'])
+    result = database_wrapper.IssueDB().get_issue_details(data['issueId'])
 
     return result
     
@@ -261,10 +262,12 @@ def add_task():
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
     task = request.get_json()['task']
-    project_id = request.get_json()['project_id']
+    project_id = request.get_json()['projectId']
+
+    due_date = datetime.strptime(task['dueDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
 
     json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
-                 'due_date': task['due_date'], 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
+                 'due_date': due_date, 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
@@ -275,7 +278,7 @@ def get_task():
 
     data = request.get_json()
 
-    return database_wrapper.TaskDB().get_task(data['task_id'])
+    return database_wrapper.TaskDB().get_task(data['taskId'])
 
 
 @app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])
@@ -293,9 +296,9 @@ def get_assigned_task_by_project():
     # this method gets all the task assigned to a user
 
     data = request.get_json()
-    print(data)
+    print(database_wrapper.TaskDB().get_task_by_project(data['projectId']))
 
-    return database_wrapper.TaskDB().get_task_by_project(data['project_id'])
+    return database_wrapper.TaskDB().get_task_by_project(data['projectId'])
 
 
 @app.route(url_pre + '/Task/UserAssigned', methods=['POST'])

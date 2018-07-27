@@ -28,7 +28,7 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Due Date:
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.due_date" />
+                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.dueDate" />
                 </div>
                 <div>
                     Status:
@@ -36,19 +36,19 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Created At:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.created_at" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.createdAt" />
                 </div>
                 <div>
                     Updated At:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.updated_at" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.updatedAt" />
                 </div>
                 <div>
                     Assigned To User:
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.assigned_to_user" />
+                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.assignedToUser" />
                 </div>
                 <div>
                     Assigned By User:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.assigned_by_user" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.task.assignedByUser" />
                 </div>
 
             </form>

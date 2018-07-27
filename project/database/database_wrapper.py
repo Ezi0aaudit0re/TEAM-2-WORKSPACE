@@ -412,12 +412,12 @@ class TaskDB:
             colum_as_key = self.table.assigned_to_user_id
 
         try:
-            task = database_helper.get_data(self.table, {colum_as_key: id})
+            task = database_helper.get_data(self.table, {colum_as_key: id}, False)
 
             return database_helper.check_exists_and_return_json(task, 'There are no tasks')
 
         except Exception as e:
-            msg = "Error occured when retrieving users in databae_wrapper"
+            msg = "Error occurred when retrieving tasks in database_wrapper"
             return database_helper.exception(msg, e)
     
 

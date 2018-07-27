@@ -42,8 +42,11 @@ class Project(Base):
         return {'id': self.id,\
                 'name': self.name,\
                 'description': self.description,\
+                'status': self.status,\
+                'createdDate': self.created_at,\
+                'updatedDate': self.updated_at,\
                 'admin': self.admin_id,\
-                'users': [{"name": user.first_name + " " + user.last_name, "id": user.id } for user in self.users]
+                'users': [{"name": user.first_name + " " + user.last_name, "id": user.id, "email": user.email_id } for user in self.users]
                }
 
 class User(UserMixin, Base):
@@ -83,14 +86,14 @@ class User(UserMixin, Base):
             })
 
         return {'id': self.id, \
-               'first_name': self.first_name,\
-               'last_name': self.last_name,\
-               'user_name': self.user_name,\
-               'email_id': self.email_id,\
+               'firstName': self.first_name,\
+               'lastName': self.last_name,\
+               'userName': self.user_name,\
+               'emailId': self.email_id,\
                'privilege': self.privilege,\
                'projects': serialized_projects,\
-               'created_at': self.created_at, \
-               'updated_at': self.updated_at }
+               'createdAt': self.created_at, \
+               'updatedAt': self.updated_at }
 
 
 
@@ -129,11 +132,11 @@ class Issue(Base):
                  'subject': self.subject,\
                  'description': self.description,\
                  'priority': self.priority,\
-                 'projects_id': self.projects_id,\
-                 'created_by_user_id': self.created_by_user_id,\
-                 'assigned_to_user_id': self.assigned_to_user_id,\
-                 'created_at': self.created_at, \
-                 'updated_at': self.updated_at }
+                 'projectsId': self.projects_id,\
+                 'createdByUserId': self.created_by_user_id,\
+                 'assignedToUserId': self.assigned_to_user_id,\
+                 'createdAt': self.created_at, \
+                 'updatedAt': self.updated_at }
 
 
 class Message(Base):
@@ -161,8 +164,8 @@ class Message(Base):
 
     def json(self):
         return {"msg": self.msg,\
-                "user_id": self.users_id,\
-                "created_at": self.created_at
+                "userId": self.users_id,\
+                "createdAt": self.created_at
                }
         
         
@@ -208,13 +211,14 @@ class Task(Base):
                 'name': self.name,\
                 'description': self.description,\
                 'priority': self.priority, \
-                'due_date': self.due_date,\
-                'assigned_to_user_id': self.assigned_to_user_id,\
-                'assigned_by_user_id': self.assigned_by_user_id,\
-                'projects_id': self.projects_id,\
+                'dueDate': self.due_date,\
+                'assignedToUser': db.session.query(User.email_id).filter((User.id == self.assigned_to_user_id)).first()[0], \
+                'assignedByUser': db.session.query(User.email_id).filter((User.id == self.assigned_by_user_id)).first()[0],\
+                'projectsId': self.projects_id,\
                 'status': self.status,\
+                'createdAt': self.created_at,\
+                'updatedAt': self.updated_at,\
                }
-
 
 
 class Comment(Base):

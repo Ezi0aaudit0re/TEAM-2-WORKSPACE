@@ -28,11 +28,11 @@ angular.module('betaApp')
                     </div>
                     <div ng-show="$ctrl.readonly">
                         Created Date: 
-                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.created_date" />
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.createdDate" />
                     </div>
                     <div ng-show="$ctrl.readonly">
-                        Update Date: 
-                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.updated_date" />
+                        Updated Date: 
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.updatedDate" />
                     </div>
 
                     <label for="inputProjectUser" class="">Project Users</label>

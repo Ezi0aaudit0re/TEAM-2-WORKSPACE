@@ -1,10 +1,10 @@
 angular.module('betaApp')
     .service('MessagesService', function ($http, $log, Flash) {
         var service = {
-            getMessages: function (id) {
+            getMessages: function (projectId) {
                 // called on page load to get all user projects
                 return $http.post("/api/messages", {
-                        "project_id": id
+                        "projectId": projectId
                     }, {
                         cache: true,
                         timeout: 3000

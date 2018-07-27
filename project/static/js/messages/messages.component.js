@@ -58,7 +58,7 @@ angular.module('betaApp')
                     "user_id": $scope.$parent.$resolve.user.id,
                     "msg": msg,
                     "created_at": new Date().toISOString().slice(0, 19).replace('T', ' '),
-                    "project_id": $scope.$parent.$resolve.project.id
+                    "projectId": $scope.$parent.$resolve.project.id
                 });
                 // clear form input
                 $('#message').val('');
@@ -80,7 +80,7 @@ angular.module('betaApp')
                 $scope.$ctrl.messages.push({
                     "username": userName,
                     "msg": msg,
-                    "timestamp": new Date().toISOString().slice(0, 19).replace('T', ' ')
+                    "timestamp": new Date()
                 });
 
             });
@@ -89,11 +89,11 @@ angular.module('betaApp')
             // var lastUpdate = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
             postNewMessages = function () {
-                console.log("postingnewMessages");
-                console.log($scope.newMessages);
-                var success = MessagesService.postMessages($scope.newMessages);
-                if (success) {
-                    $scope.newMessages = [];
+                if ($scope.newMessages.length > 0) {
+                    var success = MessagesService.postMessages($scope.newMessages);
+                    if (success) {
+                        $scope.newMessages = [];
+                    }
                 }
 
             };
