@@ -62,7 +62,8 @@ def check_exists_and_return_json(data, msg):
         jsonData = data.json()
 
     if data:
-        return jsonify({'code': 200, 'message': 'Success', 'data': jsonData})
+        return jsonify({'code': 200, 'message': 'Success',\
+                        'data': data.json() if isinstance(data, list) is False else data })
     else:
         return jsonify({'code': 404, 'message': msg})
 

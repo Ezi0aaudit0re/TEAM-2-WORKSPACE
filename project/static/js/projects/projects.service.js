@@ -49,8 +49,11 @@ angular.module('betaApp')
 
             getProject: function (projectId) {
                 // called on click of project to get details
-                return $http.post("api/project", {
-                        "projectId": projectId
+                return $http.post("api/project", { <<
+                        << << < HEAD "projectId": projectId ===
+                            === =
+                            "projectId": id >>>
+                            >>> > e12a7bee125b6bda423386a28dac85032762e522
                     }, {
                         cache: true,
                         timeout: 3000
@@ -82,7 +85,7 @@ angular.module('betaApp')
                         timeout: 3000
                     })
                     .then(function (response) {
-                        console.log(response.data.data);
+                        console.log(response)
                         return response.data.data;
                     })
                     .catch(function (error) {
