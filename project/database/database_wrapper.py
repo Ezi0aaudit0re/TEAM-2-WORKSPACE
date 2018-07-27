@@ -12,7 +12,7 @@ import helper
 import database.database_helper as database_helper
 from flask import jsonify, session
 import time
-
+import json
 
 
 """
@@ -155,12 +155,19 @@ class ProjectDB:
             # this will update the many to many table 
             # this happens through the backref 'user' in Project model 
             for email in kwargs['users']:
-                user = database_helper.get_data(User, {User.email_id: email['email']} )
-                if user:
-                    project.users.append(user)
-                else:
-                    db.session.rollback() # cancel the transaction
-                    return jsonify({"code": 404, "message": "User with emailID {} doesnot exist. The project was not created created".format(email)})
+                # format of email - email = {'email': 'test@email.com'} 
+                #result = self.add_members({'email': email['email']}, project)
+                #response = json.loads(result.get_data(as_text=True))
+                #if response['code'] != 200:
+                #    db.session.rollback() # cancel the transaction
+                #    return result
+
+               user = database_helper.get_data(User, {User.email_id: email['email']} )
+               if user:
+                   project.users.append(user)
+               else:
+                   db.session.rollback() # cancel the transaction
+                   return jsonify({"code": 404, "message": "User with emailID {} doesnot exist. The project was not created created".format(email)})
             
 
             # add the admin user also to the users_has_project_table
@@ -172,7 +179,7 @@ class ProjectDB:
             # commit and add to the database
             db.session.commit()
 
-            return jsonify({"code": 200, "message": "Successfully created user"})
+            return jsonify({"code": 200, "message": "Successfully created project"})
 
         except Exception as e:
             print("error occured when creating a project")
@@ -182,12 +189,16 @@ class ProjectDB:
 
     """
         This method is used to add members to the project
+        :param: kwargs - {'email': email@email.com}
+        :params: project - project object None if we just add users 
+                           not none if we use this method while creating projects
+        
     """
-    def add_members(self, kwargs):
-
+    def add_members(self, kwargs, project=None):
 
         try:
-            project = db.session.query(self.table).filter((self.table.id == kwargs["project_id"])).first()
+            if project is None:
+                project = db.session.query(self.table).filter((self.table.id == kwargs["project_id"])).first()
 
             if project:
                 user = db.session.query(User).filter((User.email_id == kwargs["email"])).first()
@@ -412,9 +423,12 @@ class TaskDB:
             colum_as_key = self.table.assigned_to_user_id
 
         try:
-            task = database_helper.get_data(self.table, {colum_as_key: id})
+            tasks = database_helper.get_data(self.table, {colum_as_key: id}, False)
+            task_list = list()
+            for task in tasks:
+                task_list.append(task.json())
 
-            return database_helper.check_exists_and_return_json(task, 'There are no tasks')
+            return database_helper.check_exists_and_return_json(task_list, 'There are no tasks')
 
         except Exception as e:
             msg = "Error occured when retrieving users in databae_wrapper"
@@ -423,6 +437,7 @@ class TaskDB:
 
 
     def get_task_by_project(self, project_id):
+        print(project_id)
 
         # call get_assigned_task method with self.table.project_id as param to colum as key
         return self.get_assigned_task(project_id, self.table.projects_id)

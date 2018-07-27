@@ -53,7 +53,8 @@ def exception(msg, e):
 """
 def check_exists_and_return_json(data, msg):
     if data:
-        return jsonify({'code': 200, 'message': 'Success', 'data': data.json()})
+        return jsonify({'code': 200, 'message': 'Success',\
+                        'data': data.json() if isinstance(data, list) is False else data })
     else:
         return jsonify({'code': 404, 'message': msg})
 

@@ -50,8 +50,8 @@ angular.module('betaApp')
 
             getProject: function (id) {
                 // called on click of project to get details
-                return $http.post("api/getProject", {
-                        "project_id": id
+                return $http.post("api/project", {
+                        "projectId": id
                     }, {
                         cache: true,
                         timeout: 3000
@@ -83,6 +83,7 @@ angular.module('betaApp')
                         timeout: 3000
                     })
                     .then(function (response) {
+                        console.log(response)
                         return response.data.data;
                     })
                     .catch(function (error) {

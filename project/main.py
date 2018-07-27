@@ -132,10 +132,14 @@ def create_project():
 @app.route(url_pre + '/getUserInfo', methods=["POST"])
 @login_required
 def get_user_info():
+    try:
 
-    user_id = request.get_json()['userId']
-
-    return database_wrapper.UserDB().get_user_info(user_id)
+        user_id = request.get_json()['userId']
+    
+        return database_wrapper.UserDB().get_user_info(user_id)
+    except Exception as e:
+        print(str(e))
+        return jsonify({'code': 500, 'message': 'Internal Server Error'})
     
 
 # route to add members to the project
@@ -156,7 +160,7 @@ def add_member():
 @login_required
 def get_project():
 
-    project_id = request.get_json()['projectID']
+    project_id = request.get_json()['projectId']
     user_id = session['user_id']
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
@@ -261,7 +265,7 @@ def add_task():
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
     task = request.get_json()['task']
-    project_id = request.get_json()['project_id']
+    project_id = request.get_json()['projectId']
 
     json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
                  'due_date': task['due_date'], 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
