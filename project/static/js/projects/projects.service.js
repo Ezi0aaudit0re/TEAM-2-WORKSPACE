@@ -83,7 +83,7 @@ angular.module('betaApp')
                         timeout: 3000
                     })
                     .then(function (response) {
-                        console.log(response)
+                        console.log(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
