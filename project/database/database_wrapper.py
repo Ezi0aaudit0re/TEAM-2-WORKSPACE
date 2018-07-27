@@ -274,9 +274,9 @@ class MessageDB:
             messages = list()
             for message in data:
                 msg = self.table(msg = message['msg'],\
-                                 user_id = message["user_id"],\
-                                 project_id = message["project_id"],\
-                                 created_at = message["created_at"]
+                                 user_id = message["userId"],\
+                                 project_id = message["projectId"],\
+                                 created_at = message["timestamp"]
                                 )
                 db.session.add(msg)
 
@@ -311,7 +311,7 @@ class MessageDB:
             else:
                 for message in messages:
                     outputMessage = {'timestamp': message.json()['createdAt'], \
-                        'username': db.session.query(User.first_name, User.last_name, User.id).filter((User.id == message.users_id)).first(), \
+                        'username': db.session.query(User.user_name).filter((User.id == message.users_id)).first()[0], \
                         'msg': message.json()['msg']}
 
                     json_messages.append(outputMessage)
