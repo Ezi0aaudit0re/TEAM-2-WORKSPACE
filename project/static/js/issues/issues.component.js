@@ -10,9 +10,7 @@ angular.module('betaApp')
                 <h3>
                     Issues
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newIssueModal">
-                        Add
-                    </button>
+                    <my-modal-button tgt="#newIssueModal"></my-modal-button>
                 </h3>
                 <ul>
                     <li ng-repeat="issue in $ctrl.issues">
@@ -33,22 +31,33 @@ angular.module('betaApp')
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="newIssueModalLabel">New Issue</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <my-modal-close></my-modal-close>
                             <flash-message name="flash-newissue"></flash-message>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form name="newIssueForm">
                                 <label for="inputIssueSubject" class="">Issue Subject</label>
-                                <input type="text" id="inputIssueSubject" class="form-control" placeholder="Issue Subject" required autofocus ng-model="$ctrl.issue.subject">
+                                <input type="text" id="inputIssueSubject" class="form-control" placeholder="Issue Subject" name="inputIssueSubject"
+                                    required autofocus ng-model="$ctrl.issue.subject">
+                                <div ng-messages="newIssueForm.inputIssueSubject.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
+                                
                                 <label for="inputIssueDescription" class="">Issue Description</label>
-                                <input type="text" id="inputIssueDescription" class="form-control" placeholder="Issue Description" required autofocus ng-model="$ctrl.issue.description">
-                            
+                                <input type="text" id="inputIssueDescription" class="form-control" placeholder="Issue Description" name="inputIssueDescription"
+                                    required autofocus ng-model="$ctrl.issue.description">
+                                <div ng-messages="newIssueForm.inputIssueDescription.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
+
                                 <label for="inputIssueUser" class="">Issue User</label> 
-                                <input type="email" id="inputIssueUser" class="form-control" required 
+                                <input type="email" id="inputIssueUser" class="form-control" required name="inputIssueUser"
                                     placeholder="Enter email address of assigned user" autofocus 
                                     ng-model="$ctrl.issue.user.email" value='' />
+
+                                <div ng-messages="newIssueForm.inputIssueUser.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -58,7 +67,7 @@ angular.module('betaApp')
                     </div>
                 </div>
             </div>
-            
+             
         `,
 
         controller: function (IssuesService) {
@@ -73,4 +82,5 @@ angular.module('betaApp')
                 IssuesService.postNewIssue(this.projectId, this.issue);
             };
         }
+
     });

@@ -1,4 +1,4 @@
-angular.module('betaApp', ['ui.router', 'ngFlash'])
+angular.module('betaApp', ['ui.router', 'ngFlash', 'ngMessages'])
 
     .constant('loc', 'http://127.0.0.1:5000')
     // .constant('loc', 'http://benongaruka.pythonanywhere.com')
@@ -103,9 +103,9 @@ angular.module('betaApp', ['ui.router', 'ngFlash'])
         // code for documentation
         if (!Notification) {
             alert('Desktop notifications not available in your browser. Try Chromium.');
-            return;
         }
 
-        if (Notification.permission !== "granted")
+        if (Notification.permission !== "granted") {
             Notification.requestPermission();
+        }
     });
