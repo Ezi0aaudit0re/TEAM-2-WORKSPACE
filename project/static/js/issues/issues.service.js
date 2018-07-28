@@ -1,86 +1,70 @@
 angular.module('betaApp')
-    .service('IssuesService', function ($http, $log, Flash) {
-        var testIssueDataLocation = "../static/js/issues/issues.json";
+    .service('IssuesService', function (UtilService, $log, Flash) {
+        var testDataLocation = "../static/js/issues/issues.json";
 
         var service = {
             getIssues: function (projectId) {
                 // called on page load to get all project issues
-                return $http.post("/api/getProjectIssues", {
+                return UtilService.post("/api/getProjectIssues", {
                         "projectId": projectId
-                    }, {
-                        cache: true,
-                        timeout: 3000
                     })
                     .then(function (response) {
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting issues: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.post(testIssueDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                return response.data.data;
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data;
+                        });
                     });
             },
 
             getIssue: function (issueId) {
                 // called on click of issue to get details
-                return $http.post("/api/getIssue", {
+                return UtilService.post("/api/getIssue", {
                         "issueId": issueId
-                    }, {
-                        cache: true,
-                        timeout: 3000
                     })
                     .then(function (response) {
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting issue: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testIssueDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                $log.log(response.data);
-                                return response.data.data[issueId];
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data[issueId];
+                        });
                     });
             },
 
             postNewIssue: function (projectId, issue) {
-                return $http.post('/api/issue/new', {
+                return UtilService.post('/api/issue/new', {
                         "issue": issue,
                         "projectId": projectId
                     })
                     .then(function (results) {
-                        var code = results.data.code;
-                        var msg = results.data.message;
-
-                        Flash.create('success', msg, 0);
-                        $log.log("Successfully created issue: " + JSON.stringify(results));
-                        $('#newIssueModal').modal('hide');
-                        return true;
+                        if (!UtilService.checkIfSuccess(response)) {
+                            Flash.create('danger', response.data.message, 3000, {
+                                container: 'flash-newissue'
+                            });
+                            return false;
+                        } else {
+                            Flash.create('success', response.data.message, 3000);
+                            $('#newIssueModal').modal('hide');
+                            $state.reload();
+                            return true;
+                        }
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue creating the issue', 0, {
-                            container: 'flash-newissue'
-                        });
-                        $log.log("error creating issue: " + error);
-                        return false;
+                        UtilService.handleErrorWithFlash(error, "creating the issue", 0, "flash-newissue");
                     });
             },
 
             updateIssue: function () {
                 // TODO
-                return $http.post('/api/issue/update', {
+                return UtilService.post('/api/issue/update', {
                         "issueId": issue.id,
                         "issue": {
-
                             "name": issue.name,
                             "status": issue.status,
                             "priority": issue.priority,
@@ -89,14 +73,11 @@ angular.module('betaApp')
                         }
                     })
                     .then(function (results) {
-                        Flash.create('success', 'Issue Updated!', 0);
-                        $log.log("Successfully updated issue: " + JSON.stringify(results));
+                        UtilService.checkIfSuccess(response);
                         return true;
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue updating the issue', 0);
-                        $log.log("error creating issue: " + error);
-                        return false;
+                        UtilService.handleErrorWithFlash(error, "creating the issue", 0);
                     });
             }
         };

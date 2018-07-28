@@ -42,7 +42,7 @@ angular.module('betaApp')
         </div>
     `,
 
-        controller: function ($scope, loc, MessagesService, $interval) {
+        controller: function (UtilService, $scope, loc, MessagesService, $interval) {
 
             var user = $scope.$parent.$resolve.user;
             var userName = user.userName;
@@ -86,7 +86,7 @@ angular.module('betaApp')
 
             socket.on('message', function (msg) {
                 // notification
-                notifyMe(msg.msg, msg.username);
+                UtilService.notifyMe(msg.msg, msg.username);
 
                 // update view immediately
                 $scope.$ctrl.messages.push({

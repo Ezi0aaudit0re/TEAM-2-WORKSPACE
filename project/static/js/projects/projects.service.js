@@ -1,181 +1,134 @@
 angular.module('betaApp')
-    .service('ProjectsService', function ($http, $log, Flash, $state) {
-        var testProjDataLocation = "../static/js/projects/projects.json";
+    .service('ProjectsService', function (UtilService, $log, Flash, $state) {
+        var testDataLocation = "../static/js/projects/projects.json";
 
         var service = {
             getBasicInfo: function () {
                 // called on page load to get all user projects 
-                return $http.post("/api/getBasicInfo", {
-                        cache: true,
-                        timeout: 3000
-                    })
+                return UtilService.post("/api/getBasicInfo")
                     .then(function (response) {
-                        $log.log(response.data.data);
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                return response.data;
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data;
+                        });
                     });
             },
+
             getProjects: function () {
                 // called on page load to get all user projects "/api/getProjects"
-                return $http.post("api/getBasicInfo", {
-                        cache: true,
-                        timeout: 3000
-                    })
+                return UtilService.post("api/getBasicInfo")
                     .then(function (response) {
+                        UtilService.checkIfSuccess(response);
                         return response.data.data.projects;
                     })
                     .catch(function (error) {
-                        $log.log("error getting projects: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                return response.data.data.projects;
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data.projects;
+                        });
                     });
             },
 
             getProject: function (projectId) {
                 // called on click of project to get details
-                return $http.post("api/project", {
+                return UtilService.post("api/project", {
                         "projectId": projectId
-
-                    }, {
-                        cache: true,
-                        timeout: 3000
                     })
                     .then(function (response) {
-                        $log.log(response);
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting project: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                return response.data.data.projects[1];
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data.projects[1];
+                        });
                     });
             },
 
-
             getTasks: function (projectId) {
                 // called on click of tasks for a project
-                return $http.post("/api/getTasks", {
+                return UtilService.post("/api/getTasks", {
                         "projectId": projectId
-                    }, {
-                        cache: true,
-                        timeout: 3000
                     })
                     .then(function (response) {
-                        console.log(response);
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting tasks: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                $log.log(response.data);
-                                return response.data.data.projects[1].tasks;
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data.projects[1].tasks;
+                        });
                     });
             },
 
             getTask: function (projectId, taskId) {
                 // called on click of task to get details
-                return $http.post("/api/Task/Project", {
+                return UtilService.post("/api/Task/Project", {
                         "taskId": taskId
-                    }, {
-                        cache: true,
-                        timeout: 3000
                     })
                     .then(function (response) {
+                        UtilService.checkIfSuccess(response);
                         return response.data.data;
                     })
                     .catch(function (error) {
-                        $log.log("error getting task: " + JSON.stringify(error));
                         // get sample data instead
-                        return $http.get(testProjDataLocation, {
-                                cache: true,
-                                timeout: 3000
-                            })
-                            .then(function (response) {
-                                $log.log(response.data);
-                                return response.data.data.projects[1].tasks[taskId];
-                            });
+                        return UtilService.getSampleData(error, testDataLocation).then(function (response) {
+                            return response.data.data.projects[1].tasks[taskId];
+                        });
                     });
             },
 
             postNewProject: function (project) {
-                return $http.post('/api/project/new', {
+                return UtilService.post('/api/project/new', {
                         "project": project
                     })
                     .then(function (results) {
-                        Flash.create('success', 'Your new project is now ready!', 0);
-                        $log.log("Successfully created project: " + JSON.stringify(results));
-                        $('#newProjectModal').modal('hide');
-                        $state.reload();
-                        return true;
+                        if (UtilService.checkIfSuccess(response)) {
+                            Flash.create('success', 'Your new project is now ready!', 0);
+                            $log.log("Successfully created project: " + JSON.stringify(results));
+                            $('#newProjectModal').modal('hide');
+                            $state.reload();
+                            return true;
+                        }
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue creating the project', 0, {
-                            container: 'flash-newproject'
-                        });
-                        $log.log("error creating project: " + error);
-                        return false;
+                        return UtilService.handleErrorWithFlash(error, "creating the project", 0, 'flash-newtask');
                     });
             },
 
             postNewTask: function (projectId, task) {
-                return $http.post('/api/newTask', {
+                return UtilService.post('/api/newTask', {
                         "projectId": projectId,
                         "task": task
                     })
                     .then(function (results) {
-                        var success = checkIfSuccess(results);
                         var msg = results.data.msg;
-                        if (success) {
+                        if (UtilService.checkIfSuccess(results)) {
                             Flash.create('success', msg, 0);
                             $('#newTaskModal').modal('hide');
+                            $state.reload();
+                            return true;
                         } else {
                             Flash.create('danger', msg, 0, {
                                 container: 'flash-newtask'
                             });
+                            return false;
                         }
-
-                        return true;
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue creating the task', 0, {
-                            container: 'flash-newtask'
-                        });
-                        $log.log("error creating task: " + error);
-                        return false;
+                        return UtilService.handleErrorWithFlash(error, "creating the task", 0, 'flash-newtask');
                     });
             },
 
             updateProject: function (project) {
                 // TODO
-                return $http.post('/api/project/update', {
+                return UtilService.post('/api/project/update', {
                         "project": {
                             "id": project.id,
                             "status": project.status,
@@ -184,21 +137,23 @@ angular.module('betaApp')
                         }
                     })
                     .then(function (results) {
-                        Flash.create('success', 'Project Updated!', 0);
-                        $log.log("Successfully updated project: " + JSON.stringify(results));
-                        return true;
+                        if (UtilService.checkIfSuccess(results)) {
+                            Flash.create('success', 'Project Updated!', 0);
+                            $log.log("Successfully updated project: " + JSON.stringify(results));
+                            return true;
+                        } else {
+                            return false;
+                        }
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue updating the project', 0);
-                        $log.log("error creating project: " + error);
-                        return false;
+                        return UtilService.handleErrorWithFlash(error, "updating the project", 0);
                     });
             },
 
             updateTask: function (task) {
                 // TODO
 
-                return $http.post('/api/task/update', {
+                return UtilService.post('/api/task/update', {
                         "task": {
                             "id": task.id,
                             "name": task.name,
@@ -209,14 +164,16 @@ angular.module('betaApp')
                         }
                     })
                     .then(function (results) {
-                        Flash.create('success', 'Task Updated!', 0);
-                        $log.log("Successfully updated task: " + JSON.stringify(results));
-                        return true;
+                        if (UtilService.checkIfSuccess(results)) {
+                            Flash.create('success', 'Task Updated!', 0);
+                            $log.log("Successfully updated task: " + JSON.stringify(results));
+                            return true;
+                        } else {
+                            return false;
+                        }
                     })
                     .catch(function (error) {
-                        Flash.create('danger', 'There was an issue updating the task', 0);
-                        $log.log("error creating task: " + error);
-                        return false;
+                        return UtilService.handleErrorWithFlash(error, "updating the task", 0);
                     });
             },
 

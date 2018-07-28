@@ -98,4 +98,14 @@ angular.module('betaApp', ['ui.router', 'ngFlash'])
             $urlRouterProvider.otherwise('/');
         }
 
-    ]);
+    ])
+    .run(function () {
+        // code for documentation
+        if (!Notification) {
+            alert('Desktop notifications not available in your browser. Try Chromium.');
+            return;
+        }
+
+        if (Notification.permission !== "granted")
+            Notification.requestPermission();
+    });
