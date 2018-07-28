@@ -95,7 +95,7 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                         }
                     }
                 });
-            $urlRouterProvider.otherwise('/projects');
+            $urlRouterProvider.otherwise('/');
         }
 
     ]);

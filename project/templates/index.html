@@ -22,18 +22,18 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <!-- <li> 
-                        <a ui-sref="projects.project.tasks" ui-sref-active="active">Tasks
+                    <li>
+                        <a ng-if="'projects.project' | includedByState" ui-sref="projects.project.tasks" ui-sref-active="active">Tasks
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li>
-                        <a ui-sref="projects.project.messages" ui-sref-active="active">Messages</a>
+                        <a ng-if="'projects.project' | includedByState" ui-sref="projects.project.messages" ui-sref-active="active">Messages</a>
                     </li>
                     <li>
-                        <a ui-sref="projects.project.issues" ui-sref-active="active">Issues</a>
+                        <a ng-if="'projects.project' | includedByState" ui-sref="projects.project.issues" ui-sref-active="active">Issues</a>
                     </li>
-                    <li class="dropdown">
+                    <!-- <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown
                             <span class="caret"></span>
                         </a>

@@ -1,5 +1,6 @@
 function checkIfSuccess(data) {
   if (data.code === 200) {
+    console.log("success");
     return true;
   } else {
     return false;
