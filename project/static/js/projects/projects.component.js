@@ -6,24 +6,26 @@ angular.module('betaApp')
         },
 
         template: `
-            Hi {{$ctrl.user.firstName}}!
             <div class="row" ng-init="">
-                <div class="projects col-sm-2 sidebar ">
+                <div class="projects col-sm-3 sidebar ">
                     <h1>
-                        Projects <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProjectModal">
-                            Add
-                        </button>
+                    {{$ctrl.user.firstName}} {{$ctrl.user.lastName}}'s Projects 
                     </h1>
                     <ul>
+                    <input type="text" ng-model="search.project" placeholder="Filter by project">
                         <span ng-if="$ctrl.user.projects.length==0">Please create a project</span>
-                        <li ng-repeat="project in $ctrl.user.projects">
+                        <li ng-repeat="project in $ctrl.user.projects | filter:search.project">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
                                 {{project.name}}: {{project.status}}
                             </a>
                         </li>
                     </ul>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProjectModal">
+                        Add
+                    </button>
                 </div>
+                
                 <ui-view></ui-view>
             </div>
 

@@ -6,22 +6,26 @@ angular.module('betaApp')
         },
 
         template: `
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <h3>
                     Tasks 
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
-                        Add
+                    <button type="button" class="close" aria-label="Close" ui-sref="projects.project">
+                        <span aria-hidden="true">&times;</span>
                     </button>
+                    
                 </h3>
                 <ul>
-                    <li ng-repeat="t in $ctrl.tasks">
+                    <input type="text" ng-model="search.project" placeholder="Filter by project">
+                    <li ng-repeat="t in $ctrl.tasks | filter:search.task">
                         <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: t.id })">
                             {{t.name}}: {{t.status}}
                         </a>
                     </li>
                 </ul>
-                
+                <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
+                        Add
+                    </button>
                 <button class="btn btn-secondary" ui-sref="projects.project">Close Tasks</button>
             </div>
             

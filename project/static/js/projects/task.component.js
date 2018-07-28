@@ -8,9 +8,10 @@ angular.module('betaApp')
             <div class="col-sm-4">
                 <h4>
                     Task
-                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
-                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
+                    <button type="button" class="close" aria-label="Close" ui-sref="projects.project.tasks">
+                        <span aria-hidden="true">&times;</span>
                     </button>
+                    
                 </h4>
             <form name="taskForm">
 
@@ -54,6 +55,9 @@ angular.module('betaApp')
             </form>
             <button ng-show="taskForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateTask()">
                 Submit Changes
+            </button>
+            <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
+                {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
             </button>
             <button class="btn btn-secondary" ui-sref="projects.project.tasks">Close Task</button>
         </div>

@@ -5,12 +5,13 @@ angular.module('betaApp')
         },
 
         template: `
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <h2>
                     Project 
-                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
-                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
+                    <button type="button" class="close" aria-label="Close" ui-sref="projects">
+                        <span aria-hidden="true">&times;</span>
                     </button>
+                    
                     
                 </h2>
                 <form name="projectForm">
@@ -48,6 +49,9 @@ angular.module('betaApp')
                 <div>
                     <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateProject()">
                         Submit Changes
+                    </button>
+                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
+                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
                     </button>
                     <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
                 </div>
