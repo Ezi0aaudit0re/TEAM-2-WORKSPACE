@@ -583,10 +583,9 @@ class IssueDB:
 
             issue_list = list()
             for issue in issues:
-                issue_list.append(issue.json)
+                issue_list.append(issue.json())
 
             return database_helper.check_exists_and_return_json(issue_list, 'There are no issues for project')
-            return jsonify({"code":200, "message":"Successfully retrived issues", "data":data})
         
         except Exception as e:
             print("error getting project issues")
