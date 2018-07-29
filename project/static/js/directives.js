@@ -10,31 +10,34 @@ angular.module('betaApp')
             `
         };
     })
-    .directive('myErrorMessage', function () {
+    .component('myErrorMessage', {
         // :( not working for the attributes)
-        return {
-            scope: {
-                myForm: '@',
-                myField: '@'
-            },
-            template: `
-            <div ng-messages="myForm.myField.$error" role="alert">
-                {{myForm}}.{{myField}}
+
+        bindings: {
+            myForm: '@',
+            myField: '@'
+        },
+        template: `
+            <div ng-messages={{$ctrl.target}} role="alert">
+                {{$ctrl.myForm}}.{{$ctrl.myField}}
                 <div ng-messages-include="error-messages"></div>
             </div>
-            `
-        };
+            `,
+        controller: function () {
+            this.target = '' + this.myForm + '.' + this.myField + '.$error';
+            console.log(this.target);
+        }
+
     })
-    .directive('myModalButton', function () {
-        return {
-            scope: {
-                tgt: '@'
-            },
-            template: `
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target={{tgt}}>
+    .component('myModalButton', {
+
+        bindings: {
+            tgt: '@'
+        },
+        template: `
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target={{$ctrl.tgt}}>
                     Add
                 </button>`
-        };
     })
     .directive('myModalClose', function () {
         return {
