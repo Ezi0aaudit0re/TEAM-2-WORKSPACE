@@ -554,11 +554,9 @@ class IssueDB:
             data = database_helper.get_data(self.table, {self.table.id:issue_id})
             if data == None:
                 return jsonify({"code":404, "message":"No issue with given issue id"})
-            else:
-                return jsonify({"code":500, "message":"Successfully retrieved issue details"})
-            return jsonify({"code":200, "message":"success", "data":data.json})
+            return jsonify({"code":200, "message":"success", "data":data.json()})
         except Exception as e:
-            print("error getting user issues")
+            print("error getting issue details")
             db.session.rollback()
             print(str(e))
             return jsonify({"code":500, "message":"Error getting Issue details"})
