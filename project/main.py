@@ -228,7 +228,7 @@ def create_issue():
                 "description":data["description"], \
                 "projects_id":project_id, \
                 "created_by_user_id":session["user_id"], \
-                "assigned_to_user_id":data["assignedToUser"]}
+                "assigned_to_user_email":data["user"]["email"]}
 
     result = database_wrapper.IssueDB().create_issue(json_data)
 

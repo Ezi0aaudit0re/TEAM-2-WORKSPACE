@@ -20,7 +20,7 @@ def test_create_new_issue(test_client, init_database, request_context, test_proj
 
     #user_1 creates an issue on project
     issue = {"subject":"Same user", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_id":auth_user.id}
+    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":auth_user.email_id}
 
     with request_context:
         result = test_client.post("/api/issue/new", data=json.dumps({"issue": issue}), content_type='application/json')
@@ -33,7 +33,7 @@ def test_create_new_issue(test_client, init_database, request_context, test_proj
 def test_create_new_issue_assign_member(test_client, init_database, request_context, test_project, test_users, auth_user):
     user_2 = test_users["user_2"]
     issue = {"subject":"Assign member", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_id":user_2.id}
+    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":user_2.email_id}
 
     with request_context:
         result = test_client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
@@ -45,7 +45,7 @@ def test_create_new_issue_assign_member(test_client, init_database, request_cont
 def test_create_new_issue_assign_non_member(test_client, init_database, request_context, test_project, test_users, auth_user):
     user_3 = test_users["user_3"]
     issue = {"subject":"Assign non member", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_id":user_3.id}
+    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":user_3.email_id}
 
     with request_context:
         result = test_client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
@@ -59,7 +59,7 @@ def test_create_new_issue_assign_non_member(test_client, init_database, request_
 def test_retrieve_user_issues(test_client, init_database, request_context, test_project, test_users):
     auth_user = test_users["user_1"]
     issue = {"subject":"Issue for retrieval", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_id":auth_user.id}
+    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":auth_user.email_id}
     print(auth_user.email_id)
     with request_context:
         test_client.post('/authenticate', data={"emailUsername":auth_user.email_id, "password": auth_user.password}, \
