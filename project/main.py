@@ -7,6 +7,8 @@ __author__ = "TEAM BETA"
 
 import sys, os
 import time
+from datetime import datetime
+from constants import DEFAULT_TASK_STATUS, DEFAULT_TASK_PRIORITY
 
 sys.path.append(os.getcwd())
 
@@ -117,50 +119,96 @@ def create_project():
 
         data = request.get_json()['project']
 
-        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"] }
+        json_data = {"name": data["name"], "description": data["description"], "admin_id": session["user_id"], "users": data["users"] }
+
+        #json_data = {"name": "Test Project with multiple users", "description": "Test description", "users": ["test@test.com, xyz"], "admin_id": 19}
+
 
         result = database_wrapper.ProjectDB().create_project(json_data)
 
         return result
 
 
-
-# DRK 7/7/18 - Projects is coming back as blank array - use test data for dev
-# or projects/1 or /2 via URLto bypass
-@app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
+# get user info
+@app.route(url_pre + '/getUserInfo', methods=["POST"])
 @login_required
-def basic_info():
+def get_user_info():
+    try:
 
-    #if session.get("user") is None:
-        #return jsonify({"code": 500, "meessage": "Internal server error"})
+        user_id = request.get_json()['userId']
+    
+        return database_wrapper.UserDB().get_user_info(user_id)
+    except Exception as e:
+        print(str(e))
+        return jsonify({'code': 500, 'message': 'Internal Server Error'})
+    
 
-    # we have our user id in session["user_id"]
-    # now we get the projects that the user is a part of 
-    result = database_wrapper.UserDB().get_user_data(session['user_id'])
-    print(json.loads(result.data))
-    return result
-
-@app.route(url_pre + '/storeMessage', methods=["POST", "GET"])
-@login_required
-def store_message():
-
-    #data = request.get_json()
-    json_data = [{'user_id': session['user_id'], 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
-                
-                 {'user_id': session['user_id'], 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
-
-    result = database_wrapper.MessageDB().create_messages(json_data)
-
-
-    return result
-
+# route to add members to the project
 @app.route(url_pre + '/addMember', methods=["POST"])
 @login_required
 def add_member():
+     #TODO
 
     #data = request.get_json()
     json_data = {'email': "test3@test.com", 'project_id': 33}
     result = database_wrapper.ProjectDB().add_members(json_data)
+
+    return result
+
+
+#route to get info about a single project
+@app.route(url_pre + '/project', methods=["POST"])
+@login_required
+def get_project():
+
+    project_id = request.get_json()['projectId']
+    user_id = session['user_id']
+    return database_wrapper.ProjectDB().get_project(project_id, user_id)
+
+
+################### GET BASIC INFO OF THE USER ################
+
+@app.route(url_pre + '/getBasicInfo', methods=["POST", "GET"])
+@login_required
+def basic_info():
+
+    # we have our user id in session["user_id"]
+    # now we get the projects that the user is a part of 
+    result = database_wrapper.UserDB().get_user_data(session['user_id'])
+    
+    return result
+
+###############################################################
+
+
+################### Message api calls ################
+
+@app.route(url_pre + '/storeMessage', methods=["POST"])
+@login_required
+def store_message():
+
+    
+    data = request.get_json()['messages']
+
+    # json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
+                
+    #              {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
+
+    result = database_wrapper.MessageDB().create_messages(data)
+
+
+    return result
+
+
+
+@app.route(url_pre + '/messages', methods=["POST"])
+@login_required
+def retrieve_messages():
+
+    data = request.get_json()
+
+    result = database_wrapper.MessageDB().retrieve_messages(data['projectId'])
+
 
     return result
 
@@ -170,12 +218,18 @@ def add_member():
 @app.route(url_pre + '/issue/new', methods=["POST"])
 @login_required
 def create_issue():
+
     data = request.get_json()["issue"]
+    project_id = request.get_json()["projectId"]
+
+    print(data)
+
     json_data = {"subject":data["subject"], \
                 "description":data["description"], \
-                "projects_id":data["projects_id"], \
+                "projects_id":project_id, \
                 "created_by_user_id":session["user_id"], \
-                "assigned_to_user_id":data["assigned_to_user_id"]}
+                "assigned_to_user_id":data["assignedToUser"]}
+
     result = database_wrapper.IssueDB().create_issue(json_data)
 
     return result
@@ -188,11 +242,29 @@ def get_user_issues():
     
     return result
 
-@app.route(url_pre + '/getProjectIssues', methods=["GET"])
+@app.route(url_pre + '/getProjectIssues', methods=["POST"])
 @login_required
 def get_project_issues():
-    project_id = request.get_json("project_id")
-    result = database_wrapper.IssueDB().get_project_issue(project_id)
+    project_id = request.get_json()["projectId"]
+    result = database_wrapper.IssueDB().get_project_issues(project_id)
+    return result
+
+@app.route(url_pre + '/getIssue', methods=["POST"])
+@login_required
+def get_issue_details():
+    data = request.get_json()
+
+    result = database_wrapper.IssueDB().get_issue_details(data['issueId'])
+
+    return result
+
+@app.route(url_pre + "/issue/update", methods=["POST"])
+@login_required
+def update_issue():
+    data = request.get_json()
+
+    result = database_wrapper.IssueDB().update_issue(data['issueId'], data['issue'])
+
     return result
 ####################### Task Routes ########################
 
@@ -202,19 +274,24 @@ def add_task():
 
     current_time = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    #data = reequest.get_json()
-    json_data = {'name': 'Task Name', 'description': 'Description', 'priority': 1, \
-                 'due_date': current_time, 'assigned_to_user_id': 19, 'assigned_by_user_id': 21, 'status': 1, 'project_id': 17 }
+    task = request.get_json()['task']
+    project_id = request.get_json()['projectId']
+
+    due_date = datetime.strptime(task['dueDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    json_data = {'name': task['name'], 'description': task['description'] , 'priority': DEFAULT_TASK_PRIORITY, \
+                 'due_date': due_date, 'assigned_to_user_id': task['user']['email'], 'assigned_by_user_id': session['user_id'], 'status': DEFAULT_TASK_STATUS, 'project_id': project_id }
 
     return database_wrapper.TaskDB().create_task(json_data)
 
 
-@app.route(url_pre + '/getTask', methods=['POST'])
+@app.route(url_pre + '/Task/Project', methods=['POST'])
 @login_required
 def get_task():
-    id = 1
 
-    return database_wrapper.TaskDB().get_task(id)
+    data = request.get_json()
+
+    return database_wrapper.TaskDB().get_task(data['taskId'])
 
 
 @app.route(url_pre + '/Task/AssignedToUser', methods=['POST'])
@@ -226,13 +303,15 @@ def get_assigned_task():
     return database_wrapper.TaskDB().get_assigned_task(user_id)
 
 
-@app.route(url_pre + '/Task/Project', methods=['POST'])
+@app.route(url_pre + '/getTasks', methods=['POST'])
 @login_required
 def get_assigned_task_by_project():
     # this method gets all the task assigned to a user
-    project_id = 17
 
-    return database_wrapper.TaskDB().get_task_by_project(project_id)
+    data = request.get_json()
+    print(database_wrapper.TaskDB().get_task_by_project(data['projectId']))
+
+    return database_wrapper.TaskDB().get_task_by_project(data['projectId'])
 
 
 @app.route(url_pre + '/Task/UserAssigned', methods=['POST'])
@@ -250,17 +329,11 @@ def get_assigned_task_by_user():
 ########################## Sockets for message ########################
 @socketio.on('message')
 def handle_message(msg):
-    print("Message recieved: " + msg)
+    print(msg)
+    # print("From: " + msg.username)
+    # print("At: " + msg.datestamp)
     socketio.emit('message', msg)
 
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
-
-
-
-
-
-
-
-

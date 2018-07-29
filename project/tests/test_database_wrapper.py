@@ -36,6 +36,18 @@ class BaseClass(unittest.TestCase):
             response = self.client.post('/api/getBasicInfo')
             response = json.loads(response.data)
             return response
+
+    """
+        This method gets the id based on the table its provided 
+        Eg if Project table is provided it gets the Project id 
+           if User table is specified it gets the User ID
+        :param: table -> The table to target
+        :param: kwargs -> The key value argument to target as filter
+    """
+    def get_id(self, table, kwargs):
+        key = list(kwargs.keys())[0]
+        value = list(kwargs.values())[0]
+        return db.session.query(table.id).filter((key == value)).first()[0]
     
 
 
@@ -73,9 +85,20 @@ class UserDBTest(BaseClass):
         super().setUp()
 
 
+
     def test_create_user(self):
         response = super().create_user()
         self.assertEqual(response['code'], 200, msg="{}".format(response))
+
+    def test_get_user_info(self):
+        from database.models import User
+        super().create_user()
+        super().authenticate_user()
+        # make the request
+        params = {'userId': super().get_id(User, {User.email_id: self.new_user['email_id']})}
+        response = super().make_request('/api/getUserInfo', json.dumps(params))
+        
+        self.assertIsNotNone(response['data']['id'], "Problem in get User Info method")
 
     def test_create_existing_user(self):
         super().create_user()
@@ -139,7 +162,8 @@ class ProjectDBTest(BaseClass):
         self.project_db = ProjectDB()
         self.new_project = {'name': 'Automated Test',\
                             'description': 'Automated Description',\
-                            'admin_id': user['data']['id'] 
+                            'admin_id': user['data']['id'], \
+                            'users':[{'email': 'anagpal4@bu.edu'}]
                            }
 
 
@@ -149,16 +173,28 @@ class ProjectDBTest(BaseClass):
         response = super().make_request('/api/project/new', json.dumps({"project": self.new_project}))
         self.assertEqual(response["code"], 200, "Problem creating a project")
 
+    def test_create_new_project_with_unknown_email(self):
+        self.new_project["users"] = [{'email': "unknown@fail.com"}]
+        response = super().make_request('/api/project/new', json.dumps({"project": self.new_project}))
+        self.assertEqual(response["code"], 404, "Problem testing adding user that doesnot exist")
+
     def test_create_existing_project(self):
         self.test_create_new_project()
         response = super().make_request('/api/project/new', json.dumps({"project": self.new_project}))
         self.assertEqual(response["code"], 403, "Problem when creating an existing project")
 
+    def get_project_id(self):
+        from database.models import Project
+        return super().get_id(Project, {Project.name: self.new_project['name']})
+
 
 
     def test_get_project(self):
         # create a project and then gets it id 
-        pass
+        self.test_create_new_project()
+        params = json.dumps({'projectId': self.get_project_id()})
+        response = super().make_request('/api/project', params) 
+        self.assertEqual(response['data']['name'], self.new_project['name'], "Problem retrieving new project")
 
 
 
@@ -195,7 +231,7 @@ class ProjectDBTest(BaseClass):
         # get project id 
 
 
-        params = {'email': self.new_user["email_id"], 'project_id': 13 } 
+        params = {'email': self.new_user["email_id"], 'projectID': 13 } 
 
         super().make_request('/api/addMember', params)
         
@@ -210,6 +246,41 @@ class ProjectDBTest(BaseClass):
         from main import db
         db.session.query(Project).filter((Project.name == self.new_project['name'])).delete()
         db.session.commit()
+
+
+"""
+    Test Messages
+
+"""
+class MessageDBTest(BaseClass):
+
+    def setUp(self):
+        # create a user
+
+        #authenticate user
+
+        # create a project 
+
+
+        # message 
+        self.message = None
+
+
+        pass
+
+
+    def test_create_message(self):
+        pass
+
+
+    def test_rertrieve_message(self):
+        pass
+
+
+
+
+    def tearDown(self):
+        pass
 
 
 

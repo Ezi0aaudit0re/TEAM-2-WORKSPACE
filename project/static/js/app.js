@@ -1,4 +1,4 @@
-angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
+angular.module('betaApp', ['ui.router', 'ngFlash', 'ngMessages'])
 
     .constant('loc', 'http://127.0.0.1:5000')
     // .constant('loc', 'http://benongaruka.pythonanywhere.com')
@@ -14,12 +14,13 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/projects',
                     component: 'projects',
                     resolve: {
-                        projects: function (ProjectsService) {
-                            return ProjectsService.getProjects();
-                        },
                         user: function (ProjectsService) {
                             return ProjectsService.getBasicInfo();
+                        },
+                        projects: function (ProjectsService) {
+                            return ProjectsService.getProjects();
                         }
+
                     }
                 })
                 .state({
@@ -30,9 +31,6 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     resolve: {
                         project: function (ProjectsService, $transition$) {
                             return ProjectsService.getProject($transition$.params().projectId);
-                        },
-                        projectId: function ($transition$) {
-                            return $transition$.params().projectId;
                         }
                     }
                 })
@@ -42,9 +40,11 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/tasks',
                     component: 'tasks',
                     resolve: {
-                        tasks: function (ProjectsService, project) {
-                            console.log("p: " + JSON.stringify(project));
-                            return ProjectsService.getTasks(project.projectId);
+                        projectId: function (project) {
+                            return project.id;
+                        },
+                        tasks: function (ProjectsService, projectId) {
+                            return ProjectsService.getTasks(projectId);
                         }
                     }
                 })
@@ -54,25 +54,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/:taskId',
                     component: 'task',
                     resolve: {
-                        task: function (tasks, $transition$) {
-                            return tasks.find(function (task) {
-                                return task.id === $transition$.params().taskId;
-                            });
-                        }
-                    }
-                })
-                .state({
-                    name: 'projects.project.tasks.task.edit',
-                    views: {
-                        '@tasks': {
-                            templateUrl: 'static/js/projects/projects.project.tasks.task.edit.html',
-                            controller: ['$scope', '$stateParams', '$state',
-                                function ($scope, $stateParams, $state) {
-                                    $scope.done = function () {
-                                        $state.go('^', $stateParams);
-                                    };
-                                }
-                            ]
+                        task: function (ProjectsService, projectId, $transition$) {
+                            return ProjectsService.getTask(projectId, $transition$.params().taskId);
                         }
                     }
                 })
@@ -82,8 +65,8 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/messages',
                     component: 'messages',
                     resolve: {
-                        messages: function (MessagesService) {
-                            return MessagesService.getMessages();
+                        messages: function (MessagesService, project) {
+                            return MessagesService.getMessages(project.id);
                         }
                     }
                 })
@@ -93,28 +76,36 @@ angular.module('betaApp', ['ui.router', 'btford.socket-io', 'ngFlash'])
                     url: '/issues',
                     component: 'issues',
                     resolve: {
-                        issues: function (IssuesService) {
-                            return IssuesService.getIssues();
+                        projectId: function (project) {
+                            return project.id;
+                        },
+                        issues: function (IssuesService, projectId) {
+                            return IssuesService.getIssues(projectId);
                         }
                     }
                 })
                 .state({
                     // route for the issue tracking
                     name: 'projects.project.issues.issue',
-                    url: '/{issueId}',
+                    url: '/:issueId',
                     component: 'issue',
                     resolve: {
-                        issue: function (issues, $transition$) {
-                            return issues.find(function (issue) {
-                                return issue.id === $transition$.params().issueId;
-                            });
+                        issue: function (IssuesService, projectId, $transition$) {
+                            return IssuesService.getIssue(projectId, $transition$.params().issueId);
                         }
                     }
                 });
-            $urlRouterProvider.otherwise('/projects');
+            $urlRouterProvider.otherwise('/');
         }
 
     ])
-    .factory('socket', function (socketFactory) {
-        return socketFactory();
+    .run(function () {
+        // code for documentation
+        if (!Notification) {
+            alert('Desktop notifications not available in your browser. Try Chromium.');
+        }
+
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
     });

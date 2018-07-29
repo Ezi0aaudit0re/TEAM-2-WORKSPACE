@@ -5,12 +5,13 @@ angular.module('betaApp')
         },
 
         template: `
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <h2>
                     Project 
-                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
-                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
+                    <button type="button" class="close" aria-label="Close" ui-sref="projects">
+                        <span aria-hidden="true">&times;</span>
                     </button>
+                    
                     
                 </h2>
                 <form name="projectForm">
@@ -28,16 +29,29 @@ angular.module('betaApp')
                     </div>
                     <div ng-show="$ctrl.readonly">
                         Created Date: 
-                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.created_date" />
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.createdDate" />
                     </div>
                     <div ng-show="$ctrl.readonly">
-                        Update Date: 
-                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.updated_date" />
+                        Updated Date: 
+                        <input type="text" class="form-control" readonly ng-model="$ctrl.project.updatedDate" />
                     </div>
+
+                    <label for="inputProjectUser" class="">Project Users</label>
+                    <span ng-repeat="user in $ctrl.project.users">    
+                                    <input type="email" id="inputProjectUser" class="form-control" required ng-readonly="$ctrl.readonly"
+                                        placeholder="Enter email address of user to add" autofocus 
+                                        ng-model="$ctrl.project.users[$index].email" value='' />
+                                    <button class="btn btn-danger" ng-show="$last && !$ctrl.readonly" ng-click="$ctrl.removeUserFromProject()">-</button>
+                    </span>
+                    <button type="button" class="btn btn-primary" ng-show="!$ctrl.readonly" ng-click="$ctrl.addUserToProject()">Add a user</button>
+
                 </form>
                 <div>
-                    <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="updateProject()">
+                    <button ng-show="projectForm.$dirty" class="btn btn-primary" ng-click="$ctrl.updateProject()">
                         Submit Changes
+                    </button>
+                    <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
+                        {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
                     </button>
                     <button class="btn btn-secondary" ui-sref="projects">Close Project</button>
                 </div>
@@ -52,19 +66,26 @@ angular.module('betaApp')
             
             
             `,
-        controller: ['$scope', '$stateParams', '$state', function (
-            $scope, $stateParams, $state) {
+        controller: function (ProjectsService) {
 
             this.readonly = true;
 
-            $scope.edit = function () {
+            this.addUserToProject = function () {
+                // push an empty object to create blank field
+                this.project.users.push({});
+            };
+
+            this.removeUserFromProject = function () {
+                // remove the last entry
+                this.project.users.splice(this.project.users.length - 1);
+            };
+
+            this.edit = function () {
                 this.readonly = !this.readonly;
-                console.log(readonly);
-                // $state.go('.edit', $stateParams);
             };
 
             this.updateProject = function () {
-                ProjectsService.updateProject();
-            }
-        }]
+                ProjectsService.updateProject(this.project);
+            };
+        }
     });

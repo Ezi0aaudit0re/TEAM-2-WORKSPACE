@@ -2,27 +2,28 @@ angular.module('betaApp')
     .component('projects', {
         bindings: {
             user: '<',
+            // project: '<'
         },
 
         template: `
-            Hi {{$ctrl.user.first_name}}!
             <div class="row" ng-init="">
-                <div class="projects col-sm-2 sidebar ">
+                <div class="projects col-sm-3 sidebar ">
                     <h1>
-                        Projects <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProjectModal">
-                            Add
-                        </button>
+                    {{$ctrl.user.firstName}} {{$ctrl.user.lastName}}'s Projects 
                     </h1>
                     <ul>
+                    <input type="text" ng-model="search.project" placeholder="Filter by project">
                         <span ng-if="$ctrl.user.projects.length==0">Please create a project</span>
-                        <li ng-repeat="project in $ctrl.user.projects">
+                        <li ng-repeat="project in $ctrl.user.projects | filter:search.project">
                             <a ui-sref-active="active" ui-sref="projects.project({ projectId: project.id })">
                                 {{project.name}}: {{project.status}}
                             </a>
                         </li>
                     </ul>
+                    <!-- Button trigger modal -->
+                    <my-modal-button tgt="#newProjectModal"></my-modal-button>
                 </div>
+                
                 <ui-view></ui-view>
             </div>
 
@@ -34,49 +35,66 @@ angular.module('betaApp')
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="newProjectModalLabel">New Project</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <my-modal-close></my-modal-close>
                             <flash-message name="flash-newproject"></flash-message>
                         </div>
-                        <div class="modal-body">
-                            <form>
-                                <label for="inputProjectName" class="sr-only">Project Name</label>
-                                <input type="text" id="inputProjectName" class="form-control" 
-                                    placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
-                                <label for="inputProjectDescription" class="sr-only">Project Description</label>
-                                <input type="text" id="inputProjectDescription" class="form-control" 
-                                    placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
 
+                        <form name="newProjectForm" ng-submit="">
+                            <div class="modal-body">
+
+                                <label for="inputProjectName" class="">Project Name</label>
+                                <input type="text" id="inputProjectName" class="form-control" name="inputProjectName"
+                                    placeholder="Project Name" required autofocus ng-model="$ctrl.project.name">
+                                <div ng-messages="newProjectForm.inputProjectName.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
+
+                                <label for="inputProjectDescription" class="">Project Description</label>
+                                <input type="text" id="inputProjectDescription" class="form-control" name="inputProjectDescription"
+                                    placeholder="Project Description" required autofocus ng-model="$ctrl.project.description">
+                                <div ng-messages="newProjectForm.inputProjectDescription.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
+
+                                <label for="inputProjectUser" class="">Project Users</label>
                                 <span ng-repeat="user in $ctrl.project.users">
-                                    <label for="inputProjectUser" class="sr-only">Project Users</label> 
-                                    <input type="email" id="inputProjectUser" class="form-control" required 
+                                    <input type="email" id="inputProjectUser" class="form-control" required name="inputProjectUser"
                                         placeholder="Enter email address of user to add" autofocus 
                                         ng-model="$ctrl.project.users[$index].email" value='' />
+                                    
                                     <button class="btn btn-danger" ng-show="$last" ng-click="$ctrl.removeUserFromProject()">-</button>
                                 </span>
+                                <div ng-messages="newProjectForm.inputProjectUser.$error" role="alert">
+                                    <div ng-messages-include="error-messages"></div>
+                                </div>
+                                <!-- <my-error-message myForm="newProjectForm" myField="inputProjectUser"></my-error-message> -->
+                                
                                 <button type="button" class="btn btn-primary" ng-click="$ctrl.addUserToProject()">Add a user</button>
+                                
+                            </div>
+
                             
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newProject()">Create New Project</button>
-                        </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" id="submit" ng-disabled="newProjectForm.$invalid" 
+                                    value="Create New Project" ng-click="$ctrl.newProject()" />
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+            <my-error-messages></my-error-messages>
             `,
 
-        controller: function ($scope, $http, $log, ProjectsService) {
-            // TODO
+        controller: function (ProjectsService) {
+
 
             this.project = {};
             this.project.users = [];
 
             this.addUserToProject = function () {
                 // push an empty object to create blank field
-                $log.log(this.project.users);
                 this.project.users.push({});
             };
 
@@ -85,12 +103,11 @@ angular.module('betaApp')
                 this.project.users.splice(this.project.users.length - 1);
             };
 
+
             this.newProject = function () {
-                // TODO
-
-                $log.log(this.project);
+                console.log("newProject");
                 ProjectsService.postNewProject(this.project);
-
+                console.log("newProjectDone");
             };
 
         }
