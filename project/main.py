@@ -180,7 +180,7 @@ def create_issue():
 
     return result
 
-@app.route(url_pre + '/getUserIssues', methods=["GET"])
+@app.route(url_pre + '/getUserIssues', methods=["POST"])
 @login_required
 def get_user_issues():
     user_id = session["user_id"]
@@ -189,11 +189,11 @@ def get_user_issues():
     return result
 
 @app.route(url_pre + '/getProjectIssues', methods=["GET"])
+@login_required
 def get_project_issues():
     project_id = request.get_json("project_id")
     result = database_wrapper.IssueDB().get_project_issue(project_id)
     return result
-    
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])

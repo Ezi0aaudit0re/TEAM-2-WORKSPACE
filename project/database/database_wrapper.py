@@ -483,18 +483,25 @@ class IssueDB:
 
         try:
             current_time = time.strftime('%Y-%m-%d %H:%M:%S')
-            valid_keys = ("priorty","status","tested")
+            valid_keys = ("priority","status","tested")
             keys = list(kwargs.keys())
 
+            #This can be improved maybe?
             for key in keys:
                 if key not in valid_keys:
                     return jsonify({"code":404, "message":"Invalid field"})
+
+                if key in ("priority", "status") and kwargs[key] not in (0,1,2):
+                    return jsonify({"code":404, "message":"Invalid value"})
+                
+                if key == "test" and key not in (0,1):
+                    return jsonify({"code":404, "message":"Invalid value"})
             
             issue = database_helper.get_data(self.table, {self.table.id:issue_id})
 
             if issue == None:
                 return jsonify({"code":404, "message":"No issue exists with given id"})
-            #TODO: check validy of values (priority=>(0,1,2), status=>(0,1,2), test=>(0,1,2))
+            
             issue.update(kwargs)
             issue.updated_at = current_time
             db.session.commit()
