@@ -8,6 +8,7 @@ def test_client():
     from application import app
     '''Sets up test flask client'''
     app.config['TESTING'] = True
+    app.config['LOGIN_DISABLED'] = True
     testing_client = app.test_client()
     ctx = app.app_context()
     ctx.push()
