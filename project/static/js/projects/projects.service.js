@@ -74,7 +74,12 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
-                        return response.data.data;
+                        var task = response.data.data;
+                        task.dueDate = new Date(task.dueDate);
+                        task.createdAt = new Date(task.createdAt);
+                        task.updatedAt = new Date(task.updatedAt);
+
+                        return task;
                     })
                     .catch(function (error) {
                         // get sample data instead
@@ -88,10 +93,10 @@ angular.module('betaApp')
                 return UtilService.post('/api/project/new', {
                         "project": project
                     })
-                    .then(function (results) {
+                    .then(function (response) {
                         if (UtilService.checkIfSuccess(response)) {
                             Flash.create('success', 'Your new project is now ready!', 0);
-                            $log.log("Successfully created project: " + JSON.stringify(results));
+                            $log.log("Successfully created project: " + JSON.stringify(response));
                             $('#newProjectModal').modal('hide');
                             $state.reload();
                             return true;
@@ -107,9 +112,9 @@ angular.module('betaApp')
                         "projectId": projectId,
                         "task": task
                     })
-                    .then(function (results) {
-                        var msg = results.data.msg;
-                        if (UtilService.checkIfSuccess(results)) {
+                    .then(function (response) {
+                        var msg = response.data.msg;
+                        if (UtilService.checkIfSuccess(response)) {
                             Flash.create('success', msg, 0);
                             $('#newTaskModal').modal('hide');
                             $state.reload();
@@ -136,10 +141,10 @@ angular.module('betaApp')
                             "users_id": project.users_id
                         }
                     })
-                    .then(function (results) {
-                        if (UtilService.checkIfSuccess(results)) {
+                    .then(function (response) {
+                        if (UtilService.checkIfSuccess(response)) {
                             Flash.create('success', 'Project Updated!', 0);
-                            $log.log("Successfully updated project: " + JSON.stringify(results));
+                            $log.log("Successfully updated project: " + JSON.stringify(response));
                             return true;
                         } else {
                             return false;
@@ -163,10 +168,10 @@ angular.module('betaApp')
                             "assigned_to_user": task.assigned_to_user,
                         }
                     })
-                    .then(function (results) {
-                        if (UtilService.checkIfSuccess(results)) {
+                    .then(function (response) {
+                        if (UtilService.checkIfSuccess(response)) {
                             Flash.create('success', 'Task Updated!', 0);
-                            $log.log("Successfully updated task: " + JSON.stringify(results));
+                            $log.log("Successfully updated task: " + JSON.stringify(response));
                             return true;
                         } else {
                             return false;

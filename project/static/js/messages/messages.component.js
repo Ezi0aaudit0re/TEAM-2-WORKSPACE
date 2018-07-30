@@ -9,13 +9,6 @@ angular.module('betaApp')
             <h3>
                 Messages
             </h3>
-            <div class="btn-group">
-                <button type="button" class="btn btn-success btn-filter" data-target="green">Green</button>
-                <button type="button" class="btn btn-warning btn-filter" data-target="yellow">Yellow</button>
-                <button type="button" class="btn btn-danger btn-filter" data-target="red">Red</button>
-                <button type="button" class="btn btn-default btn-filter" data-target="all">All</button>
-            </div>
-
             <div>
                 <input type="text" ng-model="search.username" placeholder="Filter by username">
                 <input type="text" ng-model="search.msg" placeholder="Filter by message text">
@@ -23,11 +16,9 @@ angular.module('betaApp')
             </div>
             <div class="container-fluid scroll" id="chatwindow" >
                 <div ng-repeat="msg in $ctrl.messages | filter:{username:search.username, timestamp:search.timestamp, msg:search.msg}" class="row">
-
-                        <span class="pull-right">{{msg.timestamp}}</span>
-                        <span class="col-sm-3">{{msg.username}}:</span>
+                    <span class="pull-right">{{msg.timestamp}}</span>
+                    <span class="col-sm-3">{{msg.username}}:</span>
                         
-
                     <p class="col-sm-5">{{msg.msg}}</p>
                 </div>
             </div>
@@ -65,7 +56,7 @@ angular.module('betaApp')
                 $scope.newMessages.push({
                     "userId": user.id,
                     "msg": message.msg,
-                    "timestamp": convertISODatetimeToMySQLString(message.datestamp),
+                    "timestamp": UtilService.convertISODatetimeToMySQLString(message.datestamp),
                     "projectId": $scope.$parent.$resolve.project.id
                 });
                 // clear form input
