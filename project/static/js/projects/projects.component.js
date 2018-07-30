@@ -61,7 +61,6 @@ angular.module('betaApp')
                                     <input type="email" id="inputProjectUser" class="form-control" required name="inputProjectUser"
                                         placeholder="Enter email address of user to add" autofocus 
                                         ng-model="$ctrl.project.users[$index].email" value='' />
-                                    <my-error-message my-form="newProjectForm" my-field="inputProjectUser"></my-error-message>
                                     <button class="btn btn-danger" ng-show="$last" ng-click="$ctrl.removeUserFromProject()">-</button>
                                 </span>
                                 <div ng-messages="newProjectForm.inputProjectUser.$error" role="alert">

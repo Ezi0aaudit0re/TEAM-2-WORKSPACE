@@ -26,7 +26,7 @@ angular.module('betaApp')
                     <div>
                     
                         Status:
-                        <select class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.status" >
+                        <select class="form-control" ng-disabled="$ctrl.readonly" ng-model="$ctrl.project.status" >
                             <option ng-value="0">Green – On Target</option>
                             <option ng-value="1">Green – Trending Down</option>
                             <option ng-value="2">Amber – Trending Up</option>
