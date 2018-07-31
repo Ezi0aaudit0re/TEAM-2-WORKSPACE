@@ -10,7 +10,7 @@ def test_client():
     app.config['TESTING'] = True
     login_manager.init_app(app)
     testing_client = app.test_client()
-    ctx = app.test_request_context()
+    ctx = app.app_context()
     ctx.push()
     yield testing_client
     #clean up db
@@ -24,9 +24,10 @@ def request_context():
 @pytest.fixture(scope="session")
 def init_database():
     from main import app, db
-    '''Initializes db for testing'''
-    create_test_db(db)
+    from flask_sqlalchemy import SQLAlchemy
+    '''Initializes db for testing'''    
     #Test
+    create_test_db(db)
     yield db
     clean_up_db(db)
 
@@ -52,10 +53,7 @@ def create_test_db(db):
 def clean_up_db(db):
     from database.models import Project, User, Issue
     #Clean up db
-    db.session.query(Issue).filter(Issue.subject=="Assign member").delete()
-    db.session.query(Issue).filter(Issue.subject=="Assign non member").delete()
-    db.session.query(Issue).filter(Issue.subject=="Same user").delete()
-    db.session.query(Issue).filter(Issue.subject=="Issue for retrieval").delete()
+    db.session.query(Issue).filter(Issue.subject=="Automatic issue for testing").delete()
     db.session.query(Project).filter(Project.name=="testissuesproject").first().users = []
     db.session.commit()
     db.session.query(Project).filter(Project.name=="testissuesproject").delete()
@@ -81,6 +79,7 @@ def test_users(init_database):
     user_3 = init_database.session.query(User).filter(User.email_id == "testuser3@yahoo.com").first()
     return {"user_1":user_1, "user_2":user_2, "user_3":user_3}
 
+"""
 @pytest.fixture(scope="session")
 def auth_user(init_database, test_client, request_context, test_users):
     #Authenticates user_1
@@ -89,8 +88,7 @@ def auth_user(init_database, test_client, request_context, test_users):
     with request_context:
         test_client.post('/authenticate', data={"emailUsername":auth_user.email_id, "password": auth_user.password}, \
         follow_redirects=True)
-        
     return auth_user
-
+"""
 
 

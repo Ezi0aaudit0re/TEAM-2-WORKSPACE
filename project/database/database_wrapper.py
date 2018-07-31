@@ -526,7 +526,7 @@ class IssueDB:
     def get_user_issues(self, user_id, user_type_filter=None):
         try:
             if user_type_filter == None:
-                issues = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id})
+                issues = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id}, False)
             else:              
                 issues = database_helper.get_data(self.table, {user_type_filter:user_id}, False)
                 #data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
@@ -542,7 +542,7 @@ class IssueDB:
             print("error getting user issues")
             db.session.rollback()
             print(str(e))
-            return jsonify({"code": 500, "message": "Error getting user Issues"})
+            return jsonify({"code": 500, "message": "Error getting user Issues:{}".format(str(e))})
     
     """
         This method gets all issue details
@@ -601,7 +601,7 @@ class IssueDB:
 
         try:
             current_time = time.strftime('%Y-%m-%d %H:%M:%S')
-            valid_keys = ("priority","status","tested")
+            valid_keys = ("priority","status","tested", "assigned_to_user_email")
             keys = list(kwargs.keys())
 
             #This can be improved maybe?
@@ -616,13 +616,15 @@ class IssueDB:
                     return jsonify({"code":404, "message":"Invalid value"})
             
             issue = database_helper.get_data(self.table, {self.table.id:issue_id})
-
             if issue == None:
                 return jsonify({"code":404, "message":"No issue exists with given id"})
+            
             
             issue.update(kwargs)
             issue.updated_at = current_time
             db.session.commit()
+
+            return jsonify({"code":200, "message":"Updated issue successfully"})
             
         except Exception as e:
             print("error updating issue")

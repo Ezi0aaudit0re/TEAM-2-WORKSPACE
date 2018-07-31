@@ -16,55 +16,63 @@ from flask import json
 """
     This unit test tests creation of a new issue by an project admin and assigned to himself
 """
-def test_create_new_issue(test_client, init_database, request_context, test_project, auth_user):
-
+def test_create_new_issue(test_client, init_database, test_project, test_users):
+    auth_user = login(test_users["user_1"], test_client)
     #user_1 creates an issue on project
-    issue = {"subject":"Same user", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":auth_user.email_id}
+    result = create_test_issue(test_client,auth_user, test_project)
 
-    with request_context:
-        result = test_client.post("/api/issue/new", data=json.dumps({"issue": issue}), content_type='application/json')
-
-    assert json.loads(result.data)["code"] == 200, json.loads(result.data)["message"]
+    assert json.loads(result["post_response"].data)["code"] == 200, json.loads(result["post_response"].data)["message"]
 
 """
     This unit test test creation of a new issue by a project admin assigned to a user who is a member of that group
 """
-def test_create_new_issue_assign_member(test_client, init_database, request_context, test_project, test_users, auth_user):
-    user_2 = test_users["user_2"]
-    issue = {"subject":"Assign member", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":user_2.email_id}
+def test_create_new_issue_assign_member(test_client, init_database, test_project, test_users):
+    auth_user = login(test_users["user_1"], test_client)
+    result = create_test_issue(test_client,auth_user, test_project, test_users["user_2"].email_id)
 
-    with request_context:
-        result = test_client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
-    assert json.loads(result.data)["code"] == 200, json.loads(result.data)["message"]
+    assert json.loads(result["post_response"].data)["code"] == 200, json.loads(result["post_response"].data)["message"]
 
 """
     This unit test tests creation of a new issue and assigned to non member
 """
-def test_create_new_issue_assign_non_member(test_client, init_database, request_context, test_project, test_users, auth_user):
-    user_3 = test_users["user_3"]
-    issue = {"subject":"Assign non member", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":user_3.email_id}
-
-    with request_context:
-        result = test_client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
+def test_create_new_issue_assign_non_member(test_client, init_database, test_project, test_users):
+    auth_user = login(test_users["user_1"], test_client)
+    result = create_test_issue(test_client, auth_user, test_project, test_users["user_3"].email_id)
     
-    assert json.loads(result.data)["code"] == 404, "Assigning to non member failed"
+    assert json.loads(result["post_response"].data)["code"] == 404, json.loads(result["post_response"].data)["message"]
     #assert "Assigned to user is not assigned to the project" in json.loads(result.data)["message"]
 
 """
     This unit test tests retrieving user issues
 """
-def test_retrieve_user_issues(test_client, init_database, request_context, test_project, test_users):
-    auth_user = test_users["user_1"]
-    issue = {"subject":"Issue for retrieval", "description":"This is a test issue for unit tests",\
-    "projects_id":test_project.id, "created_by_user_id":auth_user.id, "assigned_to_user_email":auth_user.email_id}
-    print(auth_user.email_id)
-    with request_context:
-        test_client.post('/authenticate', data={"emailUsername":auth_user.email_id, "password": auth_user.password}, \
+def test_retrieve_user_issues(test_client, init_database, test_project, test_users):
+    auth_user = login(test_users["user_1"], test_client)
+    result = test_client.post("/api/getUserIssues")
+    assert json.loads(result.data)["code"] == 200, json.loads(result.data)["message"]
+
+def test_update_issue(test_client, init_database, test_project, test_users):
+    auth_user = login(test_users["user_1"], test_client)
+    create_response = create_test_issue(test_client, auth_user, test_project)
+    result = test_client.post("api/issue/update", data = {"issue": {"priority":2, "status":0}, "issueId":create_response["new_issue"].id})
+    assert json.loads(result.data)["code"] == 200, "updating issue failed"
+
+def create_test_issue(client, create_user, project, assign_user_email = None):
+    from database import database_helper
+    from database.models import Issue
+
+    if assign_user_email == None:
+        assign_user_email = create_user.email_id
+    
+    issue = {"subject":"Automatic issue for testing", "description":"This is a test issue for unit tests",\
+    "created_by_user_id":create_user.id, "user":{"email":assign_user_email}}
+
+    result = client.post("/api/issue/new", data = json.dumps({"projectId":project.id,"issue":issue}), content_type="application/json")
+    issue = database_helper.get_data(Issue, {Issue.subject:issue["subject"]})
+
+    return {"new_issue":issue, "post_response":result}
+
+def login(user, c):
+    auth_user = user
+    c.post('/authenticate', data={"emailUsername":auth_user.email_id, "password": "password"}, \
         follow_redirects=True)
-        test_client.post("/api/issue/new", data = json.dumps({"issue":issue}), content_type="application/json")
-        result = test_client.post("/api/getUserIssues")
-    print(result.data)
-    assert json.loads(result.data)["code"] == 200, "Retrieving issues failed"
+    return auth_user
