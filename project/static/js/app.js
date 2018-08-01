@@ -90,8 +90,8 @@ angular.module('betaApp', ['ui.router', 'ngFlash', 'ngMessages'])
                     url: '/:issueId',
                     component: 'issue',
                     resolve: {
-                        issue: function (IssuesService, projectId, $transition$) {
-                            return IssuesService.getIssue(projectId, $transition$.params().issueId);
+                        issue: function (IssuesService, $transition$) {
+                            return IssuesService.getIssue($transition$.params().issueId);
                         }
                     }
                 });
