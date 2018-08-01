@@ -1,55 +1,52 @@
 angular.module('betaApp')
-    .directive('myErrorMessages', function () {
-        return {
-            template: `
+    .component('myErrorMessages', {
+        template: `
             <script type="text/ng-template" id="error-messages">
                 <div ng-message="required">Please enter a value for this field.</div>
                 <div ng-message="email">This field must be a valid email address.</div>
                 <div ng-message-default>This field has an input error</div>
             </script>
             `
-        };
     })
-    .directive('myErrorMessage', function () {
+    .component('myErrorMessage', {
         // :( not working for the attributes)
-        return {
-            scope: {
-                myForm: '@',
-                myField: '@'
-            },
-            template: `
-            <div ng-messages="myForm.myField.$error" role="alert">
-                {{myForm}}.{{myField}}
+
+        bindings: {
+            myForm: '<',
+            myField: '<'
+        },
+        template: `
+            <div ng-messages=target role="alert">
+                {{$ctrl.myForm}}.{{$ctrl.myField}}
                 <div ng-messages-include="error-messages"></div>
             </div>
-            `
-        };
+            `,
+        controller: function ($scope) {
+            $scope.target = '' + $scope.$ctrl.myForm + '.' + $scope.$ctrl.myField + '.$error';
+            console.log(this.myForm);
+        }
+
     })
-    .directive('myModalButton', function () {
-        return {
-            scope: {
-                tgt: '@'
-            },
-            template: `
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target={{tgt}}>
+    .component('myModalButton', {
+        bindings: {
+            tgt: '@'
+        },
+        template: `
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target={{$ctrl.tgt}}>
                     Add
                 </button>`
-        };
     })
-    .directive('myModalClose', function () {
-        return {
-            template: `
+    .component('myModalClose', {
+        template: `
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>`
-        };
     })
-    .directive('myModalForm', function () {
-        return {
-            scope: {
-                myType: '='
-            },
-            template: `
+    .component('myModalForm', {
+        bindings: {
+            myType: '@'
+        },
+        template: `
             <!-- Modal -->
             <div class="modal fade" id="new{{myType}}Modal" tabindex="-1" role="dialog" aria-labelledby="new{{myType}}ModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -66,5 +63,4 @@ angular.module('betaApp')
                 </div>
             </div>
             `
-        };
-    })
+    });
