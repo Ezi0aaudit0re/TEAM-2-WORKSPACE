@@ -133,8 +133,8 @@ class Issue(Base):
                  'description': self.description,\
                  'priority': self.priority,\
                  'projectsId': self.projects_id,\
-                 'createdByUserId': self.created_by_user_id,\
-                 'assignedToUserId': self.assigned_to_user_id,\
+                 'createdByUser': db.session.query(User.email_id).filter((User.id == self.created_by_user_id)).first()[0], \
+                 'assignedToUser': db.session.query(User.email_id).filter((User.id == self.assigned_to_user_id)).first()[0],\
                  'createdAt': self.created_at, \
                  'updatedAt': self.updated_at }
 
