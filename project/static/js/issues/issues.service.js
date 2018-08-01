@@ -10,7 +10,6 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
-                        console.log(response.data.data);
                         return response.data.data;
                     })
                     .catch(function (error) {
@@ -23,13 +22,11 @@ angular.module('betaApp')
 
             getIssue: function (issueId) {
                 // called on click of issue to get details
-                console.log(issueId);
                 return UtilService.post("/api/getIssue", {
                         "issueId": issueId
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
-                        console.log(response.data.data);
                         return response.data.data;
                     })
                     .catch(function (error) {
