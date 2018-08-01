@@ -1,5 +1,5 @@
 angular.module('betaApp')
-    .service('IssuesService', function (UtilService, $log, Flash) {
+    .service('IssuesService', function (UtilService, $log, Flash, $state) {
         var testDataLocation = "../static/js/issues/issues.json";
 
         var service = {
