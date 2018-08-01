@@ -228,7 +228,7 @@ def create_issue():
                 "description":data["description"], \
                 "projects_id":project_id, \
                 "created_by_user_id":session["user_id"], \
-                "assigned_to_user_id":data["assignedToUser"]}
+                "assigned_to_user_email":data["user"]["email"]}
 
     result = database_wrapper.IssueDB().create_issue(json_data)
 
@@ -243,6 +243,7 @@ def get_user_issues():
     return result
 
 @app.route(url_pre + '/getProjectIssues', methods=["POST"])
+@login_required
 def get_project_issues():
     project_id = request.get_json()["projectId"]
     result = database_wrapper.IssueDB().get_project_issues(project_id)
@@ -265,7 +266,6 @@ def update_issue():
     result = database_wrapper.IssueDB().update_issue(data['issueId'], data['issue'])
 
     return result
-    
 ####################### Task Routes ########################
 
 @app.route(url_pre + '/newTask', methods=["POST"])
