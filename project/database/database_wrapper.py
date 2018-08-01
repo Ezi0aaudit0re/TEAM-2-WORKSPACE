@@ -498,9 +498,11 @@ class IssueDB:
             if assigned_to_user.id not in user_ids:
                 return jsonify({"code":404, "message": "Assigned to user is not assigned to the project"})
 
+            print(kwargs["status"])
             issue = self.table(subject=kwargs["subject"], \
             description=kwargs["description"], \
             projects_id=kwargs["projects_id"], \
+            status=kwargs["status"], \
             created_by_user_id=kwargs["created_by_user_id"],\
             assigned_to_user_id=assigned_to_user.id)
 

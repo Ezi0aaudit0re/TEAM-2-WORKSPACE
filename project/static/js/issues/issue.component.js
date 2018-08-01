@@ -24,7 +24,6 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Status
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.status" />
                     <select class="form-control" ng-disabled="$ctrl.readonly" ng-model="$ctrl.issue.status" >
                         <option ng-value="0">Created</option>
                         <option ng-value="1">Assigned</option>
@@ -60,7 +59,7 @@ angular.module('betaApp')
         <button ui-sref="projects.project.issues">Close Issue</button>
         `,
 
-        controller: function () {
+        controller: function (IssuesService) {
             // TODO
             this.readonly = true;
 
@@ -69,7 +68,7 @@ angular.module('betaApp')
             };
 
             this.updateIssue = function () {
-                IssuesService.updateIssue();
+                IssuesService.updateIssue(this.issue);
             };
         }
     });
