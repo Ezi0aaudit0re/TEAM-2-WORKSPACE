@@ -65,11 +65,10 @@ angular.module('betaApp')
             },
 
             updateIssue: function () {
-                // TODO
+                $log.log(issue);
                 return UtilService.post('/api/issue/update', {
                         "issueId": issue.id,
                         "issue": {
-                            "name": issue.name,
                             "status": issue.status,
                             "priority": issue.priority,
                             "updatedDate": convertISODatetimeToMySQLString(new Date()),
