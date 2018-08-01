@@ -42,7 +42,7 @@ angular.module('betaApp')
                         "issue": issue,
                         "projectId": projectId
                     })
-                    .then(function (results) {
+                    .then(function (response) {
                         if (!UtilService.checkIfSuccess(response)) {
                             Flash.create('danger', response.data.message, 3000, {
                                 container: 'flash-newissue'
@@ -72,7 +72,7 @@ angular.module('betaApp')
                             "assignedToUser": issue.assignedToUser
                         }
                     })
-                    .then(function (results) {
+                    .then(function (response) {
                         UtilService.checkIfSuccess(response);
                         return true;
                     })
