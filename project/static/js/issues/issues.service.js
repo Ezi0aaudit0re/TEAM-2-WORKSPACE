@@ -27,7 +27,11 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
-                        return response.data.data;
+                        $log.log(response.data.data);
+                        var issue = response.data.data;
+                        issue.createdAt = new Date(issue.createdAt);
+                        issue.updatedAt = new Date(issue.updatedAt);
+                        return issue;
                     })
                     .catch(function (error) {
                         // get sample data instead
