@@ -490,17 +490,19 @@ class IssueDB:
             user_ids = [user.id for user in projects.users] 
             user_ids.append(int(projects.admin_id))
 
+            assigned_to_user = database_helper.get_data(User, {User.email_id:kwargs["assigned_to_user_email"]})
+            print(assigned_to_user.id)
             if kwargs["created_by_user_id"] not in user_ids:
                 return jsonify({"code":404, "message": "Creating user is not assigned to the project"})
 
-            if kwargs["assigned_to_user_id"] not in user_ids:
+            if assigned_to_user.id not in user_ids:
                 return jsonify({"code":404, "message": "Assigned to user is not assigned to the project"})
 
             issue = self.table(subject=kwargs["subject"], \
             description=kwargs["description"], \
             projects_id=kwargs["projects_id"], \
             created_by_user_id=kwargs["created_by_user_id"],\
-            assigned_to_user_id=kwargs["assigned_to_user_id"])
+            assigned_to_user_id=assigned_to_user.id)
 
             db.session.add(issue) # add in the queue
             db.session.commit() # commit to the database
@@ -524,20 +526,23 @@ class IssueDB:
     def get_user_issues(self, user_id, user_type_filter=None):
         try:
             if user_type_filter == None:
-                data = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id})
+                issues = database_helper.get_data(self.table, {self.table.assigned_to_user_id:user_id, self.table.created_by_user_id:user_id}, False)
             else:              
-                data = database_helper.get_data(self.table, {user_type_filter:user_id}, False)
+                issues = database_helper.get_data(self.table, {user_type_filter:user_id}, False)
                 #data = db.session.query(self.table.subject, self.table.priority, self.table.projects_id, self.table.status, self.table.created_by_user_id, self.table.created_at, self.table.updated_at).filter(user_id).all()
-            if data == None:
+            if issues == None:
                 return jsonify({"code": 404, "message": "No issue assigned to user"})
             else:
-                return jsonify({"code":200, "message": "Successfully retrieved user issues", "data":data})
+                issue_list = list()
+                for issue in issues:
+                    issue_list.append(issue.json())
+                return database_helper.check_exists_and_return_json(issue_list, 'There are no issues for user')
             
         except Exception as e:
             print("error getting user issues")
             db.session.rollback()
             print(str(e))
-            return jsonify({"code": 500, "message": "Error getting user Issues"})
+            return jsonify({"code": 500, "message": "Error getting user Issues:{}".format(str(e))})
     
     """
         This method gets all issue details
@@ -549,11 +554,9 @@ class IssueDB:
             data = database_helper.get_data(self.table, {self.table.id:issue_id})
             if data == None:
                 return jsonify({"code":404, "message":"No issue with given issue id"})
-            else:
-                return jsonify({"code":500, "message":"Successfully retrieved issue details"})
-            return jsonify({"code":200, "message":"success", "data":data})
+            return jsonify({"code":200, "message":"success", "data":data.json()})
         except Exception as e:
-            print("error getting user issues")
+            print("error getting issue details")
             db.session.rollback()
             print(str(e))
             return jsonify({"code":500, "message":"Error getting Issue details"})
@@ -574,9 +577,13 @@ class IssueDB:
             if project == None:
                 return jsonify({"code":404, "message":"No project with given id"})
             
-            data = database_helper.get_data(self.table, {self.table.projects_id:projects_id}, False)
+            issues = database_helper.get_data(self.table, {self.table.projects_id:projects_id}, False)
 
-            return jsonify({"code":200, "message":"Successfully retrived issues", "data":data})
+            issue_list = list()
+            for issue in issues:
+                issue_list.append(issue.json())
+
+            return database_helper.check_exists_and_return_json(issue_list, 'There are no issues for project')
         
         except Exception as e:
             print("error getting project issues")
@@ -594,21 +601,30 @@ class IssueDB:
 
         try:
             current_time = time.strftime('%Y-%m-%d %H:%M:%S')
-            valid_keys = ("priorty","status","tested")
+            valid_keys = ("priority","status","tested", "assigned_to_user_email")
             keys = list(kwargs.keys())
 
+            #This can be improved maybe?
             for key in keys:
                 if key not in valid_keys:
                     return jsonify({"code":404, "message":"Invalid field"})
+
+                if key in ("priority", "status") and kwargs[key] not in (0,1,2):
+                    return jsonify({"code":404, "message":"Invalid value"})
+                
+                if key == "test" and key not in (0,1):
+                    return jsonify({"code":404, "message":"Invalid value"})
             
             issue = database_helper.get_data(self.table, {self.table.id:issue_id})
-
             if issue == None:
                 return jsonify({"code":404, "message":"No issue exists with given id"})
-            #TODO: check validy of values (priority=>(0,1,2), status=>(0,1,2), test=>(0,1,2))
+            
+            
             issue.update(kwargs)
             issue.updated_at = current_time
             db.session.commit()
+
+            return jsonify({"code":200, "message":"Updated issue successfully"})
             
         except Exception as e:
             print("error updating issue")
