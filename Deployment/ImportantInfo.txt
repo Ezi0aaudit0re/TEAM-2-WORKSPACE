@@ -1,0 +1,3 @@
+MySQL password: beta100!
+username:benongaruka
+Database host address: benongaruka.mysql.pythonanywhere-services.com
