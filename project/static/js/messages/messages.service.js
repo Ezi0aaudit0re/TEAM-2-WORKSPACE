@@ -26,7 +26,6 @@ angular.module('betaApp')
                         "messages": newMessages
                     })
                     .then(function (response) {
-                        $log.error(error);
                         if (!UtilService.checkIfSuccess(response)) {
                             // 404 - no new messages or 503 - user not part of project
                             Flash.create('danger', response.data.message, 3000, {

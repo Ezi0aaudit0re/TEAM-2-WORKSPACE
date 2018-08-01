@@ -24,8 +24,19 @@ angular.module('betaApp')
                         <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.description" />
                     </div>
                     <div>
+                    
                         Status:
-                        <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.project.status" />
+                        <select class="form-control" ng-disabled="$ctrl.readonly" ng-model="$ctrl.project.status" >
+                            <option ng-value="0">Green – On Target</option>
+                            <option ng-value="1">Green – Trending Down</option>
+                            <option ng-value="2">Amber – Trending Up</option>
+                            <option ng-value="3">Amber – No Change</option>
+                            <option ng-value="4">Amber – Trending Down</option>
+                            <option ng-value="5">Red – Trending Up</option>
+                            <option ng-value="6">Red – No Change</option>
+                            <option ng-value="7">Red – Trending Down</option>
+                        </select>
+
                     </div>
                     <div ng-show="$ctrl.readonly">
                         Created Date: 

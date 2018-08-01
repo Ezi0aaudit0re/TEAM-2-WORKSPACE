@@ -95,7 +95,7 @@ angular.module('betaApp', ['ui.router', 'ngFlash', 'ngMessages'])
                         }
                     }
                 });
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/projects');
         }
 
     ])

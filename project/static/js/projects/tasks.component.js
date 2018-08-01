@@ -15,7 +15,7 @@ angular.module('betaApp')
                     
                 </h3>
                 <ul>
-                    <input type="text" ng-model="search.project" placeholder="Filter by project">
+                    <input type="text" ng-model="search.project" placeholder="Filter by task">
                     <li ng-repeat="t in $ctrl.tasks | filter:search.task">
                         <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: t.id })">
                             {{t.name}}: {{t.status}}

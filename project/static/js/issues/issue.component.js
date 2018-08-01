@@ -29,6 +29,15 @@ angular.module('betaApp')
                 <div>
                     Status
                     <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.status" />
+                    <select class="form-control" ng-disabled="$ctrl.readonly" ng-model="$ctrl.issue.status" >
+                        <option ng-value="0">Created</option>
+                        <option ng-value="1">Assigned</option>
+                        <option ng-value="2">In Progress</option>
+                        <option ng-value="3">Fix Developed</option>
+                        <option ng-value="4">Awaiting QA</option>
+                        <option ng-value="5">QA Completed</option>
+                        <option ng-value="6">Promoted to Production</option>
+                    </select>
                 </div>
                 <div>
                     Created At:
