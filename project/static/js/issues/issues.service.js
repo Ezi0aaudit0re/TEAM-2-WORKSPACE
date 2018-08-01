@@ -1,5 +1,5 @@
 angular.module('betaApp')
-    .service('IssuesService', function (UtilService, $log, Flash) {
+    .service('IssuesService', function (UtilService, $log, Flash, $state) {
         var testDataLocation = "../static/js/issues/issues.json";
 
         var service = {
@@ -27,7 +27,11 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
-                        return response.data.data;
+                        $log.log(response.data.data);
+                        var issue = response.data.data;
+                        issue.createdAt = new Date(issue.createdAt);
+                        issue.updatedAt = new Date(issue.updatedAt);
+                        return issue;
                     })
                     .catch(function (error) {
                         // get sample data instead
@@ -42,7 +46,7 @@ angular.module('betaApp')
                         "issue": issue,
                         "projectId": projectId
                     })
-                    .then(function (results) {
+                    .then(function (response) {
                         if (!UtilService.checkIfSuccess(response)) {
                             Flash.create('danger', response.data.message, 3000, {
                                 container: 'flash-newissue'
@@ -61,18 +65,17 @@ angular.module('betaApp')
             },
 
             updateIssue: function () {
-                // TODO
+                $log.log(issue);
                 return UtilService.post('/api/issue/update', {
                         "issueId": issue.id,
                         "issue": {
-                            "name": issue.name,
                             "status": issue.status,
                             "priority": issue.priority,
                             "updatedDate": convertISODatetimeToMySQLString(new Date()),
                             "assignedToUser": issue.assignedToUser
                         }
                     })
-                    .then(function (results) {
+                    .then(function (response) {
                         UtilService.checkIfSuccess(response);
                         return true;
                     })
