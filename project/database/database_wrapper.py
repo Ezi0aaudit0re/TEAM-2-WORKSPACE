@@ -280,7 +280,7 @@ class ProjectDB:
 
             # check if a user doesnot exist
             if project_instance == USER_DOES_NOT_EXIST:
-                return jsonoify({'code': 400, 'message': 'user doesnot exist Please update again'})
+                return jsonify({'code': 400, 'message': 'user doesnot exist Please update again'})
             else:
                 # commit the changes
                 db.session.commit()
