@@ -25,3 +25,6 @@ SECRET_KEY = "secret_key"
 
 # constants for tables 
 DEFAULT_TASK_STATUS = DEFAULT_TASK_PRIORITY = DEFAULT_ISSUE_STATUS = 0
+
+# error codes
+USER_DOES_NOT_EXIST = 12

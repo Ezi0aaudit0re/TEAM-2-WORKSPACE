@@ -8,6 +8,7 @@ __author__ = "TEAM BETA"
 from application import db
 from database.models import *
 from database.schemas import *
+from constants import *
 import helper
 import database.database_helper as database_helper
 from flask import jsonify, session
@@ -194,26 +195,19 @@ class ProjectDB:
                            not none if we use this method while creating projects
         
     """
-    def add_members(self, kwargs, project=None):
+    def add_members(self, users, project):
 
         try:
-            if project is None:
-                project = db.session.query(self.table).filter((self.table.id == kwargs["project_id"])).first()
+            for user in users:
+                # check if user exists
+                try:
+                    user = database_helper.get_data(User, {User.email_id: user['email']})
+                except Exception as e:
+                    print("user doesnot exist")
+                    return USER_DOES_NOT_EXIST 
+                project.users.append(user)
 
-            if project:
-                user = db.session.query(User).filter((User.email_id == kwargs["email"])).first()
-                if user:
-                    project.users.append(user)
-                    # commit to the databse
-                    db.session.commit()
-                    return jsonify({'code': 200, 'message': "User: {}, added as member".format(user.first_name + " " + user.last_name)})
-                else:
-                    return jsonify({'code': 403, 'message': 'User doesnot exist'})
-            else:
-                    return jsonify({'code': 403, 'message': 'Project doesnot exist'})
-
-
-
+            return project
 
         except Exception as e:
             print(str(e))
@@ -252,6 +246,50 @@ class ProjectDB:
         
         except Exception as e:
             database_helper.exception("Error in getting single project", e)
+
+
+
+    """
+        This method deals with updating the project
+    """
+    def update_project(self, project):
+
+        try:
+            print(project)
+
+            # get the project
+            project_instance = database_helper.get_data(self.table, {self.table.id: project['id']})
+
+            # update all the variables except id and users
+            #if project['name'] != project_instance.name: project_instance.name = project['name']
+            if project['description'] != project_instance.description: project_instance.description = project['description']
+            if project['status'] != project_instance.status: project_instance.status = project['status']
+
+
+
+            # deal with updating users
+            update_users = list()
+            # loop through the users which just have email i.e these are the users that are just added
+            for user in project['users']:
+                if 'id' in user:
+                    pass
+                else:
+                    update_users.append(user)
+
+            project_instance = self.add_members(update_users, project_instance)
+
+            # check if a user doesnot exist
+            if project_instance == USER_DOES_NOT_EXIST:
+                return jsonify({'code': 400, 'message': 'user doesnot exist Please update again'})
+            else:
+                # commit the changes
+                db.session.commit()
+    
+            return jsonify({"code": 200, "message": "success"})
+        except Exception as e:
+            print("Problem updating project")
+            print(str(e))
+            return jsonify({'code': 500, 'message': 'Internal server error'})
 
 
 ######################## Message class ######################
@@ -451,6 +489,43 @@ class TaskDB:
 
         # call get_assigned_task method with self.table.assigned_by_user_id as param to colum as key
         return self.get_assigned_task(user_id, self.table.assigned_by_user_id)
+
+
+
+    """
+        Update a task
+    """
+    def update_task(self, task):
+        try:
+            print(task['id'])
+            print(task)
+            task_instance = database_helper.get_data(self.table, {self.table.id: task['id']})
+
+            if task['priority'] != task_instance.priority: task_instance.priority = task['priority']
+            if task['status'] != task_instance.status: task_instance.status = task['status']
+            if task['dueDate'] != task_instance.due_date: task_instance.due_date = task['dueDate']
+
+
+
+            # update user
+            try:
+                user = database_helper.get_data(User, {User.email_id: task['assignedToUser']})
+            except Excpetion as e:
+                return jsonify({'code': 403, "message": "User doesnot exists"})
+
+            task_instance.assigned_to_user_id = user.id
+            
+            # commit the changes
+            db.session.commit()
+
+
+
+
+
+
+            return jsonify({'code': 200, 'message': 'Task Updated Successfully'})
+        except Exception as e:
+            return jsonify({'code': 500, 'message': "Internal server error"})
 
     
 

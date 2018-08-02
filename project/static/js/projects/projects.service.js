@@ -132,13 +132,13 @@ angular.module('betaApp')
             },
 
             updateProject: function (project) {
-                // called after changes to project
                 return UtilService.post('/api/project/update', {
                         "project": {
                             "id": project.id,
                             "status": project.status,
-                            "updated_date": new Date(),
-                            "users_id": project.users_id
+                            "updatedDate": UtilService.convertISODatetimeToMySQLString(new Date()),
+                            "users": project.users,
+                            "description": project.description
                         }
                     })
                     .then(function (response) {
@@ -158,15 +158,14 @@ angular.module('betaApp')
 
             updateTask: function (task) {
                 // called after changes to task
-
                 return UtilService.post('/api/task/update', {
                         "task": {
                             "id": task.id,
-                            "name": task.name,
+                            "dueDate": UtilService.convertISODatetimeToMySQLString(task.dueDate),
                             "status": task.status,
                             "priority": task.priority,
-                            "updated_date": new Date(),
-                            "assigned_to_user": task.assigned_to_user,
+                            "updatedDate": UtilService.convertISODatetimeToMySQLString(new Date()),
+                            "assignedToUser": task.assignedToUser,
                         }
                     })
                     .then(function (response) {

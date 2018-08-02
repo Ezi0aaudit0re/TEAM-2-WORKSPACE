@@ -38,6 +38,8 @@ angular.module('betaApp')
             // get user from parent scope
             var user = $scope.$parent.$resolve.user;
             var userName = user.userName;
+            
+            console.log(loc)
 
             // SOCKETIO
             var socket = io.connect(loc);
