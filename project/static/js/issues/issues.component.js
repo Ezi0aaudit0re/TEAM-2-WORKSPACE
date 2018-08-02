@@ -9,6 +9,10 @@ angular.module('betaApp')
             <div class="col-sm-2">
                 <h3>
                     Issues
+                    <button type="button" class="close" aria-label="Close" ui-sref="projects.project">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
                     <!-- Button trigger modal -->
                     <my-modal-button tgt="#newIssueModal"></my-modal-button>
                 </h3>
@@ -75,10 +79,11 @@ angular.module('betaApp')
 
             this.getIssuesForUser = function () {
                 // TODO
+                // this would be for a use-centric dashboard
             };
 
             this.createNewIssue = function () {
-                // TODO
+                // service call from modal form
                 IssuesService.postNewIssue(this.projectId, this.issue);
             };
         }

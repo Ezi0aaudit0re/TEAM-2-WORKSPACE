@@ -74,13 +74,14 @@ angular.module('betaApp')
         `,
 
         controller: function (ProjectsService) {
-
+            // to allow edit in same view
             this.readonly = true;
 
             this.edit = function () {
                 this.readonly = !this.readonly;
             };
 
+            // service call for update
             this.updateTask = function () {
                 ProjectsService.updateTask(this.task);
             };

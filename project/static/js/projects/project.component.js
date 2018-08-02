@@ -78,7 +78,7 @@ angular.module('betaApp')
             
             `,
         controller: function (ProjectsService) {
-
+            // to allow edit in same view
             this.readonly = true;
 
             this.addUserToProject = function () {
@@ -95,6 +95,7 @@ angular.module('betaApp')
                 this.readonly = !this.readonly;
             };
 
+            // service call for update
             this.updateProject = function () {
                 ProjectsService.updateProject(this.project);
             };

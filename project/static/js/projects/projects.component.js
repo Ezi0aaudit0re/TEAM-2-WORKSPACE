@@ -88,7 +88,7 @@ angular.module('betaApp')
 
         controller: function (ProjectsService) {
 
-
+            // handling for new project form - adding users
             this.project = {};
             this.project.users = [];
 
@@ -102,11 +102,9 @@ angular.module('betaApp')
                 this.project.users.splice(this.project.users.length - 1);
             };
 
-
+            // service call for new project
             this.newProject = function () {
-                console.log("newProject");
                 ProjectsService.postNewProject(this.project);
-                console.log("newProjectDone");
             };
 
         }

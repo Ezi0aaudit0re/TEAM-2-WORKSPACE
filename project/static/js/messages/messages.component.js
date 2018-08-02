@@ -35,12 +35,16 @@ angular.module('betaApp')
 
         controller: function (UtilService, $scope, loc, MessagesService, $interval) {
 
+            // get user from parent scope
             var user = $scope.$parent.$resolve.user;
             var userName = user.userName;
 
+            // SOCKETIO
             var socket = io.connect(loc);
 
+            // initialize empty array to track new messages on client
             $scope.newMessages = [];
+
 
             this.createMessage = function () {
                 var message = {};
@@ -88,6 +92,7 @@ angular.module('betaApp')
 
             });
 
+            // called every 3 seconds to post client messages to server
             postNewMessages = function () {
                 if ($scope.newMessages.length > 0) {
                     var success = MessagesService.postMessages($scope.newMessages);
