@@ -227,9 +227,11 @@ def create_issue():
     json_data = {"subject":data["subject"], \
                 "description":data["description"], \
                 "projects_id":project_id, \
+                "status": DEFAULT_ISSUE_STATUS, \
                 "created_by_user_id":session["user_id"], \
                 "assigned_to_user_email":data["user"]["email"]}
 
+    print(json_data)
     result = database_wrapper.IssueDB().create_issue(json_data)
 
     return result

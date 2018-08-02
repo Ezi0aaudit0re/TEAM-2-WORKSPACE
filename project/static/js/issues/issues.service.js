@@ -64,14 +64,14 @@ angular.module('betaApp')
                     });
             },
 
-            updateIssue: function () {
+            updateIssue: function (issue) {
                 $log.log(issue);
                 return UtilService.post('/api/issue/update', {
                         "issueId": issue.id,
                         "issue": {
                             "status": issue.status,
                             "priority": issue.priority,
-                            "updatedDate": convertISODatetimeToMySQLString(new Date()),
+                            "updatedDate": UtilService.convertISODatetimeToMySQLString(new Date()),
                             "assignedToUser": issue.assignedToUser
                         }
                     })
