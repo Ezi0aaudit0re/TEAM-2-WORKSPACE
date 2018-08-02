@@ -23,12 +23,7 @@ angular.module('betaApp')
                     <input type="text" class="form-control" readonly ng-model="$ctrl.issue.description" />
                 </div>
                 <div>
-                    Severity
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.severity" />
-                </div>
-                <div>
                     Status
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.status" />
                     <select class="form-control" ng-disabled="$ctrl.readonly" ng-model="$ctrl.issue.status" >
                         <option ng-value="0">Created</option>
                         <option ng-value="1">Assigned</option>
@@ -41,19 +36,19 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Created At:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.issue.created_at" />
+                    <input type="date" class="form-control" readonly ng-model="$ctrl.issue.createdAt" />
                 </div>
                 <div>
                     Updated At:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.issue.updated_at" />
+                    <input type="date" class="form-control" readonly ng-model="$ctrl.issue.updatedAt" />
                 </div>
                 <div>
                     Assigned To User:
-                    <input type="email" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.assigned_to_user_id" />
+                    <input type="email" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.issue.assignedToUser" />
                 </div>
                 <div>
                     Created By User:
-                    <input type="text" class="form-control" readonly ng-model="$ctrl.issue.created_by_user" />
+                    <input type="text" class="form-control" readonly ng-model="$ctrl.issue.createdByUser" />
                 </div>
 
             </form>
@@ -64,7 +59,7 @@ angular.module('betaApp')
         <button ui-sref="projects.project.issues">Close Issue</button>
         `,
 
-        controller: function () {
+        controller: function (IssuesService) {
             // TODO
             this.readonly = true;
 
@@ -73,7 +68,7 @@ angular.module('betaApp')
             };
 
             this.updateIssue = function () {
-                IssuesService.updateIssue();
+                IssuesService.updateIssue(this.issue);
             };
         }
     });
