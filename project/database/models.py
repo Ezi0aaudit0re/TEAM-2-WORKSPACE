@@ -124,6 +124,7 @@ class Issue(Base):
         self.projects_id = kwargs["projects_id"]
         self.created_by_user_id = kwargs["created_by_user_id"]
         self.assigned_to_user_id = kwargs["assigned_to_user_id"]
+        self.status = kwargs["status"]
         self.created_at = current_time
         self.updated_at = current_time
 
@@ -133,8 +134,9 @@ class Issue(Base):
                  'description': self.description,\
                  'priority': self.priority,\
                  'projectsId': self.projects_id,\
-                 'createdByUserId': self.created_by_user_id,\
-                 'assignedToUserId': self.assigned_to_user_id,\
+                 'createdByUser': db.session.query(User.email_id).filter((User.id == self.created_by_user_id)).first()[0], \
+                 'assignedToUser': db.session.query(User.email_id).filter((User.id == self.assigned_to_user_id)).first()[0],\
+                 'status': self.status, \
                  'createdAt': self.created_at, \
                  'updatedAt': self.updated_at }
 

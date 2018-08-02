@@ -498,9 +498,11 @@ class IssueDB:
             if assigned_to_user.id not in user_ids:
                 return jsonify({"code":404, "message": "Assigned to user is not assigned to the project"})
 
+            print(kwargs["status"])
             issue = self.table(subject=kwargs["subject"], \
             description=kwargs["description"], \
             projects_id=kwargs["projects_id"], \
+            status=kwargs["status"], \
             created_by_user_id=kwargs["created_by_user_id"],\
             assigned_to_user_id=assigned_to_user.id)
 
@@ -552,8 +554,10 @@ class IssueDB:
     def get_issue_details(self, issue_id):
         try:
             data = database_helper.get_data(self.table, {self.table.id:issue_id})
+            
             if data == None:
                 return jsonify({"code":404, "message":"No issue with given issue id"})
+
             return jsonify({"code":200, "message":"success", "data":data.json()})
         except Exception as e:
             print("error getting issue details")
