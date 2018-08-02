@@ -43,7 +43,6 @@ angular.module('betaApp')
                 </button>`
     })
     .component('myModalForm', {
-        // :( not working for the attributes)
         bindings: {
             myType: '@'
         },
