@@ -162,11 +162,11 @@ angular.module('betaApp')
                 return UtilService.post('/api/task/update', {
                         "task": {
                             "id": task.id,
-                            "due_date": task.due_date,
+                            "dueDate": UtilService.convertISODatetimeToMySQLString(task.dueDate),
                             "status": task.status,
                             "priority": task.priority,
-                            "updated_date": new Date(),
-                            "assigned_to_user": task.assigned_to_user,
+                            "updatedDate": UtilService.convertISODatetimeToMySQLString(new Date()),
+                            "assignedToUser": task.assignedToUser,
                         }
                     })
                     .then(function (response) {

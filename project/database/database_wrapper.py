@@ -497,17 +497,19 @@ class TaskDB:
     """
     def update_task(self, task):
         try:
+            print(task['id'])
+            print(task)
             task_instance = database_helper.get_data(self.table, {self.table.id: task['id']})
 
             if task['priority'] != task_instance.priority: task_instance.priority = task['priority']
             if task['status'] != task_instance.status: task_instance.status = task['status']
-            if task['due_date'] != task_instance.due_date: task_instance.due_date = task['due_date']
+            if task['dueDate'] != task_instance.due_date: task_instance.due_date = task['dueDate']
 
 
 
             # update user
             try:
-                user = database_helper.get_data(User, {User.email_id: task['assigned_to_user_id']})
+                user = database_helper.get_data(User, {User.email_id: task['assignedToUser']})
             except Excpetion as e:
                 return jsonify({'code': 403, "message": "User doesnot exists"})
 
