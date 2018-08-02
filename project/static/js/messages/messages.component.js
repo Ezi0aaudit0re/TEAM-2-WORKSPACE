@@ -37,6 +37,8 @@ angular.module('betaApp')
 
             var user = $scope.$parent.$resolve.user;
             var userName = user.userName;
+            
+            console.log(loc)
 
             var socket = io.connect(loc);
 

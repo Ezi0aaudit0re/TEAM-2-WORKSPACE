@@ -132,13 +132,15 @@ angular.module('betaApp')
             },
 
             updateProject: function (project) {
-                // TODO
+                console.log(project)
                 return UtilService.post('/api/project/update', {
                         "project": {
                             "id": project.id,
                             "status": project.status,
                             "updated_date": new Date(),
-                            "users_id": project.users_id
+                            "users_id": project.users_id,
+                            "description": project.description,
+                            "users": project.users
                         }
                     })
                     .then(function (response) {

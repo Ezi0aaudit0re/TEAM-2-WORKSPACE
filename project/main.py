@@ -165,6 +165,14 @@ def get_project():
     user_id = session['user_id']
     return database_wrapper.ProjectDB().get_project(project_id, user_id)
 
+# update a project
+@app.route(url_pre + '/project/update', methods=["POST"])
+@login_required
+def update_project():
+
+    project = request.get_json()['project']
+    return database_wrapper.ProjectDB().update_project(project)
+
 
 ################### GET BASIC INFO OF THE USER ################
 
@@ -189,10 +197,6 @@ def store_message():
 
     
     data = request.get_json()['messages']
-
-    # json_data = [{'user_id': 19 , 'project_id': 1, 'msg': 'test message storing', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')},\
-                
-    #              {'user_id': 21, 'project_id': 1, 'msg': 'second message', 'created_at': time.strftime('%Y-%m-%d %H:%M:%S')}]
 
     result = database_wrapper.MessageDB().create_messages(data)
 
