@@ -15,6 +15,7 @@ class BaseClass(unittest.TestCase):
 
     def setUp(self):
         from main import db, app
+        from database.models import User
         self.app = app
         self.client = app.test_client()
         self.client.testing = True
@@ -62,8 +63,14 @@ class BaseClass(unittest.TestCase):
             else:
                 response = self.client.post(route)
 
+
             response = json.loads(response.data)
+
+
             return response
+
+
+
 
 
 
@@ -124,7 +131,7 @@ class UserDBTest(BaseClass):
     def test_get_user_data(self):
         self.test_create_user()
         response = super().authenticate_user()
-        self.assertEqual(response['data']['email_id'], self.new_user['email_id'], "Getting basic info is not working")
+        self.assertEqual(response['data']['emailId'], self.new_user['email_id'], "Getting basic info is not working")
 
 
     def test_get_basic_info(self):
@@ -158,11 +165,11 @@ class ProjectDBTest(BaseClass):
         # we create a user to do our project related tests with
         super().create_user()
         # authenticate the useer
-        user = super().authenticate_user()
+        self.user = super().authenticate_user()
         self.project_db = ProjectDB()
         self.new_project = {'name': 'Automated Test',\
                             'description': 'Automated Description',\
-                            'admin_id': user['data']['id'], \
+                            'admin_id': self.user['data']['id'], \
                             'users':[{'email': 'anagpal4@bu.edu'}]
                            }
 
@@ -255,32 +262,64 @@ class ProjectDBTest(BaseClass):
 class MessageDBTest(BaseClass):
 
     def setUp(self):
-        # create a user
+        super().setUp()
 
-        #authenticate user
+        from database.models import Project
 
-        # create a project 
+        # create an instance of project test class
+        self.project_test = ProjectDBTest()
+
+        # create a user and authenticate the user 
+        self.project_test.setUp()
+
+        # create the project
+        self.project_test.test_create_new_project()
+
+        super().authenticate_user()
 
 
         # message 
-        self.message = None
+        self.message = {"messages": [{\
+                                      'userId': self.project_test.user['data']['id'],
+                                      'msg': "This is the test message",
+                                      'timestamp': "2018-07-31 01:07:24",
+                                      'projectId': super().get_id(Project, {Project.name: self.project_test.new_project['name']})
+                                     }]
+                       }
 
 
-        pass
 
 
-    def test_create_message(self):
-        pass
+    def test_store_message(self):
+        response = super().make_request('/api/storeMessage', json.dumps(self.message))
+        self.assertEqual(response['code'], 200, "Problem storing messages in the database")
 
 
     def test_rertrieve_message(self):
-        pass
+        # first create a message 
+        super().make_request('/api/storeMessage', json.dumps(self.message))
+
+        # try to retrieve the message
+        params = json.dumps({"projectId": self.message['messages'][0]['projectId']})
+        response = super().make_request('/api/messages', params)
+
+        self.assertEqual(response['data'][0]['msg'], self.message['messages'][0]['msg'], "Problem retrieving message")
 
 
 
 
     def tearDown(self):
-        pass
+        from database.models import Message
+        # delete the message
+        db.session.query(Message).filter((Message.msg == self.message['messages'][0]['msg'])).delete()
+
+        db.session.commit()
+
+        # delete the project that we created
+        self.project_test.tearDown()
+
+        #delete the user
+        super().tearDown()
 
 
 
