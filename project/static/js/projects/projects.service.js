@@ -132,11 +132,6 @@ angular.module('betaApp')
             },
 
             updateProject: function (project) {
-<<<<<<< HEAD
-                console.log(project)
-=======
-                // called after changes to project
->>>>>>> 13ee5aec432053a4e100f63d1a79560a7d6f081d
                 return UtilService.post('/api/project/update', {
                         "project": {
                             "id": project.id,
