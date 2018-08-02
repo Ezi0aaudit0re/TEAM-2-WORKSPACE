@@ -53,7 +53,8 @@ def test_retrieve_user_issues(test_client, init_database, test_project, test_use
 def test_update_issue(test_client, init_database, test_project, test_users):
     auth_user = login(test_users["user_1"], test_client)
     create_response = create_test_issue(test_client, auth_user, test_project)
-    result = test_client.post("api/issue/update", data = {"issue": {"priority":2, "status":0}, "issueId":create_response["new_issue"].id})
+    result = test_client.post("api/issue/update", data = json.dumps({"issue": {"priority":2, "status":0, "assignedToUser":test_users["user_2"].email_id},\
+     "issueId":create_response["new_issue"].id}), content_type="application/json")
     assert json.loads(result.data)["code"] == 200, "updating issue failed"
 
 def create_test_issue(client, create_user, project, assign_user_email = None):
