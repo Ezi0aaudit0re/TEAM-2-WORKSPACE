@@ -22,6 +22,7 @@ angular.module('betaApp')
             },
 
             postMessages: function (newMessages) {
+                // called on regular interval to send client messages to backend
                 return UtilService.post('/api/storeMessage', {
                         "messages": newMessages
                     })

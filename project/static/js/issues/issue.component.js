@@ -8,6 +8,9 @@ angular.module('betaApp')
         <div class="col-sm-4">
             <h4>
                 {{$ctrl.issue.subject}}
+                <button type="button" class="close" aria-label="Close" ui-sref="projects.project.issues">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 <button class="btn btn-primary" ng-click="$ctrl.readonly  = !$ctrl.readonly">
                     {{$ctrl.readonly == true ? 'Edit' : 'Stop Editing'}}
                 </button>
@@ -60,13 +63,14 @@ angular.module('betaApp')
         `,
 
         controller: function (IssuesService) {
-            // TODO
+            // to allow edit in same view
             this.readonly = true;
 
             this.edit = function () {
                 this.readonly = !this.readonly;
             };
 
+            // service call for update
             this.updateIssue = function () {
                 IssuesService.updateIssue(this.issue);
             };

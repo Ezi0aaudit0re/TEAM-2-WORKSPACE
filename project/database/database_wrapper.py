@@ -643,28 +643,25 @@ class IssueDB:
 
         try:
             current_time = time.strftime('%Y-%m-%d %H:%M:%S')
-            valid_keys = ("priority","status","tested", "assigned_to_user_email")
-            keys = list(kwargs.keys())
-
-            #This can be improved maybe?
-            for key in keys:
-                if key not in valid_keys:
-                    return jsonify({"code":404, "message":"Invalid field"})
-
-                if key in ("priority", "status") and kwargs[key] not in (0,1,2):
-                    return jsonify({"code":404, "message":"Invalid value"})
-                
-                if key == "test" and key not in (0,1):
-                    return jsonify({"code":404, "message":"Invalid value"})
-            
+         
             issue = database_helper.get_data(self.table, {self.table.id:issue_id})
             if issue == None:
                 return jsonify({"code":404, "message":"No issue exists with given id"})
-            
-            
-            issue.update(kwargs)
-            issue.updated_at = current_time
+            print(kwargs)
+            assigned_to_user_id = database_helper.get_data(User, {User.email_id:kwargs["assignedToUser"]}).id
+            if not database_helper.check_user_in_project(Project, assigned_to_user_id, issue.projects_id):
+                return jsonify({"code":404, "message":"Assigned to user is not a member of the project"})
+
+            issue.status=kwargs["status"] 
+            issue.priority=kwargs["priority"] 
+            issue.updated_at=current_time           
+            issue.assigned_to_user_id=assigned_to_user_id
+
             db.session.commit()
+
+            #TODO
+            #if not database_helper.check_update_success(self.table, kwargs, id):
+                #return jsonify({"code":500, "message":"Issue updated failed to commit"})
 
             return jsonify({"code":200, "message":"Updated issue successfully"})
             

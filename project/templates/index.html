@@ -28,13 +28,13 @@
                         </a>
                     </li>
                     <li ng-if="'projects.project' | includedByState" class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Project
+                        <a ui-sref="projects.project" ui-sref-active="active" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">Project
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a ng-if="'projects.project' | includedByState" ui-sref="projects.project.tasks" ui-sref-active="active">Tasks
-                                    <span class="sr-only">(current)</span>
                                 </a>
                             </li>
                             <li>

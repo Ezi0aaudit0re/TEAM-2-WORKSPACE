@@ -132,7 +132,11 @@ angular.module('betaApp')
             },
 
             updateProject: function (project) {
+<<<<<<< HEAD
                 console.log(project)
+=======
+                // called after changes to project
+>>>>>>> 13ee5aec432053a4e100f63d1a79560a7d6f081d
                 return UtilService.post('/api/project/update', {
                         "project": {
                             "id": project.id,
@@ -147,6 +151,7 @@ angular.module('betaApp')
                         if (UtilService.checkIfSuccess(response)) {
                             Flash.create('success', 'Project Updated!', 0);
                             $log.log("Successfully updated project: " + JSON.stringify(response));
+                            $state.reload();
                             return true;
                         } else {
                             return false;
@@ -158,7 +163,7 @@ angular.module('betaApp')
             },
 
             updateTask: function (task) {
-                // TODO
+                // called after changes to task
 
                 return UtilService.post('/api/task/update', {
                         "task": {
@@ -172,8 +177,9 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         if (UtilService.checkIfSuccess(response)) {
-                            Flash.create('success', 'Task Updated!', 0);
                             $log.log("Successfully updated task: " + JSON.stringify(response));
+                            $state.reload();
+                            Flash.create('success', 'Task Updated!', 0);
                             return true;
                         } else {
                             return false;
@@ -186,6 +192,7 @@ angular.module('betaApp')
 
             getTasksForUser: function () {
                 // TODO
+                // this would be for a use-centric dashboard
             }
         };
 

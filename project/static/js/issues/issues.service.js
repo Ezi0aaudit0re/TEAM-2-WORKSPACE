@@ -42,6 +42,7 @@ angular.module('betaApp')
             },
 
             postNewIssue: function (projectId, issue) {
+                // called from modal form adding new issue
                 return UtilService.post('/api/issue/new', {
                         "issue": issue,
                         "projectId": projectId
@@ -65,6 +66,7 @@ angular.module('betaApp')
             },
 
             updateIssue: function (issue) {
+                // called after changes to issue
                 $log.log(issue);
                 return UtilService.post('/api/issue/update', {
                         "issueId": issue.id,
@@ -77,6 +79,7 @@ angular.module('betaApp')
                     })
                     .then(function (response) {
                         UtilService.checkIfSuccess(response);
+                        $state.reload();
                         return true;
                     })
                     .catch(function (error) {

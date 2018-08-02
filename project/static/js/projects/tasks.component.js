@@ -15,7 +15,7 @@ angular.module('betaApp')
                     
                 </h3>
                 <ul>
-                    <input type="text" ng-model="search.project" placeholder="Filter by task">
+                    <input type="text" ng-model="search.task" placeholder="Filter by task">
                     <li ng-repeat="t in $ctrl.tasks | filter:search.task">
                         <a ui-sref-active="active" ui-sref="projects.project.tasks.task({ taskId: t.id })">
                             {{t.name}}: {{t.status}}
@@ -94,19 +94,10 @@ angular.module('betaApp')
         `,
 
         controller: function (ProjectsService) {
-            // TODO
-
-            this.getTasksForUser = function () {
-                // TODO
-            };
 
             this.createNewTask = function () {
-                console.log(this.task);
-
-                console.log(this.projectId);
-
+                // service call from modal form
                 ProjectsService.postNewTask(this.projectId, this.task);
-                console.log(this.task);
             };
         }
     });
