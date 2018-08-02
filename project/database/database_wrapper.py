@@ -490,6 +490,41 @@ class TaskDB:
         # call get_assigned_task method with self.table.assigned_by_user_id as param to colum as key
         return self.get_assigned_task(user_id, self.table.assigned_by_user_id)
 
+
+
+    """
+        Update a task
+    """
+    def update_task(self, task):
+        try:
+            task_instance = database_helper.get_data(self.table, {self.table.id: task['id']})
+
+            if task['priority'] != task_instance.priority: task_instance.priority = task['priority']
+            if task['status'] != task_instance.status: task_instance.status = task['status']
+            if task['due_date'] != task_instance.due_date: task_instance.due_date = task['due_date']
+
+
+
+            # update user
+            try:
+                user = database_helper.get_data(User, {User.email_id: task['assigned_to_user_id']})
+            except Excpetion as e:
+                return jsonify({'code': 403, "message": "User doesnot exists"})
+
+            task_instance.assigned_to_user_id = user.id
+            
+            # commit the changes
+            db.session.commit()
+
+
+
+
+
+
+            return jsonify({'code': 200, 'message': 'Task Updated Successfully'})
+        except Exception as e:
+            return jsonify({'code': 500, 'message': "Internal server error"})
+
     
 
 

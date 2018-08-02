@@ -330,6 +330,15 @@ def get_assigned_task_by_user():
 
 
 
+@app.route(url_pre + '/task/update', methods=["POST"])
+@login_required
+def update_task():
+
+    task = request.get_json()['task']
+    return database_wrapper.TaskDB().update_task(task)
+
+
+
 
 
 ########################## Sockets for message ########################

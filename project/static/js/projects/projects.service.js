@@ -159,11 +159,10 @@ angular.module('betaApp')
 
             updateTask: function (task) {
                 // called after changes to task
-
                 return UtilService.post('/api/task/update', {
                         "task": {
                             "id": task.id,
-                            "name": task.name,
+                            "due_date": task.due_date,
                             "status": task.status,
                             "priority": task.priority,
                             "updated_date": new Date(),

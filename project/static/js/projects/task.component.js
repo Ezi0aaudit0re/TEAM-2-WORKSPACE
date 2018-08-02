@@ -25,7 +25,12 @@ angular.module('betaApp')
                 </div>
                 <div>
                     Priority:
-                    <input type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.priority" />
+                    <select type="text" class="form-control" ng-readonly="$ctrl.readonly" ng-model="$ctrl.task.priority" />
+                        <option ng-value=1>1</option>
+                        <option ng-value=2>2</option>
+                        <option ng-value=3>3</option>
+
+                    </select>
                 </div>
                 <div>
                     Due Date:
