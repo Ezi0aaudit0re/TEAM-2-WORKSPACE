@@ -136,10 +136,9 @@ angular.module('betaApp')
                         "project": {
                             "id": project.id,
                             "status": project.status,
-                            "updated_date": new Date(),
-                            "users_id": project.users_id,
-                            "description": project.description,
-                            "users": project.users
+                            "updatedDate": UtilService.convertISODatetimeToMySQLString(new Date()),
+                            "users": project.users,
+                            "description": project.description
                         }
                     })
                     .then(function (response) {
